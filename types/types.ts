@@ -17,6 +17,14 @@ export type RecipeWithDetails = Recipe & {
     ingredient_id: number;
     ingredients: Ingredient;
   }[];
+
+  recipesteps: {
+    id: number;
+    recipe_id: number;
+    step_number: number;
+    instruction: string;
+    created_at: string;
+  }[];
 };
 export type Ingredient = {
   id: number;

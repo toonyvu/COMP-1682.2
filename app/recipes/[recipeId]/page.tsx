@@ -7,7 +7,7 @@ type Props = {
 };
 
 export default async function Recipe({ params }: Props) {
-  const { supabase } = await getUser();
+  const { supabase, user } = await getUser();
   const { recipeId } = await params;
 
   const { data, error } = await supabase
@@ -15,8 +15,7 @@ export default async function Recipe({ params }: Props) {
     .select(
       `*, recipeingredients 
       (ingredient_id, 
-        ingredients (*)
-      )`,
+        ingredients (*)), recipesteps (*)`,
     )
     .eq("id", recipeId)
     .single();
@@ -24,5 +23,17 @@ export default async function Recipe({ params }: Props) {
   if (error) {
     console.log(error);
   }
-  return <RecipePage recipe={data} />;
+
+  let isFavorited = false;
+  if (user) {
+    const { data: favorite } = await supabase
+      .from("recipefavorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("recipe_id", recipeId)
+      .maybeSingle();
+
+    isFavorited = !!favorite;
+  }
+  return <RecipePage recipe={data} isFavorited={isFavorited} />;
 }

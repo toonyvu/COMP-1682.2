@@ -3,12 +3,13 @@ import RecipeDetails from "@/components/RecipeDetails";
 
 type Props = {
   recipe: RecipeWithDetails;
+  isFavorited: boolean;
 };
 
-export default function RecipePage({ recipe }: Props) {
+export default function RecipePage({ recipe, isFavorited }: Props) {
   if (!recipe) {
     return <div>Loading...</div>;
   }
 
-  return <RecipeDetails recipe={recipe} />;
+  return <RecipeDetails recipe={recipe} isFavorited={isFavorited} />;
 }

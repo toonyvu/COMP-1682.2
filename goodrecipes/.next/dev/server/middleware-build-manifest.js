@@ -1,0 +1,51 @@
+globalThis.__BUILD_MANIFEST = {
+  "pages": {
+    "/_app": [
+      "static/chunks/63471_next_dist_compiled_1ab8cc40._.js",
+      "static/chunks/63471_next_dist_shared_lib_55b4e1fc._.js",
+      "static/chunks/63471_next_dist_client_2a5bfa77._.js",
+      "static/chunks/63471_next_dist_fd818f7c._.js",
+      "static/chunks/63471_next_app_4bf2b31e.js",
+      "static/chunks/[next]_entry_page-loader_ts_d2a5bc23._.js",
+      "static/chunks/63471_react-dom_6cdd7dec._.js",
+      "static/chunks/63471_b6d2507d._.js",
+      "static/chunks/[root-of-the-server]__7369ebca._.js",
+      "static/chunks/Documents_PRJ_goodrecipes_pages__app_2da965e7._.js",
+      "static/chunks/turbopack-Documents_PRJ_goodrecipes_pages__app_67aec055._.js"
+    ],
+    "/_error": [
+      "static/chunks/63471_next_dist_compiled_1ab8cc40._.js",
+      "static/chunks/63471_next_dist_shared_lib_0f3a05df._.js",
+      "static/chunks/63471_next_dist_client_2a5bfa77._.js",
+      "static/chunks/63471_next_dist_46637f6d._.js",
+      "static/chunks/63471_next_error_248957c5.js",
+      "static/chunks/[next]_entry_page-loader_ts_22c18e10._.js",
+      "static/chunks/63471_react-dom_6cdd7dec._.js",
+      "static/chunks/63471_b6d2507d._.js",
+      "static/chunks/[root-of-the-server]__fc552f78._.js",
+      "static/chunks/Documents_PRJ_goodrecipes_pages__error_2da965e7._.js",
+      "static/chunks/turbopack-Documents_PRJ_goodrecipes_pages__error_04eaf0c9._.js"
+    ]
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/63471_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_030eb4a9._.js",
+    "static/chunks/63471_next_dist_compiled_react-dom_994fed0e._.js",
+    "static/chunks/63471_next_dist_compiled_react-server-dom-turbopack_5ea73eb8._.js",
+    "static/chunks/63471_next_dist_compiled_next-devtools_index_d9c79a22.js",
+    "static/chunks/63471_next_dist_compiled_5647337b._.js",
+    "static/chunks/63471_next_dist_client_94a43953._.js",
+    "static/chunks/63471_next_dist_e481bfcc._.js",
+    "static/chunks/63471_@swc_helpers_cjs_2debca75._.js",
+    "static/chunks/Documents_PRJ_goodrecipes_a0ff3932._.js",
+    "static/chunks/turbopack-Documents_PRJ_goodrecipes_cb3f9e8f._.js"
+  ]
+};
+globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
+"/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
+"/static/" + process.env.__NEXT_BUILD_ID + "/_ssgManifest.js"
+];

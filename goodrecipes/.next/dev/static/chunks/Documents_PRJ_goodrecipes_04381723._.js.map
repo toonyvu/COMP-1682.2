@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/components/ScrollToTop.tsx"],"sourcesContent":["\"use client\";\r\n\r\nimport { usePathname } from \"next/navigation\";\r\nimport { useEffect } from \"react\";\r\n\r\nexport default function ScrollToTop() {\r\n  const pathname = usePathname();\r\n\r\n  useEffect(() => {\r\n    window.scrollTo(0, 0);\r\n  }, [pathname]);\r\n\r\n  return null;\r\n}\r\n"],"names":[],"mappings":";;;;AAEA;AACA;;AAHA;;;AAKe,SAAS;;IACtB,MAAM,WAAW,IAAA,uLAAW;IAE5B,IAAA,6MAAS;iCAAC;YACR,OAAO,QAAQ,CAAC,GAAG;QACrB;gCAAG;QAAC;KAAS;IAEb,OAAO;AACT;GARwB;;QACL,uLAAW;;;KADN"}},
+    {"offset": {"line": 40, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/node_modules/next/navigation.js"],"sourcesContent":["module.exports = require('./dist/client/components/navigation')\n"],"names":[],"mappings":"AAAA,OAAO,OAAO","ignoreList":[0]}}]
+}

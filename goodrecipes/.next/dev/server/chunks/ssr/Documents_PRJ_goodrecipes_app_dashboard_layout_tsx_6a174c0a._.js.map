@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/dashboard/layout.tsx"],"sourcesContent":["import UserNavbar from \"@/components/UserNavbar\";\r\n\r\nexport default function DashboardLayout({\r\n  children,\r\n}: {\r\n  children: React.ReactNode;\r\n}) {\r\n  return (\r\n    <div>\r\n      <UserNavbar />\r\n      {children}\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;;;;;;;;AAEe,SAAS,gBAAgB,EACtC,QAAQ,EAGT;IACC,qBACE,iRAAC;;0BACC,iRAAC;;;;;YACA;;;;;;;AAGP"}}]
+}

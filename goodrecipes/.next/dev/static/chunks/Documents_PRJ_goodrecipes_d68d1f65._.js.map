@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/hooks/useAuth.ts"],"sourcesContent":["import { useContext } from \"react\";\r\nimport { AuthContext } from \"@/components/contexts/AuthProvider\";\r\n\r\nexport const useAuth = () => {\r\n  const ctx = useContext(AuthContext);\r\n\r\n  if (!ctx) {\r\n    throw new Error(\"useAuth must be used within an AuthContext.\");\r\n  }\r\n\r\n  return ctx;\r\n};\r\n"],"names":[],"mappings":";;;;AAAA;AACA;;;;AAEO,MAAM,UAAU;;IACrB,MAAM,MAAM,IAAA,8MAAU,EAAC,4LAAW;IAElC,IAAI,CAAC,KAAK;QACR,MAAM,IAAI,MAAM;IAClB;IAEA,OAAO;AACT;GARa"}},
+    {"offset": {"line": 29, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/dashboard/page.tsx"],"sourcesContent":["\"use client\";\r\nimport UserDashboard from \"@/pages/Dashboard\";\r\nimport { useAuth } from \"@/hooks/useAuth\";\r\n\r\nexport default function Dashboard() {\r\n  const { user } = useAuth();\r\n  return (\r\n    <div>\r\n      <h1>Hello!</h1>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAEA;;;AAFA;;AAIe,SAAS;;IACtB,MAAM,EAAE,IAAI,EAAE,GAAG,IAAA,iKAAO;IACxB,qBACE,gOAAC;kBACC,cAAA,gOAAC;sBAAG;;;;;;;;;;;AAGV;GAPwB;;QACL,iKAAO;;;KADF"}}]
+}

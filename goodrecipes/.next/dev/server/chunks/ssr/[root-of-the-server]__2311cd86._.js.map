@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/recipes/%5BrecipeId%5D/page.tsx"],"sourcesContent":["type Props = {\r\n  params: Promise<{ recipeId: string }>;\r\n};\r\n\r\nexport default async function Recipe({ params }: Props) {\r\n  const { recipeId } = await params;\r\n\r\n  return <h1>Hello, this is recipe {recipeId}!!</h1>;\r\n}\r\n"],"names":[],"mappings":";;;;;;AAIe,eAAe,OAAO,EAAE,MAAM,EAAS;IACpD,MAAM,EAAE,QAAQ,EAAE,GAAG,MAAM;IAE3B,qBAAO,iRAAC;;YAAG;YAAuB;YAAS;;;;;;;AAC7C"}}]
+}

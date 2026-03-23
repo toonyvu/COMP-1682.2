@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/dashboard/page.tsx"],"sourcesContent":["export default function Dashboard() {\r\n  return <h1>Hello!</h1>;\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS;IACtB,qBAAO,iRAAC;kBAAG;;;;;;AACb"}}]
+}

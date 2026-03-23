@@ -6,19 +6,12 @@ import Image from "next/image";
 import { difficultyColor } from "@/constants/constants";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import PaginationComponent from "@/components/Pagination";
 
 import { getMealKits } from "@/lib/api/getMealKits";
 
 import loading from "@/public/loading.svg";
 import { limit } from "@/constants/constants";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationLink,
-  PaginationItem,
-} from "./ui/pagination";
 
 export default function MealkitList() {
   const router = useRouter();
@@ -103,50 +96,12 @@ export default function MealkitList() {
           </Link>
         ))}
       </div>
-      <div className="flex justify-center items-center gap-4 mt-6">
-        {/* Disable the button based on the truthiness of the expression page === 1.
-        When clicked, reduce the page state by 1.*/}
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => setPage((p) => p - 1)}
-                className={page === 1 ? "pointer-events-none opacity-50" : ""}
-              >
-                Prev
-              </PaginationPrevious>
-            </PaginationItem>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-              (pageNum) => (
-                <PaginationItem key={pageNum}>
-                  <PaginationLink>
-                    <button
-                      onClick={() => setPage(pageNum)}
-                      className={`px-3 py-1 rounded ${
-                        page === pageNum
-                          ? "bg-green-600 text-white"
-                          : "bg-gray-200"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  </PaginationLink>
-                </PaginationItem>
-              ),
-            )}
-
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => setPage((p) => p + 1)}
-                className={
-                  page === totalPages ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+      <PaginationComponent
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+      />
     </>
   );
 }

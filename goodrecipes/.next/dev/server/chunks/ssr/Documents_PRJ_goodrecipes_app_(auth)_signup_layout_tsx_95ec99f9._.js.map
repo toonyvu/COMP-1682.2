@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/%28auth%29/signup/layout.tsx"],"sourcesContent":["export default function LoginLayout({\r\n  children,\r\n}: {\r\n  children: React.ReactNode;\r\n}) {\r\n  return <div>{children}</div>;\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS,YAAY,EAClC,QAAQ,EAGT;IACC,qBAAO,iRAAC;kBAAK;;;;;;AACf"}}]
-}

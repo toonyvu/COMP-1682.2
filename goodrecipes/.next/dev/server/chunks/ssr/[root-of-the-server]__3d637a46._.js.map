@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 22, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/pages/Dashboard.tsx"],"sourcesContent":["export default function Dashboard() {\r\n  return (\r\n    <div>\r\n      <h1>Welcome,</h1>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS;IACtB,qBACE,iRAAC;kBACC,cAAA,iRAAC;sBAAG;;;;;;;;;;;AAGV"}},
-    {"offset": {"line": 47, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/dashboard/page.tsx"],"sourcesContent":["import UserDashboard from \"@/pages/Dashboard\";\r\n\r\nexport default function Dashboard() {\r\n  return <UserDashboard />;\r\n}\r\n"],"names":[],"mappings":";;;;;AAAA;;;AAEe,SAAS;IACtB,qBAAO,iRAAC,iKAAa;;;;;AACvB"}}]
-}

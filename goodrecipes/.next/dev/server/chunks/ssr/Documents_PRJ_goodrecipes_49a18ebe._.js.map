@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/public/loading.svg.mjs%20%28structured%20image%20object%20with%20data%20url%29"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 512, height: 512, blurWidth: 0, blurHeight: 0};\n"],"names":[],"mappings":";;;;AAAA;;uCACe;IAAE,KAAA,yKAAG;IAAE,OAAO;IAAK,QAAQ;IAAK,WAAW;IAAG,YAAY;AAAC"}},
-    {"offset": {"line": 24, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/dashboard/loading.tsx"],"sourcesContent":["import loading from \"@/public/loading.svg\";\r\nimport Image from \"next/image\";\r\n\r\nexport default function Loading() {\r\n  return (\r\n    <div className=\"h-screen flex flex-col justify-center items-center\">\r\n      <Image\r\n        src={loading}\r\n        height={80}\r\n        width={80}\r\n        alt={\"Loading\"}\r\n        className=\"animate-spin\"\r\n      ></Image>\r\n\r\n      <h1 className=\"mt-5\">Fetching Recipes...</h1>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAAA;AACA;;;;AAEe,SAAS;IACtB,qBACE,iRAAC;QAAI,WAAU;;0BACb,iRAAC,2KAAK;gBACJ,KAAK,qXAAO;gBACZ,QAAQ;gBACR,OAAO;gBACP,KAAK;gBACL,WAAU;;;;;;0BAGZ,iRAAC;gBAAG,WAAU;0BAAO;;;;;;;;;;;;AAG3B"}}]
-}

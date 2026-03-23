@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/recipes/%5BrecipeId%5D/loading.tsx"],"sourcesContent":["import loading from \"@/public/loading.svg\";\r\n\r\nexport default function Loading() {\r\n  return (\r\n    <div className=\"h-screen\">\r\n      <h1 className=\"place-self-center\"></h1>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;;AAEe,SAAS;IACtB,qBACE,iRAAC;QAAI,WAAU;kBACb,cAAA,iRAAC;YAAG,WAAU;;;;;;;;;;;AAGpB"}}]
-}

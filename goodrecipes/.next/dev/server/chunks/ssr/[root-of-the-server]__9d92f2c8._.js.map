@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/components/home.tsx"],"sourcesContent":["export default function Home() {\r\n  return (\r\n    <div>\r\n      <div className=\"flex flex-row bg-lime-100 w-full h-20 p-2 gap-2 justify-between items-center\">\r\n        <h1>Test1</h1>\r\n        <h1>Test2</h1>\r\n        <h1>Test3</h1>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS;IACtB,qBACE,iRAAC;kBACC,cAAA,iRAAC;YAAI,WAAU;;8BACb,iRAAC;8BAAG;;;;;;8BACJ,iRAAC;8BAAG;;;;;;8BACJ,iRAAC;8BAAG;;;;;;;;;;;;;;;;;AAIZ"}},
-    {"offset": {"line": 66, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/page.tsx"],"sourcesContent":["import Home from \"../components/home\";\nexport default function Page() {\n  return <Home />;\n}\n"],"names":[],"mappings":";;;;;AAAA;;;AACe,SAAS;IACtB,qBAAO,iRAAC,iKAAI;;;;;AACd"}}]
-}

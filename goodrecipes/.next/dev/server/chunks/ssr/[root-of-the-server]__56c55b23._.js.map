@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/ym101/Documents/PRJ/goodrecipes/app/home/page.tsx"],"sourcesContent":["export default function Homepage() {\r\n  return (\r\n    <div>\r\n      <h1>Hello!!!!!</h1>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAe,SAAS;IACtB,qBACE,iRAAC;kBACC,cAAA,iRAAC;sBAAG;;;;;;;;;;;AAGV"}}]
-}

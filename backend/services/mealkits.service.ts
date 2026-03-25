@@ -1,15 +1,19 @@
 import { pool } from "../database.js";
 
-export async function getAllRecipes(page: number, limit: number) {
+export async function getAllRecipes(page: number, limit: number, week: number) {
   const offset = (page - 1) * limit;
-  const result = await pool.query("SELECT * FROM recipes LIMIT $1 OFFSET $2", [
-    limit,
-    offset,
-  ]);
+  const MealitResult = await pool.query(
+    "SELECT t1.*, t2.price, t2.max_servings, t2.week_number FROM recipes t1 INNER JOIN mealkits t2 ON t1.id = t2.recipe_id WHERE t2.week_number = $1 ORDER BY t2.id LIMIT $2 OFFSET $3",
+    [week, limit, offset],
+  );
 
-  const countResult = await pool.query("SELECT COUNT(*) FROM recipes");
+  const countResult = await pool.query(
+    `SELECT COUNT(*) 
+    FROM mealkits WHERE week_number = $1`,
+    [week],
+  );
   return {
-    mealkits: result.rows,
+    mealkits: MealitResult.rows,
     total: Number(countResult.rows[0].count),
     page,
     limit,

@@ -6,36 +6,39 @@ import Image from "next/image";
 import { difficultyColor } from "@/constants/constants";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import PaginationComponent from "@/components/Pagination";
+import PaginationComponent from "@/components/PaginationComponent";
 
 import { getMealKits } from "@/lib/api/getMealKits";
 
 import loading from "@/public/loading.svg";
 import { limit } from "@/constants/constants";
 
-export default function MealkitList() {
+type Props = {
+  week: number;
+};
+export default function MealkitList({ week }: Props) {
   const router = useRouter();
-  const [recipes, setRecipes] = useState<MealKitList | null>(null);
+  const [mealkits, setMealkits] = useState<MealKitList | null>(null);
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
 
-  const totalPages = recipes ? Math.ceil(total / limit) : 0;
+  const totalPages = mealkits ? Math.ceil(total / limit) : 0;
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getMealKits(page);
-        setRecipes(data.result);
+        const data = await getMealKits(page, week);
+        setMealkits(data.result);
         setTotal(data.result.total);
-        console.log(page);
+        console.log(data.result);
       } catch (err) {
         router.push("/");
       }
     };
 
     fetchData();
-  }, [router, page]);
+  }, [router, page, week]);
 
-  if (!recipes) {
+  if (!mealkits) {
     return (
       <div className="h-screen flex flex-col justify-center items-center">
         <Image
@@ -53,7 +56,7 @@ export default function MealkitList() {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 mt-15">
-        {recipes.mealkits.map((recipe) => (
+        {mealkits.mealkits.map((recipe) => (
           <Link
             key={recipe.id}
             href={`/recipes/${recipe.id}`}
@@ -87,9 +90,13 @@ export default function MealkitList() {
 
                 <div className="text-sm font-semibold text-gray-800 mt-auto">
                   <p>Servings: {recipe.servings}</p>
-                  <p>
-                    {recipe.prep_time} min prep • {recipe.cooking_time} min cook
-                  </p>
+                  <div className="flex flex-row">
+                    <p>
+                      {recipe.prep_time} min prep • {recipe.cooking_time} min
+                      cook
+                    </p>
+                    <p className="ml-auto">{recipe.price}$</p>
+                  </div>
                 </div>
               </div>
             </div>

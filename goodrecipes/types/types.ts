@@ -10,6 +10,15 @@ export type Recipe = {
   prep_time: number;
   cooking_time: number;
   created_at: string;
+  price: string;
+};
+
+export type DateInfo = {
+  week: number;
+  year: number;
+  start: Date;
+  end: Date;
+  range: string;
 };
 
 export type MealKitList = {

@@ -15,7 +15,7 @@ import type { Request, Response } from "express";
 */
 export async function login(req: Request, res: Response) {
   try {
-    const { accessToken, user, refreshToken } = await authService.login(
+    const { accessToken, user, refreshToken, role } = await authService.login(
       req.body.email,
       req.body.password,
     );
@@ -30,6 +30,7 @@ export async function login(req: Request, res: Response) {
     return res.json({
       accessToken,
       user,
+      role,
     });
   } catch (err: any) {
     return res.status(err.status || 500).json({ message: err.message });

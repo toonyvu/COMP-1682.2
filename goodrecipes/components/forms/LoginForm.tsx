@@ -30,7 +30,11 @@ export default function LoginForm() {
       if (res.ok) {
         console.log(res.data);
         localStorage.setItem("accessToken", res.data.accessToken);
-        router.push("/dashboard");
+        if (res.data.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
         setError(res.data.message);
       }

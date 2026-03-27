@@ -33,8 +33,6 @@ export function getWeeks(count = 5, startDate = new Date()) {
   return weeks;
 }
 
-const weeks = getWeeks();
-
 export function getWeekRange(date: Date) {
   const tempDate = new Date(date);
 
@@ -57,4 +55,3 @@ export function getWeekRange(date: Date) {
   return { start, end, range };
 }
 
-console.log(weeks);

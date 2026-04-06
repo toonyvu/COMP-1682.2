@@ -26,23 +26,21 @@ export async function addItem(userId: number, mealkitId: number, qty: number) {
   const cart = await getOrCreateCart(userId);
   const cartId = cart.id;
 
-  const existing = await pool.query(
+  const existing = await pool.query(  
     "SELECT id FROM cart_items WHERE cart_id = $1 AND mealkit_id = $2",
     [cartId, mealkitId],
   );
 
-  if ((existing.rowCount ?? 0) > 0) {
+  if ((existing.rowCount ?? 0) > 0) { 
     const updateResult = await pool.query(
       "UPDATE cart_items SET qty = qty + $1 WHERE mealkit_id = $2 AND cart_id = $3 RETURNING *",
       [qty, mealkitId, cartId],
     );
-    return updateResult.rows[0];
   } else {
     const insertResult = await pool.query(
       "INSERT INTO cart_items(cart_id, mealkit_id, qty) VALUES ($1, $2, $3) RETURNING *",
       [cartId, mealkitId, qty],
     );
-    return insertResult.rows[0];
   }
 }
 
@@ -103,9 +101,30 @@ export async function removeItem(userId: number, mealkitId: number) {
 }
 
 export async function getFullCart(userId: number) {
-  //CODE HERE
-}
+  const cart = await getOrCreateCart(userId);
+  const cartId = cart.id;
 
-export async function calculateTotal(userId: number) {
-  //CODE HERE
+  const cartItems = await pool.query(
+    `SELECT t1.id AS cart_item_id, t1.qty, t2.id 
+    AS mealkit_id, t2.price, t2.week_number, t3.name, t3.avatar_url,
+    (t1.qty * t2.price) AS item_total
+    FROM cart_items t1 
+    INNER JOIN mealkits t2 
+    ON t1.mealkit_id = t2.id 
+    INNER JOIN recipes t3 
+    ON t2.recipe_id = t3.id 
+    WHERE t1.cart_id = $1`,
+    [cartId],
+  );
+
+  const items = cartItems.rows;
+
+  const totalPrice = items.reduce((sum, item) => {
+    return sum + Number(item.item_total);
+  }, 0);
+
+  return {
+    items,
+    totalPrice,
+  };
 }

@@ -27,7 +27,7 @@ export async function login(email: string, password: string) {
     process.env.ACCESS_TOKEN_SECRET!,
     { expiresIn: "2h" },
   );
-
+ 
   const refreshToken = jwt.sign(
     { userId: user.id },
     process.env.REFRESH_TOKEN_SECRET!,

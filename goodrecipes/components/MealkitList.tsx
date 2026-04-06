@@ -13,6 +13,21 @@ import { getMealKits } from "@/lib/api/getMealKits";
 import loading from "@/public/loading.svg";
 import { limit } from "@/constants/constants";
 
+import cart from "@/public/shopping-basket (1).png";
+
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+import { Button } from "./ui/button";
+
 type Props = {
   week: number;
 };
@@ -50,6 +65,16 @@ export default function MealkitList({ week }: Props) {
         ></Image>
 
         <h1 className="mt-5">Fetching Recipes...</h1>
+      </div>
+    );
+  }
+
+  if (total === 0) {
+    return (
+      <div>
+        <h1 className="place-self-center my-20 text-lg text-gray-600">
+          No recipes found.
+        </h1>
       </div>
     );
   }
@@ -91,11 +116,19 @@ export default function MealkitList({ week }: Props) {
                 <div className="text-sm font-semibold text-gray-800 mt-auto">
                   <p>Servings: {recipe.servings}</p>
                   <div className="flex flex-row">
-                    <p>
-                      {recipe.prep_time} min prep • {recipe.cooking_time} min
-                      cook
-                    </p>
-                    <p className="ml-auto">{recipe.price}$</p>
+                    <div>
+                      <p>
+                        {recipe.prep_time} min prep • {recipe.cooking_time} min
+                        cook
+                      </p>
+                      <p className="ml-auto">{recipe.price}$</p>
+                    </div>
+
+                    <div className="ml-auto">
+                      <Button className="bg-green-600 hover:bg-green-700">
+                        Add
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -109,6 +142,25 @@ export default function MealkitList({ week }: Props) {
         totalPages={totalPages}
         setPage={setPage}
       />
+      <div className="fixed bottom-4 right-8 z-50">
+        <Sheet>
+          <SheetTrigger>
+            <Image
+              className="hover:scale-105"
+              width={50}
+              height={50}
+              alt={"Shop"}
+              src={cart}
+            />
+          </SheetTrigger>
+
+          <SheetContent className="z-100">
+            <SheetHeader>
+              <SheetTitle>Test</SheetTitle>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      </div>
     </>
   );
 }

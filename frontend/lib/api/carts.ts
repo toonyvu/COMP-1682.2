@@ -1,11 +1,7 @@
 import { checkKey } from "./apiClient";
 
-export async function addToCart(
-  userId: number,
-  mealkitId: number,
-  week: number,
-) {
-  const token = checkKey();
+export async function addToCart(mealkitId: number, week: number) {
+  const token = await checkKey();
 
   const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, {
     method: "POST",
@@ -13,7 +9,7 @@ export async function addToCart(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ userId, mealkitId, week }),
+    body: JSON.stringify({ mealkitId, week }),
   });
 
   const data = await result.json();
@@ -21,7 +17,7 @@ export async function addToCart(
   return { ok: result.ok, data: data };
 }
 
-export async function removeFromCart(userId: number, mealkitId: number) {
+export async function removeFromCart(mealkitId: number) {
   const token = await checkKey();
 
   const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/remove`, {
@@ -30,26 +26,23 @@ export async function removeFromCart(userId: number, mealkitId: number) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ userId, mealkitId }),
+    body: JSON.stringify({ mealkitId }),
   });
 
   const data = await result.json();
   return { ok: result.ok, data: data };
 }
 
-export async function getFullCart(userId: number) {
+export async function getFullCart() {
   const token = await checkKey();
 
-  const result = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/cart/${userId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type:": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+  const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
+    method: "GET",
+    headers: {
+      "Content-Type:": "application/json",
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 
   const data = await result.json();
   return { ok: result.ok, data: data };

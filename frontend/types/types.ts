@@ -1,7 +1,8 @@
 type Difficulty = "Easy" | "Medium" | "Hard";
 
 export type Recipe = {
-  id: number;
+  recipe_id: number;
+  mealkit_id: number;
   name: string;
   description: string;
   avatar_url: string;

@@ -1,10 +1,13 @@
+import dotenv from "dotenv";
 import { Pool } from "pg";
-
 //The Pool is a class that takes an OBJECT, with user, host, database name and password, with the port name (usually 5432)
+
+dotenv.config();
+
 export const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "goodrecipes",
-  password: "vutuannghia422005",
-  port: 5432,
+  user: process.env.USER,
+  host: process.env.HOST,
+  database: process.env.DATABASE,
+  password: process.env.PASSWORD,
+  port: Number(process.env.DB_PORT),
 });

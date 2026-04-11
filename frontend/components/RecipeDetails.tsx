@@ -1,7 +1,6 @@
 "use client";
 
 import { difficultyColor } from "@/constants/constants";
-import star_icon from "@/public/star_icon.svg";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";

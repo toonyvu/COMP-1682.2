@@ -26,18 +26,18 @@ export async function addItem(userId: number, mealkitId: number, qty: number) {
   const cart = await getOrCreateCart(userId);
   const cartId = cart.id;
 
-  const existing = await pool.query(  
+  const existing = await pool.query(
     "SELECT id FROM cart_items WHERE cart_id = $1 AND mealkit_id = $2",
     [cartId, mealkitId],
   );
 
-  if ((existing.rowCount ?? 0) > 0) { 
-    const updateResult = await pool.query(
+  if ((existing.rowCount ?? 0) > 0) {
+    await pool.query(
       "UPDATE cart_items SET qty = qty + $1 WHERE mealkit_id = $2 AND cart_id = $3 RETURNING *",
       [qty, mealkitId, cartId],
     );
   } else {
-    const insertResult = await pool.query(
+    await pool.query(
       "INSERT INTO cart_items(cart_id, mealkit_id, qty) VALUES ($1, $2, $3) RETURNING *",
       [cartId, mealkitId, qty],
     );
@@ -127,4 +127,12 @@ export async function getFullCart(userId: number) {
     items,
     totalPrice,
   };
+}
+
+export async function clearCart(userId: number) {
+  const cart = await getOrCreateCart(userId);
+
+  const cartId = cart.id;
+
+  await pool.query("DELETE * FROM cart_items WHERE cartId = $1", [cartId]);
 }

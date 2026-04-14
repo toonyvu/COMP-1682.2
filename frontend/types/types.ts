@@ -56,3 +56,7 @@ export type RecipeWithDetails = Recipe & {
 
   isFavorited: boolean;
 };
+
+export type CartItem = Recipe & {
+  qty: number;
+};

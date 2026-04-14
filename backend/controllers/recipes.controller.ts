@@ -19,7 +19,6 @@ export async function getRecipes(req: Request, res: Response) {
       return res.status(400).json({ message: "Invalid Recipe ID." });
     }
 
-    console.log("Function continues");
     const result = await getRecipeDetails(Number(id), userId);
     return res.status(200).json(result);
   } catch (err: any) {

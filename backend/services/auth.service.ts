@@ -46,7 +46,6 @@ export async function login(email: string, password: string) {
     refreshToken,
     user: safeUser,
     role: safeUser.role,
-    userId: safeUser.id,
   };
 }
 

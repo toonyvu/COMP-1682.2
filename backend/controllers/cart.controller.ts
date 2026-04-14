@@ -2,10 +2,10 @@ import type { Request, Response } from "express";
 import * as cartService from "../services/cart.service.js";
 
 export async function addItem(req: Request, res: Response) {
-  const { mealkitId, week } = req.body;
+  const { mealkitId } = req.body;
   const userId = Number(req.user?.userId);
   try {
-    await cartService.addItem(userId, mealkitId, week);
+    await cartService.addItem(userId, mealkitId);
     const result = await cartService.getFullCart(userId);
 
     res.status(200).json({ result });

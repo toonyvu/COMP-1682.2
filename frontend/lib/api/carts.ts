@@ -1,6 +1,6 @@
 import { checkKey } from "./apiClient";
 
-export async function addToCart(mealkitId: number, week: number) {
+export async function addToCart(mealkitId: number) {
   const token = await checkKey();
 
   const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, {
@@ -9,7 +9,7 @@ export async function addToCart(mealkitId: number, week: number) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ mealkitId, week }),
+    body: JSON.stringify({ mealkitId }),
   });
 
   const data = await result.json();
@@ -21,7 +21,7 @@ export async function removeFromCart(mealkitId: number) {
   const token = await checkKey();
 
   const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/remove`, {
-    method: "DELETE",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ export async function getFullCart() {
   const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
     method: "GET",
     headers: {
-      "Content-Type:": "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });

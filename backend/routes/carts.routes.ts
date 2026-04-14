@@ -5,6 +5,6 @@ const router = Router();
 
 router.get("/", authenticateToken, cartController.getCart);
 router.post("/add", authenticateToken, cartController.addItem);
-router.delete("/remove", authenticateToken, cartController.removeItem);
+router.put("/remove", authenticateToken, cartController.removeItem);
 
 export default router;

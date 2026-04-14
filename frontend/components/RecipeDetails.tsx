@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getRecipe } from "@/lib/api/getRecipe";
+import { getRecipe } from "@/lib/api/recipes";
 import { addFavorite, removeFavorite } from "@/lib/api/favorites";
 import loading from "@/public/loading.svg";
 
@@ -121,7 +121,7 @@ export default function RecipeDetails({ id }: Props) {
 
       <div className="fixed bottom-0 left-0 w-full z-50">
         <div className="max-w-4xl flex items-center gap-2 sm:gap-6 p-4 place-self-end">
-          <input type="hidden" name="recipeId" value={recipeDetails.id} />
+          <input type="hidden" name="recipeId" value={recipeDetails.recipe_id} />
           <Button
             onClick={toggleFavorite}
             className={`text-sm sm:text-md md:text-xl h-10 md:h-12 rounded-3xl ${favorited ? "bg-gray-400 hover:bg-gray-700" : "bg-green-600 hover:bg-green-900 transition duration-100 hover:scale-105"}`}

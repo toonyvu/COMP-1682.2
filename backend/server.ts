@@ -19,6 +19,7 @@ app.use("/auth", authRoutes);
 app.use("/dashboard", mealkitRoutes);
 app.use("/recipes", recipeRoutes);
 app.use("/cart", cartRoutes);
+console.log("Hello");
 
 app.listen(PORT, () => {
   console.log("Express running on port ", PORT);

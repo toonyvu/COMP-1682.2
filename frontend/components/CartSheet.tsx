@@ -12,16 +12,31 @@ import {
 } from "@/components/ui/sheet";
 
 import { Button } from "./ui/button";
+import { buttonColors } from "@/constants/constants";
 
 import cart from "@/public/shopping-basket (1).png";
 
 import { useCartStore } from "@/stores/cartStore";
 
+import { createCheckoutSession } from "@/lib/api/checkout";
+import { useState } from "react";
+
 export default function CartSheet() {
   const cartItems = useCartStore((state) => state.cartItems);
   const addItem = useCartStore((state) => state.addItem);
   const removeItem = useCartStore((state) => state.removeItem);
-  const setCart = useCartStore((state) => state.setCart);
+  const [loading, setLoading] = useState(false);
+
+  async function handleCheckout() {
+    try {
+      setLoading(true);
+      await createCheckoutSession();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const addCartBackend = async (mealkitId: number) => {
     await cartService.addToCart(mealkitId);
@@ -137,8 +152,11 @@ export default function CartSheet() {
             </span>
           </div>
 
-          <Button className="w-full bg-green-600 hover:bg-green-700">
-            Checkout
+          <Button
+            className={`text-white w-full ${!loading ? buttonColors.Ready : buttonColors.Loading}`}
+            onClick={handleCheckout}
+          >
+            {!loading ? "Checkout" : "Loading"}
           </Button>
         </SheetFooter>
       </SheetContent>

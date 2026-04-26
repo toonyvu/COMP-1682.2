@@ -4,6 +4,8 @@ import * as cartService from "../services/cart.service.js";
 export async function addItem(req: Request, res: Response) {
   const { mealkitId } = req.body;
   const userId = Number(req.user?.userId);
+
+  console.log("Adding item!");
   try {
     await cartService.addItem(userId, mealkitId);
     const result = await cartService.getFullCart(userId);

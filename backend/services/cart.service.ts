@@ -139,10 +139,6 @@ export async function getFullCart(userId: number) {
 
   const items = cartItems.rows;
 
-  const totalPrice = items.reduce((sum, item) => {
-    return sum + Number(item.item_total);
-  }, 0);
-
   return {
     items,
   };

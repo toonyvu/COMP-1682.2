@@ -58,6 +58,14 @@ export default function MealkitList({ week }: Props) {
     fetchData();
   }, [router, page, week]);
 
+  async function addToBackend(mealkitId: number) {
+    try {
+      await cartApi.addToCart(mealkitId);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   if (!mealkits) {
     return (
       <div className="h-screen flex flex-col justify-center items-center">
@@ -139,7 +147,10 @@ export default function MealkitList({ week }: Props) {
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
+                          console.log("Adding item");
                           addItem(recipe);
+
+                          addToBackend(recipe.mealkit_id);
                         }}
                       >
                         Add

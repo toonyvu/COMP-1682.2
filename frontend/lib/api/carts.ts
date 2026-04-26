@@ -3,6 +3,8 @@ import { checkKey } from "./apiClient";
 export async function addToCart(mealkitId: number) {
   const token = await checkKey();
 
+  console.log("Adding to cart...");
+
   const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/add`, {
     method: "POST",
     headers: {

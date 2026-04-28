@@ -4,4 +4,9 @@ export const difficultyColor = {
   Hard: "bg-red-100 text-red-700",
 };
 
+export const buttonColors = {
+  Ready: "bg-green-600 hover:bg-green-700",
+  Loading: "bg-gray-600 disabled:cursor-not-allowed",
+};
+
 export const limit = 5;

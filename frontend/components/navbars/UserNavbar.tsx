@@ -11,7 +11,7 @@ import icon from "../../public/icon.png";
 import profile from "../../public/profile.png";
 export default function UserNavbar() {
   return (
-    <div className="w-full h-12 sm:h-16 bg-white flex items-center px-2 lg:px-6 sticky top-0 z-100">
+    <div className="w-full h-12 sm:h-16 bg-white flex items-center px-2 lg:px-6 sticky top-0 z-100 shadow-lg">
       <div className="flex flex-row items-center">
         <Image
           src={icon}

@@ -32,6 +32,16 @@ export default function UserNavbar() {
                 asChild
                 className=" hover:bg-black hover:text-white"
               >
+                <Link href="/dashboard" className="text-sm sm:text-xl">
+                  Recipes
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                asChild
+                className=" hover:bg-black hover:text-white"
+              >
                 <Link href="/signup" className="text-sm sm:text-xl">
                   Profile
                 </Link>

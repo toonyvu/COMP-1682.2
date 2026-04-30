@@ -1,11 +1,5 @@
-import SubscribeLeft from "@/components/SubscribeLeft";
+import SubscribePage from "@/pages/SubscribePage";
 
-export default async function SubscribePage() {
-  return (
-    <div className="flex-1 flex">
-      <SubscribeLeft />
-
-      <div className="flex-1">Hi</div>
-    </div>
-  );
+export default async function Subscribe() {
+  return <SubscribePage />;
 }

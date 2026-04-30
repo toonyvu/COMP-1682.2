@@ -8,10 +8,14 @@ import mealkitRoutes from "./routes/mealkits.routes.js";
 import recipeRoutes from "./routes/recipes.routes.js";
 import cartRoutes from "./routes/carts.routes.js";
 import checkoutRoutes from "./routes/checkout.routes.js";
+import orderRoutes from "./routes/orders.routes.js";
+import webhookRoutes from "./routes/webhook.routes.js";
 
 const app = express();
 
 app.use(cors());
+
+app.use("/webhook", express.raw({ type: "application/json" }), webhookRoutes);
 
 app.use(express.json());
 
@@ -22,6 +26,7 @@ app.use("/dashboard", mealkitRoutes);
 app.use("/recipes", recipeRoutes);
 app.use("/cart", cartRoutes);
 app.use("/create-checkout-session", checkoutRoutes);
+app.use("/orders", orderRoutes);
 
 console.log("Hello");
 

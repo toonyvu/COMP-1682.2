@@ -8,7 +8,7 @@ export async function createNewSession(req: Request, res: Response) {
     const result = await createCheckoutSession(userId);
     res.status(200).json({ url: result });
   } catch (err: any) {
-    console.error("STRIPE ERROR:", err); // 👈 ADD THIS
+    console.error("STRIPE ERROR:", err);
     res.status(500).json({
       message: err.message,
       type: err.type,

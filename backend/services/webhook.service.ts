@@ -55,16 +55,21 @@ export async function handleStripeEvent(event: Stripe.Event) {
         for (const item of cart.items) {
           await client.query(
             `
-            INSERT INTO order_items (order_id, mealkit_id, quantity, price)
+            INSERT INTO order_items (order_id, mealkit_id, qty, price)
             VALUES ($1, $2, $3, $4)
             `,
             [orderId, item.mealkit_id, item.qty, item.price],
           );
         }
 
-        await client.query(`DELETE FROM cart_items WHERE user_id = $1`, [
-          userId,
-        ]);
+        await client.query(
+          `
+          DELETE FROM cart_items
+          WHERE cart_id IN (
+          SELECT id FROM cart WHERE user_id = $1);
+          `,
+          [userId],
+        );
 
         await client.query("COMMIT");
 

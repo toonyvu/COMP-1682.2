@@ -1,15 +1,12 @@
-import { getOrderSummary } from "@/lib/api/stripe";
+import SuccessItems from "@/components/SuccessItems";
 
 export default async function CheckoutSuccess({
   searchParams,
 }: {
-  searchParams: { session_id: string };
+  searchParams: Promise<{ session_id?: string }>;
 }) {
-  const { session_id } = await searchParams;
+  const params = await searchParams;
+  const session_id = params.session_id;
 
-  return (
-    <>
-      <h1>Checkout Successful!</h1>
-    </>
-  );
+  return <SuccessItems session_id={session_id ?? ""} />;
 }

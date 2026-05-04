@@ -6,9 +6,9 @@ export default function SuccessLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <UserNavbar />
-      {children}
+      <main className="flex-1 flex flex-col">{children}</main>
     </div>
   );
 }

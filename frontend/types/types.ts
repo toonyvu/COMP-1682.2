@@ -1,6 +1,6 @@
 type Difficulty = "Easy" | "Medium" | "Hard";
 
-type Subscriptions = "premium" | "deluxe";
+export type Subscriptions = "premium" | "deluxe";
 
 export type Recipe = {
   recipe_id: number;

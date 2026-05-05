@@ -10,6 +10,7 @@ import cartRoutes from "./routes/carts.routes.js";
 import checkoutRoutes from "./routes/checkout.routes.js";
 import orderRoutes from "./routes/orders.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
+import subscriptionRoutes from "./routes/subscriptions.routes.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/dashboard", mealkitRoutes);
 app.use("/recipes", recipeRoutes);
 app.use("/cart", cartRoutes);
 app.use("/create-checkout-session", checkoutRoutes);
+app.use("/create-subscription-session", subscriptionRoutes);
 app.use("/orders", orderRoutes);
 
 console.log("Hello");

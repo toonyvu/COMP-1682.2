@@ -1,4 +1,13 @@
+"use client";
+
+import { createSubscriptionSession } from "@/lib/api/subscriptions";
+import type { Subscriptions } from "@/types/types";
+
 export default function SubscribeRight() {
+  const handleSubscribe = async (tier: Subscriptions) => {
+    await createSubscriptionSession(tier);
+  };
+
   return (
     <div className="flex-1 flex flex-col min-w-0 items-center py-6 gap-8">
       <h1 className="font-black text-black text-4xl place-self-start ml-10">
@@ -43,9 +52,9 @@ export default function SubscribeRight() {
             </li>
           </ul>
 
-          <div className="bg-blue-500 text-white h-10 w-29 flex items-center justify-center rounded-lg shadow-md transition duration-100 hover:bg-blue-800 hover:scale-105 ">
-            Subscribe
-          </div>
+          <button className="bg-blue-500 text-white h-10 w-29 flex items-center justify-center rounded-lg shadow-md transition duration-100 hover:bg-blue-800 hover:scale-105 ">
+            You`&lsquo;`re here
+          </button>
         </div>
       </div>
 
@@ -88,9 +97,12 @@ export default function SubscribeRight() {
             </li>
           </ul>
 
-          <div className="bg-green-600 text-white h-10 w-29 flex items-center justify-center rounded-lg shadow-md transition duration-100 hover:bg-green-800 ">
+          <button
+            onClick={() => handleSubscribe("premium")}
+            className="bg-green-600 text-white h-10 w-29 flex items-center justify-center rounded-lg shadow-md transition duration-100 hover:bg-green-800 "
+          >
             Subscribe
-          </div>
+          </button>
         </div>
       </div>
 
@@ -133,9 +145,12 @@ export default function SubscribeRight() {
             </li>
           </ul>
 
-          <div className="bg-orange-600 text-white h-10 w-29 flex items-center justify-center rounded-lg shadow-md transition duration-100 hover:bg-orange-800 ">
+          <button
+            onClick={() => handleSubscribe("deluxe")}
+            className="bg-orange-600 text-white h-10 w-29 flex items-center justify-center rounded-lg shadow-md transition duration-100 hover:bg-orange-800 "
+          >
             Subscribe
-          </div>
+          </button>
         </div>
       </div>
       <p className="text-gray-400">

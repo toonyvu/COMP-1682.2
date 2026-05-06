@@ -1,32 +1,34 @@
 import Stripe from "stripe";
 import { pool } from "../database.js";
 import { getFullCart } from "./cart.service.js";
+const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
 export async function handleStripeEvent(event: Stripe.Event) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
 
-      const userId = session.metadata?.userId;
-      if (!userId) throw new Error("Missing userId in metadata");
+      if (session.mode === "payment") {
+        const userId = session.metadata?.userId;
+        if (!userId) throw new Error("Missing userId in metadata");
 
-      const existing = await pool.query(
-        `SELECT id FROM orders WHERE stripe_session_id = $1`,
-        [session.id],
-      );
+        const existing = await pool.query(
+          `SELECT id FROM orders WHERE stripe_session_id = $1`,
+          [session.id],
+        );
 
-      if (existing.rows.length > 0) {
-        console.log("Order already exists");
-        return;
-      }
+        if (existing.rows.length > 0) {
+          console.log("Order already exists");
+          return;
+        }
 
-      const client = await pool.connect();
+        const client = await pool.connect();
 
-      try {
-        await client.query("BEGIN");
+        try {
+          await client.query("BEGIN");
 
-        const orderResult = await client.query(
-          `
+          const orderResult = await client.query(
+            `
           INSERT INTO orders (
             user_id,
             stripe_session_id,
@@ -38,50 +40,105 @@ export async function handleStripeEvent(event: Stripe.Event) {
           VALUES ($1, $2, $3, $4, $5, $6)
           RETURNING id
           `,
-          [
-            userId,
-            session.id,
-            session.payment_intent,
-            session.amount_total,
-            session.currency,
-            "paid",
-          ],
-        );
+            [
+              userId,
+              session.id,
+              session.payment_intent,
+              session.amount_total,
+              session.currency,
+              "paid",
+            ],
+          );
 
-        const orderId = orderResult.rows[0].id;
+          const orderId = orderResult.rows[0].id;
 
-        const cart = await getFullCart(Number(userId));
+          const cart = await getFullCart(Number(userId));
 
-        for (const item of cart.items) {
-          await client.query(
-            `
+          for (const item of cart.items) {
+            await client.query(
+              `
             INSERT INTO order_items (order_id, mealkit_id, qty, price)
             VALUES ($1, $2, $3, $4)
             `,
-            [orderId, item.mealkit_id, item.qty, item.price],
-          );
-        }
+              [orderId, item.mealkit_id, item.qty, item.price],
+            );
+          }
 
-        await client.query(
-          `
+          await client.query(
+            `
           DELETE FROM cart_items
           WHERE cart_id IN (
           SELECT id FROM cart WHERE user_id = $1);
           `,
-          [userId],
+            [userId],
+          );
+
+          await client.query("COMMIT");
+
+          console.log(" Order + items saved:", orderId);
+        } catch (err) {
+          await client.query("ROLLBACK");
+          throw err;
+        } finally {
+          client.release();
+        }
+
+        break;
+      } else if (session.mode === "subscription") {
+        const subscriptionId = session.subscription as string;
+        const subscription =
+          await stripe.subscriptions.retrieve(subscriptionId);
+        const userId = session.metadata?.userId;
+        const tier = session.metadata?.tier;
+
+        if (!userId || !tier) {
+          throw new Error("Missing user data or tier data in metadata.");
+        }
+
+        const existing = await pool.query(
+          "SELECT id FROM subscriptions WHERE stripe_subscription_id = $1",
+          [subscription.id],
         );
 
-        await client.query("COMMIT");
+        if (existing.rows.length > 0) {
+          console.log("Order already exists!");
+          return;
+        }
 
-        console.log(" Order + items saved:", orderId);
-      } catch (err) {
-        await client.query("ROLLBACK");
-        throw err;
-      } finally {
-        client.release();
+        const client = await pool.connect();
+
+        try {
+          await client.query("BEGIN");
+
+          const subscriptionResult = await client.query(
+            `
+            INSERT INTO subscriptions (user_id, tier, status, stripe_customer_id, stripe_subscription_id, stripe_price_id, current_period_end, cancel_at_period_end, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id
+            `,
+            [
+              userId,
+              tier,
+              subscription.status,
+              subscription.customer,
+              subscription.id,
+              subscription.items.data[0]?.plan.id,
+              subscription.items.data[0]?.current_period_end,
+              subscription.cancel_at_period_end,
+              new Date(),
+            ],
+          );
+
+          const subscriptionId = subscriptionResult.rows[0].id;
+
+          await client.query("COMMIT");
+          console.log("Subscription + items saved:", subscriptionId);
+        } catch (err) {
+          console.log(err);
+          await client.query("ROLLBACK");
+        } finally {
+          client.release();
+        }
       }
-
-      break;
     }
 
     default:

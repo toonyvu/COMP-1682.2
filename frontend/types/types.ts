@@ -62,3 +62,49 @@ export type RecipeWithDetails = Recipe & {
 export type CartItem = Recipe & {
   qty: number;
 };
+
+export type Order = {
+  order: {
+    checkoutData: {
+      amount_total: string;
+      amount_subtotal: string;
+      customer_details: {
+        address: {
+          city: string;
+          country: string;
+          line1: string;
+          line2: string;
+          postal_code: string;
+          state: string;
+        };
+
+        name: string;
+        email: string;
+        phone: number;
+      };
+    };
+
+    items: [
+      {
+        avatar_url: string;
+        id: number;
+        mealkit_id: number;
+        name: string;
+        order_id: number;
+        price: string;
+        qty: number;
+      },
+    ];
+
+    order: {
+      amount_total: string;
+      created_at: string;
+      currency: string;
+      id: number;
+      status: string;
+      stripe_payment_intent_id: string;
+      stripe_session_id: string;
+      user_id: number;
+    };
+  };
+};

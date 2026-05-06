@@ -13,7 +13,7 @@ export async function createSubscriptionSession(tier: "premium" | "deluxe") {
         Authorization: `Bearer ${token}`,
       },
 
-      body: JSON.stringify({ prodId: subscriptionPlans[tier] }),
+      body: JSON.stringify({ prodId: subscriptionPlans[tier], tier: tier }),
     },
   );
 

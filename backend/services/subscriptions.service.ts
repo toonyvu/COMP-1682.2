@@ -4,13 +4,14 @@ const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
 export async function createSubscriptionSession(
   userId: number,
-  prodId: string,
+  priceId: string,
+  tier: string,
 ) {
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     line_items: [
       {
-        price: prodId,
+        price: priceId,
         quantity: 1,
       },
     ],
@@ -19,6 +20,7 @@ export async function createSubscriptionSession(
     cancel_url: "http://localhost:3000/checkout/cancel",
     metadata: {
       userId: userId.toString(),
+      tier: tier,
     },
   });
 

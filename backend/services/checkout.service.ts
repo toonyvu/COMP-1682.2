@@ -21,6 +21,9 @@ export async function createCheckoutSession(userId: number) {
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     line_items,
+    phone_number_collection: {
+      enabled: true,
+    },
     shipping_address_collection: {
       allowed_countries: ["VN", "US", "GB", "SG", "CN", "JP", "CA"],
     },

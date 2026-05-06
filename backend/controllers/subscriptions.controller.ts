@@ -5,11 +5,11 @@ export async function createNewSubscriptionSession(
   req: Request,
   res: Response,
 ) {
-  const { prodId } = req.body;
+  const { prodId, tier } = req.body;
   const userId = Number(req.user?.userId);
 
   try {
-    const result = await createSubscriptionSession(userId, prodId);
+    const result = await createSubscriptionSession(userId, prodId, tier);
     res.status(200).json({ url: result });
   } catch (err: any) {
     console.error("STRIPE ERROR:", err);

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { createNewSession } from "../controllers/checkout.controller.js";
+import { createNewCheckoutSession } from "../controllers/checkout.controller.js";
 import { authenticateToken } from "../middleware/authenticateToken.js";
 
 const router = Router();
 
-router.post("/", authenticateToken, createNewSession);
+router.post("/", authenticateToken, createNewCheckoutSession);
 
 export default router;

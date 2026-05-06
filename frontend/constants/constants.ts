@@ -10,3 +10,8 @@ export const buttonColors = {
 };
 
 export const limit = 5;
+
+export const subscriptionPlans = {
+  premium: "price_1TRZTsGyHK1KatBRY5Jt71sY",
+  deluxe: "price_1TRZUHGyHK1KatBR1EwOrtcB",
+};

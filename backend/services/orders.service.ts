@@ -1,4 +1,7 @@
 import { pool } from "../database.js";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
 export async function getOrder(sessionId: string) {
   const orderResult = await pool.query(
@@ -9,6 +12,8 @@ export async function getOrder(sessionId: string) {
   if (orderResult.rows.length === 0) {
     return null;
   }
+
+  const checkoutData = await stripe.checkout.sessions.retrieve(sessionId);
 
   const order = orderResult.rows[0];
 
@@ -26,5 +31,6 @@ export async function getOrder(sessionId: string) {
   return {
     order,
     items: itemsResult.rows,
+    checkoutData: checkoutData,
   };
 }

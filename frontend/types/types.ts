@@ -1,6 +1,6 @@
 type Difficulty = "Easy" | "Medium" | "Hard";
 
-export type Subscriptions = "premium" | "deluxe";
+export type Subscriptions = "free" | "premium" | "deluxe";
 
 export type Recipe = {
   recipe_id: number;
@@ -105,6 +105,26 @@ export type Order = {
       stripe_payment_intent_id: string;
       stripe_session_id: string;
       user_id: number;
+      cus_order_id: string;
     };
+
+    paymentBrand: string;
+    paymentType: string;
+    wallet: string | null;
   };
+};
+
+export type UserType = {
+  id: string;
+  role: string;
+  username: string;
+  tier: "free" | "premium" | "deluxe";
+  email: string;
+  bio: string;
+  avatar_url: string;
+  dob: string;
+  created_at: string;
+  address: string;
+  first_name: string;
+  last_name: string;
 };

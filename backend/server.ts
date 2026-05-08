@@ -11,6 +11,7 @@ import checkoutRoutes from "./routes/checkout.routes.js";
 import orderRoutes from "./routes/orders.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
 import subscriptionRoutes from "./routes/subscriptions.routes.js";
+import userRoutes from "./routes/users.routes.js";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/cart", cartRoutes);
 app.use("/create-checkout-session", checkoutRoutes);
 app.use("/create-subscription-session", subscriptionRoutes);
 app.use("/orders", orderRoutes);
+app.use("/users", userRoutes);
 
 console.log("Hello");
 

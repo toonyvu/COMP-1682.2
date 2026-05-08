@@ -42,7 +42,7 @@ export default function UserNavbar() {
                 asChild
                 className=" hover:bg-black hover:text-white"
               >
-                <Link href="/signup" className="text-sm sm:text-xl">
+                <Link href="/profile" className="text-sm sm:text-xl">
                   Profile
                 </Link>
               </NavigationMenuLink>

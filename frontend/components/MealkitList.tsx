@@ -103,7 +103,7 @@ export default function MealkitList({ week }: Props) {
             key={recipe.recipe_id}
             href={`/recipes/${recipe.recipe_id}`}
             scroll
-            className="block h-full"
+            className="block h-full hover:scale-105"
           >
             <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-gray-600 transition duration-300 h-full flex flex-col">
               <div className="relative w-full aspect-4/3">

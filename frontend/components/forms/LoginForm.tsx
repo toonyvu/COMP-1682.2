@@ -8,6 +8,7 @@ import Image from "next/image";
 import logo from "../../public/icon.png";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUserStore } from "@/stores/userStore";
 
 import { login } from "@/lib/api/auth";
 
@@ -16,6 +17,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const setUser = useUserStore((state) => state.setUser);
 
   const router = useRouter();
 
@@ -29,6 +32,7 @@ export default function LoginForm() {
 
       if (res.ok) {
         console.log(res.data);
+        setUser(res.data.user);
         localStorage.setItem("accessToken", res.data.accessToken);
         if (res.data.role === "admin") {
           router.push("/admin");

@@ -1,8 +1,12 @@
 import { subscriptionPlans } from "@/constants/constants";
 import { checkKey } from "./apiClient";
 
-export async function createSubscriptionSession(tier: "premium" | "deluxe") {
+export async function createSubscriptionSession(
+  tier: "free" | "premium" | "deluxe",
+) {
   const token = await checkKey();
+
+  if (tier === "free") return;
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/create-subscription-session`,

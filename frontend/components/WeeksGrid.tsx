@@ -29,7 +29,7 @@ export default function WeeksGrid({ week, setWeek }: Props) {
             setWeek(weekData.week);
           }}
           key={weekData.week}
-          className={`h-15 transition duration-100 ${weekData.week === week ? "bg-black text-white" : "bg-white text-black"}`}
+          className={`h-15 transition duration-100 ${weekData.week === week ? "bg-black text-white" : "bg-white text-black hover:bg-gray-200"}`}
         >
           Week {weekData.week} <br /> {weekData.range}
         </button>

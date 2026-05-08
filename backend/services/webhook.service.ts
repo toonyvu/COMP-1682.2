@@ -3,6 +3,16 @@ import { pool } from "../database.js";
 import { getFullCart } from "./cart.service.js";
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
+function generateRandomString(length = 10) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 export async function handleStripeEvent(event: Stripe.Event) {
   switch (event.type) {
     case "checkout.session.completed": {
@@ -26,6 +36,20 @@ export async function handleStripeEvent(event: Stripe.Event) {
 
         try {
           await client.query("BEGIN");
+          let existing = true;
+          let customerId = "";
+
+          while (existing) {
+            customerId = generateRandomString();
+            const customerOrderResult = await client.query(
+              "SELECT id FROM orders WHERE cus_order_id = $1",
+              [customerId],
+            );
+
+            if (customerOrderResult.rows.length === 0) {
+              existing = false;
+            }
+          }
 
           const orderResult = await client.query(
             `
@@ -35,9 +59,10 @@ export async function handleStripeEvent(event: Stripe.Event) {
             stripe_payment_intent_id,
             amount_total,
             currency,
-            status
+            status,
+            cus_order_id
           )
-          VALUES ($1, $2, $3, $4, $5, $6)
+          VALUES ($1, $2, $3, $4, $5, $6, $7)
           RETURNING id
           `,
             [
@@ -47,6 +72,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
               session.amount_total,
               session.currency,
               "paid",
+              `ORD-${customerId}`,
             ],
           );
 

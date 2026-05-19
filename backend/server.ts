@@ -32,8 +32,17 @@ app.use("/create-subscription-session", subscriptionRoutes);
 app.use("/orders", orderRoutes);
 app.use("/users", userRoutes);
 
-console.log("Hello");
+let ready: Promise<void>;
+async function init() {
+  if (process.env.NODE_ENV !== "test") {
+    app.listen(PORT, () => {
+      console.log("Express running on port ", PORT);
+    });
+  } else {
+    ready = init();
+  }
+}
 
-app.listen(PORT, () => {
-  console.log("Express running on port ", PORT);
-});
+init();
+
+export { app, ready };

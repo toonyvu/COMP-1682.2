@@ -4,42 +4,27 @@ import { difficultyColor } from "@/constants/constants";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { getRecipe } from "@/lib/api/recipes";
 import { addFavorite, removeFavorite } from "@/lib/api/favorites";
 import loading from "@/public/loading.svg";
 
 import type { RecipeWithDetails } from "@/types/types";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   id: number;
 };
 
 export default function RecipeDetails({ id }: Props) {
-  console.log(id);
-  const router = useRouter();
-  const [recipeDetails, setRecipeDetails] = useState<RecipeWithDetails | null>(
-    null,
-  );
-  const [favorited, setFavorited] = useState<boolean | null>(null);
+  const { data: recipeDetails } = useQuery<RecipeWithDetails | null>({
+    queryKey: ["recipe", id],
 
-  useEffect(() => {
-    async function getRecipeDetails(recipeId: number) {
-      try {
-        const result = await getRecipe(recipeId);
-        setRecipeDetails(result);
-        setFavorited(result.isFavorited);
-      } catch (err) {
-        console.log(err);
-        router.push("/");
-      }
-    }
+    queryFn: async () => getRecipe(id),
+  });
 
-    getRecipeDetails(id);
-  }, [id, router]);
+  const [favorited, setFavorited] = useState<boolean>(false);
 
-  console.log(recipeDetails);
   async function toggleFavorite() {
     try {
       if (!favorited) {

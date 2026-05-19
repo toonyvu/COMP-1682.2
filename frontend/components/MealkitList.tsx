@@ -5,13 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { difficultyColor } from "@/constants/constants";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import PaginationComponent from "@/components/PaginationComponent";
+import { showToast } from "nextjs-toast-notify";
 
 import { getMealKits } from "@/lib/api/mealkits";
 
 import loading from "@/public/loading.svg";
-import { limit } from "@/constants/constants";
 
 import * as cartApi from "@/lib/api/carts";
 
@@ -21,19 +20,28 @@ import { Button } from "./ui/button";
 
 import { useCartStore } from "@/stores/cartStore";
 
+import { useQuery } from "@tanstack/react-query";
+
 type Props = {
   week: number;
 };
 export default function MealkitList({ week }: Props) {
-  const router = useRouter();
-  const [mealkits, setMealkits] = useState<MealKitList | null>(null);
-
   const [page, setPage] = useState<number>(1);
-  const [total, setTotal] = useState<number>(0);
 
-  const totalPages = mealkits ? Math.ceil(total / limit) : 0;
   const addItem = useCartStore((state) => state.addItem);
   const setCart = useCartStore((state) => state.setCart);
+
+  const { data: mealkits } = useQuery<MealKitList | null>({
+    queryKey: ["mealkitQuery", page, week],
+
+    queryFn: async () => {
+      const res = await getMealKits(page, week);
+      return res.data;
+    },
+  });
+
+  const total = mealkits?.total ?? 0;
+  const totalPages = Math.floor(total / 5) === 0 ? 1 : Math.floor(total / 5);
 
   useEffect(() => {
     async function loadCart() {
@@ -42,21 +50,6 @@ export default function MealkitList({ week }: Props) {
     }
     loadCart();
   }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getMealKits(page, week);
-        setMealkits(data.result);
-        setTotal(data.result.total);
-      } catch (err) {
-        console.log(err);
-        router.push("/");
-      }
-    };
-
-    fetchData();
-  }, [router, page, week]);
 
   async function addToBackend(mealkitId: number) {
     try {
@@ -148,6 +141,11 @@ export default function MealkitList({ week }: Props) {
                           e.stopPropagation();
                           e.preventDefault();
                           console.log("Adding item");
+                          showToast.success(`Added ${recipe.name} to cart!`, {
+                            position: "top-left",
+                            duration: 3000,
+                            transition: "slideInUp",
+                          });
                           addItem(recipe);
 
                           addToBackend(recipe.mealkit_id);

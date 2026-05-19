@@ -35,7 +35,7 @@ export default function LoginForm() {
         setUser(res.data.user);
         localStorage.setItem("accessToken", res.data.accessToken);
         if (res.data.role === "admin") {
-          router.push("/admin");
+          router.push("/admin/dashboard");
         } else {
           router.push("/dashboard");
         }

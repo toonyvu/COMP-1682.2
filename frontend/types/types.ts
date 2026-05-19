@@ -1,4 +1,4 @@
-type Difficulty = "Easy" | "Medium" | "Hard";
+export type Difficulty = "Easy" | "Medium" | "Hard";
 
 export type Subscriptions = "free" | "premium" | "deluxe";
 
@@ -14,6 +14,17 @@ export type Recipe = {
   cooking_time: number;
   created_at: string;
   price: string;
+};
+
+export type RecipeAdd = {
+  name: string;
+  description: string;
+  avatar_url: string;
+  servings: number;
+  difficulty: Difficulty | string;
+  prep_time: number;
+  cooking_time: number;
+  price: number;
 };
 
 export type DateInfo = {
@@ -118,7 +129,7 @@ export type UserType = {
   id: string;
   role: string;
   username: string;
-  tier: "free" | "premium" | "deluxe";
+  tier: string | "free" | "premium" | "deluxe";
   email: string;
   bio: string;
   avatar_url: string;
@@ -127,4 +138,5 @@ export type UserType = {
   address: string;
   first_name: string;
   last_name: string;
+  phone: string;
 };

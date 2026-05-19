@@ -1,7 +1,7 @@
-import Image from "next/image";
+"use client";
 
-import * as cartService from "@/lib/api/carts";
-
+// ------ IMPORTS ----- //
+// UI COMPONENTS
 import {
   Sheet,
   SheetContent,
@@ -10,16 +10,18 @@ import {
   SheetTrigger,
   SheetFooter,
 } from "@/components/ui/sheet";
-
 import { Button } from "./ui/button";
-import { buttonColors } from "@/constants/constants";
 
-import cart from "@/public/shopping-basket (1).png";
-
+// LIBRARIES
+import * as cartService from "@/lib/api/carts";
+import Image from "next/image";
 import { useCartStore } from "@/stores/cartStore";
-
 import { createCheckoutSession } from "@/lib/api/checkout";
 import { useState } from "react";
+
+// CONSTANTS/TYPES/IMAGES
+import { buttonColors } from "@/constants/constants";
+import cart from "@/public/shopping-basket (1).png";
 
 export default function CartSheet() {
   const cartItems = useCartStore((state) => state.cartItems);

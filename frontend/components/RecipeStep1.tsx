@@ -12,25 +12,36 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useRecipeStore } from "@/stores/recipeStore";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { uploadRecipeImg } from "@/utils/imgUpload";
+import Image from "next/image";
 
 type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
+const defaultFormData = {
+  name: "",
+  description: "",
+  servings: 1,
+  difficulty: "",
+  prep_time: 0,
+  cooking_time: 0,
+  avatar_url: "",
+  price: 0,
+};
+
 export default function RecipeStep1({ setFormStep }: Props) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    servings: 1,
-    difficulty: "",
-    prep_time: 0,
-    cooking_time: 0,
-    avatar_url: "",
-    price: 0,
-  });
+  const recipeDetails = useRecipeStore((state) => state.recipe);
+  const [formData, setFormData] = useState(defaultFormData);
+
+  useEffect(() => {
+    if (recipeDetails) {
+      setFormData(recipeDetails);
+    }
+  }, [recipeDetails]);
+
   const [uploading, setUploading] = useState(false);
 
   const setRecipeDetails = useRecipeStore((state) => state.setRecipeDetails);
@@ -47,7 +58,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
 
       setFormData((prev) => ({
         ...prev,
-        image_url: imgUrl,
+        avatar_url: imgUrl,
       }));
     } catch (err) {
       console.error(err);
@@ -62,10 +73,33 @@ export default function RecipeStep1({ setFormStep }: Props) {
   return (
     <div className=" w-full bg-white rounded-2xl shadow-lg p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Enter Recipe Details</h1>
+      <div className="mb-8 flex flex-row justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Enter Recipe Details</h1>
 
-        <p className="text-gray-500 mt-2">Step 1 of 3 — Recipe Details</p>
+          <p className="text-gray-500 mt-2">Step 1 of 3 — Recipe Details</p>
+        </div>
+
+        <div className="flex flex-row gap-4">
+          <Button
+            className="px-6 bg-blue-600 h-10 hover:bg-blue-800 w-24"
+            onClick={() => {
+              setFormData(defaultFormData);
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            className="px-6 bg-green-600 h-10 hover:bg-green-800 w-24"
+            onClick={() => {
+              setRecipeDetails(formData);
+              handleSubmit();
+              setFormStep(2);
+            }}
+          >
+            Continue
+          </Button>
+        </div>
       </div>
 
       {/* Form */}
@@ -77,6 +111,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
           <Input
             id="recipe-name"
             placeholder="Enter recipe name"
+            value={formData.name}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -94,6 +129,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
             id="description"
             rows={5}
             placeholder="Describe your recipe..."
+            value={formData.description}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -108,7 +144,8 @@ export default function RecipeStep1({ setFormStep }: Props) {
 
           <Input
             id="recipe-name"
-            placeholder="Enter recipe name"
+            placeholder="Enter Price"
+            value={formData.price}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -128,6 +165,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
               id="servings"
               type="number"
               placeholder="4"
+              value={formData.servings}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -142,6 +180,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
             <Label>Difficulty</Label>
 
             <Select
+              value={formData.difficulty}
               onValueChange={(value) =>
                 setFormData({
                   ...formData,
@@ -176,6 +215,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
               id="prep-time"
               type="number"
               placeholder="15"
+              value={formData.prep_time}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -193,6 +233,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
               id="cook-time"
               type="number"
               placeholder="30"
+              value={formData.cooking_time}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -213,20 +254,20 @@ export default function RecipeStep1({ setFormStep }: Props) {
             accept="image/*"
             onChange={handleImageUpload}
           />
+
+          <h1>Current Image:</h1>
+          {recipeDetails?.avatar_url && (
+            <Image
+              alt={"Recipe_Image"}
+              height={100}
+              width={100}
+              src={recipeDetails?.avatar_url}
+            ></Image>
+          )}
         </div>
 
         {/* Footer Buttons */}
-        <div className="flex justify-end mt-4">
-          <Button
-            className="px-6"
-            onClick={() => {
-              handleSubmit();
-              setFormStep(2);
-            }}
-          >
-            Continue
-          </Button>
-        </div>
+        <div className="flex justify-end mt-4 gap-4"></div>
       </div>
     </div>
   );

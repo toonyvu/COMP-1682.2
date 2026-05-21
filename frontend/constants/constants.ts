@@ -15,3 +15,14 @@ export const subscriptionPlans = {
   premium: "price_1TRZTsGyHK1KatBRY5Jt71sY",
   deluxe: "price_1TRZUHGyHK1KatBR1EwOrtcB",
 };
+
+const defaultIngredientForm = {
+  name: "",
+  category: "",
+  unit_type: "",
+  calories_per_100g: 0,
+  is_vegetarian: false,
+  is_vegan: false,
+  unit: "",
+  qty: 0,
+};

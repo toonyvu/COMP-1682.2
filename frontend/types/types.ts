@@ -54,6 +54,16 @@ export type Ingredient = {
   qty: number;
 };
 
+export type IngredientAdd = {
+  name: string;
+  category: string;
+  unit_type: string;
+  calories_per_100g: number;
+  is_vegetarian: boolean;
+  is_vegan: boolean;
+  qty: number;
+};
+
 export type Steps = {
   id: number;
   recipe_id: number;

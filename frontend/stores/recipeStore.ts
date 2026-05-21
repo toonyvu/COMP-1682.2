@@ -1,19 +1,19 @@
 import { create } from "zustand";
 
 import type { RecipeAdd } from "@/types/types";
-import type { Ingredient } from "@/types/types";
+import type { IngredientAdd } from "@/types/types";
 import type { Steps } from "@/types/types";
 
 type RecipeStore = {
   recipe: RecipeAdd | null;
-  ingredients: Ingredient[];
+  ingredients: IngredientAdd[];
   steps: Steps[];
 
   setRecipeDetails: (recipe: RecipeAdd) => void;
 
-  addIngredient: (ingredient: Ingredient) => void;
+  addIngredient: (ingredient: IngredientAdd) => void;
   removeIngredient: (index: number) => void;
-  updateIngredient: (index: number, ingredient: Ingredient) => void;
+  updateIngredient: (index: number, ingredient: IngredientAdd) => void;
 
   addStep: (step: Steps) => void;
   removeStep: (index: number) => void;

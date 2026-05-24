@@ -17,15 +17,28 @@ import { useState, useEffect } from "react";
 import { uploadRecipeImg } from "@/utils/imgUpload";
 import Image from "next/image";
 
+import type { Difficulty } from "@/types/types";
+
 type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const defaultFormData = {
+type RecipeFormData = {
+  name: string;
+  description: string;
+  servings: number;
+  difficulty: Difficulty;
+  prep_time: number;
+  cooking_time: number;
+  avatar_url: string;
+  price: number;
+};
+
+const defaultFormData: RecipeFormData = {
   name: "",
   description: "",
   servings: 1,
-  difficulty: "",
+  difficulty: "Easy",
   prep_time: 0,
   cooking_time: 0,
   avatar_url: "",
@@ -97,7 +110,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
               setFormStep(2);
             }}
           >
-            Continue
+            Next
           </Button>
         </div>
       </div>
@@ -181,7 +194,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
 
             <Select
               value={formData.difficulty}
-              onValueChange={(value) =>
+              onValueChange={(value: "Easy" | "Medium" | "Hard") =>
                 setFormData({
                   ...formData,
                   difficulty: value,
@@ -194,11 +207,11 @@ export default function RecipeStep1({ setFormStep }: Props) {
 
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="easy">Easy</SelectItem>
+                  <SelectItem value="Easy">Easy</SelectItem>
 
-                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
 
-                  <SelectItem value="hard">Hard</SelectItem>
+                  <SelectItem value="Hard">Hard</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -262,6 +275,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
               height={100}
               width={100}
               src={recipeDetails?.avatar_url}
+              className="w-auto h-auto"
             ></Image>
           )}
         </div>

@@ -86,12 +86,12 @@ export default function RecipeStep2({ setFormStep }: Props) {
         </div>
 
         <div className="flex flex-row justify-between mt-4">
-          <div className="w-full max-w-2xl bg-white shadow-md outline-1 p-8">
+          <section className="w-full max-w-2xl bg-white shadow-md outline-1 p-8">
             {/* Header */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold">Add Ingredient</h1>
+              <h2 className="text-2xl font-bold">Add Ingredient</h2>
 
-              <p className="text-gray-500 mt-2">
+              <p className="text-gray-500 mt-2 text-sm">
                 Enter ingredient details for this recipe.
               </p>
             </div>
@@ -279,7 +279,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
               </div>
 
               {/* Footer */}
-              <div className="flex gap-4 justify-end pt-4">
+              <footer className="flex gap-4 justify-end pt-4">
                 {editingIndex === null ? (
                   <>
                     <Button
@@ -321,14 +321,14 @@ export default function RecipeStep2({ setFormStep }: Props) {
                     </Button>
                   </>
                 )}
-              </div>
+              </footer>
             </div>
-          </div>
-          <div className="w-full outline-1 bg-white shadow-md p-6">
+          </section>
+          <section className="w-full outline-1 bg-white shadow-md p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-3xl font-bold">Ingredients List</h1>
+                <h2 className="text-2xl font-bold">Ingredients List</h2>
 
                 <p className="text-sm text-gray-500 mt-1">
                   {ingredients.length} ingredient
@@ -424,7 +424,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </div>

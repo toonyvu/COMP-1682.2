@@ -2,12 +2,12 @@ import { create } from "zustand";
 
 import type { RecipeAdd } from "@/types/types";
 import type { IngredientAdd } from "@/types/types";
-import type { Steps } from "@/types/types";
+import type { StepsAdd } from "@/types/types";
 
 type RecipeStore = {
-  recipe: RecipeAdd | null;
+  recipe: RecipeAdd;
   ingredients: IngredientAdd[];
-  steps: Steps[];
+  steps: StepsAdd[];
 
   setRecipeDetails: (recipe: RecipeAdd) => void;
 
@@ -15,9 +15,9 @@ type RecipeStore = {
   removeIngredient: (index: number) => void;
   updateIngredient: (index: number, ingredient: IngredientAdd) => void;
 
-  addStep: (step: Steps) => void;
+  addStep: (step: StepsAdd) => void;
   removeStep: (index: number) => void;
-  updateStep: (index: number, step: Steps) => void;
+  updateStep: (index: number, step: StepsAdd) => void;
 
   resetRecipeStore: () => void;
 };

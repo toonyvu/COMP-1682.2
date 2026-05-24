@@ -16,12 +16,20 @@ export type Recipe = {
   price: string;
 };
 
+export type RecipeAPIType = {
+  recipe: RecipeAdd;
+
+  ingredients: IngredientAdd[];
+
+  steps: StepsAdd[];
+};
+
 export type RecipeAdd = {
   name: string;
   description: string;
   avatar_url: string;
   servings: number;
-  difficulty: Difficulty | string;
+  difficulty: Difficulty;
   prep_time: number;
   cooking_time: number;
   price: number;
@@ -70,6 +78,11 @@ export type Steps = {
   step_number: number;
   instruction: string;
   created_at: string;
+};
+
+export type StepsAdd = {
+  step_number: number;
+  instruction: string;
 };
 
 export type RecipeWithDetails = Recipe & {

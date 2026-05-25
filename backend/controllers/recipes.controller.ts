@@ -1,5 +1,8 @@
 import type { Request, Response } from "express";
-import { getRecipeDetails } from "../services/recipes.service.js";
+import {
+  getRecipeDetails,
+  createRecipeService,
+} from "../services/recipes.service.js";
 import {
   addRecipeFavorite,
   removeRecipeFavorite,
@@ -9,7 +12,6 @@ export async function getRecipes(req: Request, res: Response) {
   console.log(req);
   const userId = req.user!.userId;
   const { id } = req.params;
-
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
 
@@ -66,5 +68,17 @@ export async function deleteFavorite(req: Request, res: Response) {
     return res
       .status(500)
       .json({ message: "Failed to add recipe to favorites." });
+  }
+}
+
+export async function createRecipeController(req: Request, res: Response) {
+  const userId = req.user!.userId;
+
+  const { recipe, ingredients, steps } = req.body;
+
+  try {
+    const res = await createRecipeService(recipe, ingredients, steps);
+  } catch (err: any) {
+    return res.status(500).json(err.message);
   }
 }

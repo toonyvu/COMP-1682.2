@@ -1,5 +1,5 @@
-import AdminNavbar from "@/components/navbars/AdminNavbar";
-import AdminSidebar from "@/components/AdminSidebar";
+import AdminNavbar from "@/components/[navbars]/AdminNavbar";
+import AdminSidebar from "@/components/[admin]/AdminSidebar";
 
 export default function DashboardLayout({
   children,

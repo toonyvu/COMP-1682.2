@@ -64,6 +64,7 @@ export async function createRecipeService(
   steps: Step[],
 ) {
   const client = await pool.connect();
+  console.log("Create recipe function hit!");
 
   try {
     await client.query("BEGIN");
@@ -88,6 +89,7 @@ export async function createRecipeService(
     const createdRecipe = recipeResult.rows[0];
 
     const recipeId = createdRecipe.id;
+    let ingredientsList = [];
     for (const ingredient of ingredients) {
       const existing = await client.query(
         `
@@ -99,14 +101,19 @@ export async function createRecipeService(
       );
 
       if (existing.rows.length > 0) {
-        await client.query(
+        const ingredientResult = await client.query(
           `
         INSERT INTO recipe_ingredients(recipe_id, ingredient_id, qty, unit)
-        VALUES ($1, $2, $3, $4)
+        VALUES ($1, $2, $3, $4) RETURNING *
         `,
           [recipeId, existing.rows[0].id, ingredient.qty, ingredient.unit_type],
         );
 
+        ingredientsList.push({
+          ...existing.rows[0],
+          qty: ingredient.qty,
+          unit_type: ingredient.unit_type,
+        });
         continue;
       }
 
@@ -127,6 +134,10 @@ export async function createRecipeService(
       );
 
       const createdIngredient = ingredientResult.rows[0];
+      ingredientsList.push({
+        ...createdIngredient,
+        qty: ingredient.qty,
+      });
 
       await client.query(
         `
@@ -137,19 +148,25 @@ export async function createRecipeService(
       );
     }
 
+    const stepsList = [];
     for (const step of steps) {
-      await client.query(
+      const stepResult = await client.query(
         `
         INSERT INTO recipe_steps(recipe_id, step_number, instruction)
-        VALUES ($1, $2, $3)`,
+        VALUES ($1, $2, $3) RETURNING *`,
         [recipeId, step.step_number, step.instruction],
       );
+      const { recipe_id, ...filtered } = stepResult.rows[0];
+
+      stepsList.push(filtered);
     }
 
     await client.query("COMMIT");
 
     return {
       recipe: createdRecipe,
+      ingredients: ingredientsList,
+      steps: stepsList,
     };
   } catch (err: any) {
     console.log(err);

@@ -1,5 +1,5 @@
-import SubscribeLeft from "@/components/SubscribeLeft";
-import SubscribeRight from "@/components/SubscribeRight";
+import SubscribeLeft from "@/components/subscribe/SubscribeLeft";
+import SubscribeRight from "@/components/subscribe/SubscribeRight";
 
 export default function SubscribePage() {
   return (

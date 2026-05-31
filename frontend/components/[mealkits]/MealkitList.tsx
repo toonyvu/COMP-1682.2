@@ -16,7 +16,7 @@ import * as cartApi from "@/lib/api/carts";
 
 import CartSheet from "./CartSheet";
 
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 import { useCartStore } from "@/stores/cartStore";
 
@@ -41,7 +41,7 @@ export default function MealkitList({ week }: Props) {
   });
 
   const total = mealkits?.total ?? 0;
-  const totalPages = Math.floor(total / 5) === 0 ? 1 : Math.floor(total / 5);
+  const totalPages = Math.floor(total / 5) === 0 ? 1 : Math.ceil(total / 5);
 
   useEffect(() => {
     async function loadCart() {

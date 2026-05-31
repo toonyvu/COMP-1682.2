@@ -10,7 +10,7 @@ import {
   SheetTrigger,
   SheetFooter,
 } from "@/components/ui/sheet";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 // LIBRARIES
 import * as cartService from "@/lib/api/carts";
@@ -18,6 +18,7 @@ import Image from "next/image";
 import { useCartStore } from "@/stores/cartStore";
 import { createCheckoutSession } from "@/lib/api/checkout";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // CONSTANTS/TYPES/IMAGES
 import { buttonColors } from "@/constants/constants";
@@ -27,18 +28,8 @@ export default function CartSheet() {
   const cartItems = useCartStore((state) => state.cartItems);
   const addItem = useCartStore((state) => state.addItem);
   const removeItem = useCartStore((state) => state.removeItem);
-  const [loading, setLoading] = useState(false);
 
-  async function handleCheckout() {
-    try {
-      setLoading(true);
-      await createCheckoutSession();
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const router = useRouter();
 
   const addCartBackend = async (mealkitId: number) => {
     await cartService.addToCart(mealkitId);
@@ -154,11 +145,18 @@ export default function CartSheet() {
             </span>
           </div>
 
-          <Button
+          {/*<Button
             className={`text-white w-full ${!loading ? buttonColors.Ready : buttonColors.Loading}`}
             onClick={handleCheckout}
           >
             {!loading ? "Checkout" : "Loading"}
+          </Button> */}
+
+          <Button
+            className={`text-white w-full ${buttonColors.Ready}`}
+            onClick={() => router.push("/checkout")}
+          >
+            Proceed to checkout
           </Button>
         </SheetFooter>
       </SheetContent>

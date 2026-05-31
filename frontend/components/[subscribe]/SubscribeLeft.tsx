@@ -1,4 +1,4 @@
-import ScrollItems from "./ScrollItems";
+import ScrollItems from "../ScrollItems";
 
 export default function SubscribeLeft() {
   return (

@@ -1,5 +1,5 @@
-import UserNavbar from "@/components/navbars/UserNavbar";
-import AdminSidebar from "@/components/AdminSidebar";
+import UserNavbar from "@/components/[navbars]/UserNavbar";
+import AdminSidebar from "@/components/[admin]/AdminSidebar";
 
 export default function HomeLayout({
   children,

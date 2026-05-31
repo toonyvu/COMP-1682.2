@@ -38,3 +38,52 @@ export async function getOrder(sessionId: string) {
     wallet: paymentMethod.card?.wallet?.type ?? null,
   };
 }
+
+export async function getAllOrders(userId: number) {
+  const ordersResult = await pool.query(
+    `SELECT
+      o.*,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'mealkit_id', oi.mealkit_id,
+            'qty', oi.qty,
+            'price', oi.price,
+
+            'week_number', m.week_number,
+            'year', m.year,
+            'max_servings', m.max_servings,
+
+            'recipe', json_build_object(
+              'id', r.id,
+              'name', r.name,
+              'description', r.description,
+              'servings', r.servings,
+              'difficulty', r.difficulty,
+              'prep_time', r.prep_time,
+              'cooking_time', r.cooking_time,
+              'avatar_url', r.avatar_url
+            )
+          )
+        ) FILTER (WHERE oi.id IS NOT NULL),
+        '[]'::json
+      ) AS items
+    FROM orders o
+    LEFT JOIN order_items oi
+      ON o.id = oi.order_id
+    LEFT JOIN mealkits m
+      ON oi.mealkit_id = m.id
+    LEFT JOIN recipes r
+      ON m.recipe_id = r.id
+    WHERE o.user_id = $1
+    GROUP BY o.id;`,
+    [userId],
+  );
+
+  const orders = ordersResult.rows.map((order) => ({
+    ...order,
+    amount_total: order.amount_total / 100,
+  }));
+
+  return orders;
+}

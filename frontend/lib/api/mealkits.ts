@@ -17,6 +17,7 @@ export async function getMealKits(page: number, week: number) {
   );
 
   const data = await result.json();
+  console.log(data);
 
   if (!result.ok) {
     throw new Error(data.message || "Failed to fetch recipes.");

@@ -1,4 +1,4 @@
-import SuccessItems from "@/components/SuccessItems";
+import SuccessItems from "@/components/[checkout]/SuccessItems";
 
 export default async function CheckoutSuccess({
   searchParams,

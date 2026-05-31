@@ -1,6 +1,6 @@
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "./ui/label";
+import { Label } from "../../ui/label";
 
 import { useState } from "react";
 

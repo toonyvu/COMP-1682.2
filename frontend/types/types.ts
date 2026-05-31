@@ -16,6 +16,12 @@ export type Recipe = {
   price: string;
 };
 
+export type RecipeStore = {
+  recipe: RecipeAdd | null;
+  ingredients: IngredientAdd[];
+  steps: StepsAdd[];
+};
+
 export type RecipeAPIType = {
   recipe: RecipeAdd;
 
@@ -162,4 +168,38 @@ export type UserType = {
   first_name: string;
   last_name: string;
   phone: string;
+};
+
+export type OrderItems = {
+  max_servings: number;
+  mealkit_id: number;
+  price: number;
+  qty: number;
+  week_number: number;
+  year: number;
+  recipe: {
+    avatar_url: string;
+    cooking_time: number;
+    description: number;
+    difficulty: Difficulty;
+    id: number;
+    name: string;
+    prep_time: string;
+    servings: number;
+  };
+};
+
+export type UserOrder = {
+  amount_total: number;
+  card_brand: string;
+  created_at: string;
+  currency: string;
+  cus_order_id: string;
+  id: number;
+  payment_method: string | null;
+  status: string;
+  stripe_payment_intent_id: string;
+  stripe_session_id: string;
+  user_id: number;
+  items: OrderItems[];
 };

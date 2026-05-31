@@ -85,3 +85,20 @@ export function convertDateMonth(dateString?: string) {
 
   return formatted;
 }
+
+export function TimestampToDate(timestamp: string) {
+  const date = new Date(timestamp);
+
+  const datePart = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+
+  return `${timePart}, ${datePart}`;
+}

@@ -72,12 +72,14 @@ export async function deleteFavorite(req: Request, res: Response) {
 }
 
 export async function createRecipeController(req: Request, res: Response) {
-  const userId = req.user!.userId;
-
   const { recipe, ingredients, steps } = req.body;
+  console.log(recipe);
+  console.log(ingredients);
+  console.log(steps);
 
   try {
-    const res = await createRecipeService(recipe, ingredients, steps);
+    const result = await createRecipeService(recipe, ingredients, steps);
+    return res.status(200).json(result);
   } catch (err: any) {
     return res.status(500).json(err.message);
   }

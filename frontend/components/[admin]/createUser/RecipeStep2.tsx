@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "./ui/label";
+import { Label } from "../../ui/label";
 
-import { Checkbox } from "./ui/checkbox";
+import { Checkbox } from "../../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import { useRecipeStore } from "@/stores/recipeStore";
 
 export const defaultIngredientForm = {

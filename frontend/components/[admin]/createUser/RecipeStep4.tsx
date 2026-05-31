@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import { useRecipeStore } from "@/stores/recipeStore";
 import { difficultyColor } from "@/constants/constants";
 import { createRecipe } from "@/lib/api/recipes";
@@ -10,15 +10,22 @@ type Props = {
 
 export default function RecipeStep4({ setFormStep }: Props) {
   const recipe = useRecipeStore((state) => state.recipe);
+  const setFullRecipe = useRecipeStore((state) => state.setFullRecipe);
   const ingredients = useRecipeStore((state) => state.ingredients);
   const steps = useRecipeStore((state) => state.steps);
 
   const addRecipe = async () => {
     if (!recipe) return;
-    createRecipe({ recipe, ingredients, steps });
+    const createdRecipe = await createRecipe({ recipe, ingredients, steps });
+    console.log(createdRecipe);
+    if (createdRecipe) {
+      setFullRecipe(createdRecipe);
+      setFormStep(5);
+    }
   };
+
   return (
-    <div className="w-full bg-white rounded-2xl p-8 shadow-lgz">
+    <div className="w-full bg-white rounded-2xl p-8 shadow-lg">
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>
@@ -39,7 +46,7 @@ export default function RecipeStep4({ setFormStep }: Props) {
 
           <Button
             className="bg-green-600 hover:bg-green-800 h-10 w-24"
-            onClick={() => addRecipe}
+            onClick={() => addRecipe()}
           >
             Publish
           </Button>

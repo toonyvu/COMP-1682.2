@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import { getOrder } from "../services/orders.service.js";
+import { getOrder, getAllOrders } from "../services/orders.service.js";
 
 type Params = {
   sessionId: string;
 };
 
-export async function orderController(req: Request<Params>, res: Response) {
+export async function getOrderController(req: Request<Params>, res: Response) {
   const sessionId = req.params.sessionId;
 
   if (!sessionId) {
@@ -23,5 +23,21 @@ export async function orderController(req: Request<Params>, res: Response) {
   } catch (err: any) {
     console.error("Error fetching order:", err.message);
     return res.status(500).json({ message: "Failed to fetch order" });
+  }
+}
+
+export async function getAllOrdersController(req: Request, res: Response) {
+  const userId = Number(req.user?.userId);
+
+  if (!userId) {
+    return res.status(401).json({ message: "No userId found." });
+  }
+
+  try {
+    const orders = await getAllOrders(userId);
+    return res.status(200).json({ orders });
+  } catch (err: any) {
+    console.error("Error in orders:", err.message);
+    return res.status(500).json({ message: err.message });
   }
 }

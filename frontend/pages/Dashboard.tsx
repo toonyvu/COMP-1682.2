@@ -1,7 +1,7 @@
 "use client";
 
-import MealkitList from "@/components/MealkitList";
-import WeeksGrid from "@/components/WeeksGrid";
+import MealkitList from "@/components/[mealkits]/MealkitList";
+import WeeksGrid from "@/components/[mealkits]/WeeksGrid";
 import { useEffect, useState } from "react";
 import { getWeekYear } from "@/utils/dates";
 import { useUserStore } from "@/stores/userStore";

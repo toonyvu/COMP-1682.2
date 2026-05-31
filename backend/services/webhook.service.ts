@@ -22,6 +22,16 @@ export async function handleStripeEvent(event: Stripe.Event) {
         const userId = session.metadata?.userId;
         if (!userId) throw new Error("Missing userId in metadata");
 
+        const paymentIntentId = session.payment_intent as string;
+        const paymentIntent =
+          await stripe.paymentIntents.retrieve(paymentIntentId);
+
+        const paymentMethodId = (await paymentIntent).payment_method as string;
+        const paymentMethod =
+          await stripe.paymentMethods.retrieve(paymentMethodId);
+
+        console.log(paymentMethod);
+
         const existing = await pool.query(
           `SELECT id FROM orders WHERE stripe_session_id = $1`,
           [session.id],
@@ -60,9 +70,11 @@ export async function handleStripeEvent(event: Stripe.Event) {
             amount_total,
             currency,
             status,
-            cus_order_id
+            cus_order_id,
+            payment_method,
+            card_brand
           )
-          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
           RETURNING id
           `,
             [
@@ -73,6 +85,8 @@ export async function handleStripeEvent(event: Stripe.Event) {
               session.currency,
               "paid",
               `ORD-${customerId}`,
+              paymentMethod.type,
+              paymentMethod.card?.brand ?? null,
             ],
           );
 

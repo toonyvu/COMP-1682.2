@@ -1,4 +1,4 @@
-import type { Recipe, RecipeAPIType } from "@/types/types";
+import type { RecipeAPIType } from "@/types/types";
 import { checkKey } from "./apiClient";
 
 export async function getRecipe(id: number) {
@@ -23,6 +23,7 @@ export async function getRecipe(id: number) {
 
 export async function createRecipe(recipe: RecipeAPIType) {
   const token = await checkKey();
+  console.log("Helloooo!");
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes`, {
     method: "POST",

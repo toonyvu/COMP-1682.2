@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "../../ui/button";
 import { useRecipeStore } from "@/stores/recipeStore";
@@ -25,7 +27,7 @@ export default function RecipeStep4({ setFormStep }: Props) {
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl p-8 shadow-lg">
+    <div className="w-full bg-white rounded-2xl p-8">
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>

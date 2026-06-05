@@ -1,6 +1,8 @@
 import type { RecipeAPIType } from "@/types/types";
 import { checkKey } from "./apiClient";
 
+import { limit } from "@/constants/constants";
+
 export async function getRecipe(id: number) {
   const token = await checkKey();
 
@@ -39,4 +41,29 @@ export async function createRecipe(recipe: RecipeAPIType) {
   }
 
   return res.json();
+}
+
+export async function getRecipesAdmin(page: number, search: string) {
+  const token = await checkKey();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/recipes/admin?page=${page}&limit=${limit}&search=${search}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const msg = await res.text();
+    console.log(msg);
+    throw new Error(`${res.status}: ${msg}`);
+  }
+
+  const data = await res.json();
+
+  return data;
 }

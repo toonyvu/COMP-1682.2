@@ -175,3 +175,43 @@ export async function createRecipeService(
     client.release();
   }
 }
+
+export async function getAllRecipesAdmin(
+  page: number,
+  limit: number,
+  search?: string,
+) {
+  const offset = (page - 1) * limit;
+  console.log("Service reached");
+
+  if (!search?.trim()) {
+    const recipeResult = await pool.query(
+      `SELECT * FROM recipes ORDER BY id ASC LIMIT $1 OFFSET $2`,
+      [limit, offset],
+    );
+
+    const countResult = await pool.query(
+      `SELECT COUNT(*) as count FROM recipes`,
+    );
+
+    return {
+      recipes: recipeResult.rows,
+      total: countResult.rows[0].count,
+    };
+  }
+
+  const recipeResult = await pool.query(
+    `SELECT * FROM recipes WHERE name ILIKE $1 ORDER BY id ASC LIMIT $2 OFFSET $3`,
+    [`%${search}%`, limit, offset],
+  );
+
+  const countResult = await pool.query(
+    `SELECT COUNT(*) as count FROM recipes WHERE name ILIKE $1`,
+    [`%${search}%`],
+  );
+
+  return {
+    recipes: recipeResult.rows,
+    total: countResult.rows[0].count,
+  };
+}

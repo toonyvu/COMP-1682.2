@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-1/5 sticky top-0 h-screen">
+      <div className="w-64 sticky top-0 h-screen">
         <AdminSidebar />
       </div>
 

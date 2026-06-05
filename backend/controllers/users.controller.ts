@@ -2,10 +2,10 @@ import type { Request, Response } from "express";
 import { getUserInfo, updateUserInfo } from "../services/users.service.js";
 
 export async function getUser(req: Request, res: Response) {
-  const { id } = req.params;
+  const userId = Number(req.user?.userId);
 
   try {
-    const result = await getUserInfo(Number(id));
+    const result = await getUserInfo(Number(userId));
 
     res.status(200).json({ user: result });
   } catch (err: any) {

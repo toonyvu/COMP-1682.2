@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import {
   getRecipeDetails,
   createRecipeService,
+  getAllRecipesAdmin,
 } from "../services/recipes.service.js";
 import {
   addRecipeFavorite,
@@ -79,6 +80,21 @@ export async function createRecipeController(req: Request, res: Response) {
 
   try {
     const result = await createRecipeService(recipe, ingredients, steps);
+    return res.status(200).json(result);
+  } catch (err: any) {
+    return res.status(500).json(err.message);
+  }
+}
+
+export async function getRecipesAdminController(req: Request, res: Response) {
+  const limit = Number(req.query.limit) || 20;
+  const page = Number(req.query.page) || 1;
+  const search = String(req.query.search);
+
+  console.log("Controller reached");
+
+  try {
+    const result = await getAllRecipesAdmin(page, limit, search);
     return res.status(200).json(result);
   } catch (err: any) {
     return res.status(500).json(err.message);

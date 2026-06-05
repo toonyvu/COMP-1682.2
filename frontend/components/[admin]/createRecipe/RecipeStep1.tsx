@@ -84,7 +84,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
     setRecipeDetails(formData);
   };
   return (
-    <div className=" w-full bg-white rounded-2xl shadow-lg p-8">
+    <div className=" w-full bg-white rounded-2xl p-8">
       {/* Header */}
       <div className="mb-8 flex flex-row justify-between">
         <div>

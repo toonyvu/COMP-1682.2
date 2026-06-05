@@ -4,14 +4,17 @@ import {
   addFavorite,
   deleteFavorite,
   createRecipeController,
+  getRecipesAdminController,
 } from "../controllers/recipes.controller.js";
 import { authenticateToken } from "../middleware/authenticateToken.js";
 
 const router = Router();
 
+router.get("/admin", authenticateToken, getRecipesAdminController);
+router.post("/", authenticateToken, createRecipeController);
+
 router.get("/:id", authenticateToken, getRecipes);
 router.post("/:id", authenticateToken, addFavorite);
-router.post("/", authenticateToken, createRecipeController);
 router.delete("/:id", authenticateToken, deleteFavorite);
 
 export default router;

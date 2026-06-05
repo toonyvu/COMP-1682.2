@@ -54,7 +54,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
   };
 
   return (
-    <div className=" w-full bg-white rounded-2xl p-8 shadow-lg">
+    <div className=" w-full bg-white rounded-2xl p-8">
       <div className="mb-8">
         <div className="flex flex-row justify-between items-start">
           <div>

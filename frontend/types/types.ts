@@ -16,6 +16,25 @@ export type Recipe = {
   price: string;
 };
 
+export type RecipeAdmin = {
+  id: number;
+  mealkit_id: number;
+  name: string;
+  description: string;
+  avatar_url: string;
+  servings: number;
+  difficulty: Difficulty;
+  prep_time: number;
+  cooking_time: number;
+  created_at: string;
+  price: string;
+};
+
+export type RecipePaginated = {
+  total: number;
+  recipes: RecipeAdmin[];
+};
+
 export type RecipeStore = {
   recipe: RecipeAdd | null;
   ingredients: IngredientAdd[];
@@ -203,3 +222,10 @@ export type UserOrder = {
   user_id: number;
   items: OrderItems[];
 };
+
+export type OrderStatus =
+  | "pending"
+  | "paid"
+  | "preparing"
+  | "shipped"
+  | "delivered";

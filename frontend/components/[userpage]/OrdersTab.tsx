@@ -276,7 +276,7 @@ export default function OrdersTab() {
                       Qty: <strong>{item.qty}</strong>
                     </p>
 
-                    <p className="font-semibold">${item.price}</p>
+                    <p className="font-semibold">${item.price.toFixed(2)}</p>
                   </div>
                 </div>
               ))}
@@ -284,9 +284,12 @@ export default function OrdersTab() {
 
             {/* Footer */}
             <div className="flex justify-end gap-3 p-4 border-t">
-              <button className="px-4 py-2 border rounded-md hover:bg-gray-200">
+              <Button
+                className="px-4 py-2 border rounded-md hover:bg-gray-200 bg-white h-full text-black outline-1 outline-gray-700"
+                onClick={() => router.push(`orders/${order.cus_order_id}`)}
+              >
                 View Details
-              </button>
+              </Button>
 
               <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-800">
                 Reorder

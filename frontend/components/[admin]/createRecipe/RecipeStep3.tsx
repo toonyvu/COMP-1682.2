@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "../../ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "../../ui/label";
@@ -25,7 +27,7 @@ export default function RecipeStep3({ setFormStep }: Props) {
   const removeStep = useRecipeStore((state) => state.removeStep);
 
   return (
-    <div className="w-full bg-white rounded-2xl p-8 shadow-lg">
+    <div className="w-full bg-white rounded-2xl p-8">
       <div className="mb-8 flex flex-row justify-between">
         <header>
           <h1 className="text-3xl font-bold">Enter Steps Details</h1>

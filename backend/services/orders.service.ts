@@ -87,3 +87,37 @@ export async function getAllOrders(userId: number) {
 
   return orders;
 }
+
+export async function getOrderDetails(orderId: string, userId: number) {
+  const result = await pool.query(
+    `
+    SELECT
+      o.*,
+      json_agg(
+        json_build_object(
+          'mealkit_id', oi.mealkit_id,
+          'qty', oi.qty,
+          'price', oi.price,
+          'recipe', json_build_object(
+            'id', r.id,
+            'name', r.name,
+            'avatar_url', r.avatar_url
+          )
+        )
+      ) AS items
+    FROM orders o
+    JOIN order_items oi
+      ON oi.order_id = o.id
+    JOIN mealkits mk
+      ON mk.id = oi.mealkit_id
+    JOIN recipes r
+      ON r.id = mk.recipe_id
+    WHERE o.cus_order_id = $1
+      AND o.user_id = $2
+    GROUP BY o.id
+    `,
+    [orderId, userId],
+  );
+
+  return result.rows[0];
+}

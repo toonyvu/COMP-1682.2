@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import { getOrder, getAllOrders } from "../services/orders.service.js";
+import {
+  getOrder,
+  getAllOrders,
+  getOrderDetails,
+} from "../services/orders.service.js";
 
 type Params = {
   sessionId: string;
@@ -38,6 +42,26 @@ export async function getAllOrdersController(req: Request, res: Response) {
     return res.status(200).json({ orders });
   } catch (err: any) {
     console.error("Error in orders:", err.message);
+    return res.status(500).json({ message: err.message });
+  }
+}
+
+export async function getOrderDetailsController(req: Request, res: Response) {
+  const { orderId } = req.params;
+  const userId = Number(req.user?.userId);
+
+  if (!userId || !orderId) {
+    return res.status(401).json({ message: "No UserId for orderId." });
+  }
+
+  if (typeof orderId !== "string") {
+    return res.status(400).json({ message: "Invalid order ID" });
+  }
+
+  try {
+    const order = await getOrderDetails(orderId, userId);
+    return res.status(200).json(order);
+  } catch (err: any) {
     return res.status(500).json({ message: err.message });
   }
 }

@@ -7,6 +7,7 @@ import { difficultyColor } from "@/constants/constants";
 import { useEffect, useState } from "react";
 import PaginationComponent from "@/components/PaginationComponent";
 import { showToast } from "nextjs-toast-notify";
+import { Input } from "../ui/input";
 
 import { getMealKits } from "@/lib/api/mealkits";
 
@@ -19,6 +20,7 @@ import CartSheet from "./CartSheet";
 import { Button } from "@/components/ui/button";
 
 import { useCartStore } from "@/stores/cartStore";
+import { useUserStore } from "@/stores/userStore";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -27,21 +29,37 @@ type Props = {
 };
 export default function MealkitList({ week }: Props) {
   const [page, setPage] = useState<number>(1);
-
+  const [search, setSearch] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const addItem = useCartStore((state) => state.addItem);
   const setCart = useCartStore((state) => state.setCart);
 
-  const { data: mealkits } = useQuery<MealKitList | null>({
-    queryKey: ["mealkitQuery", page, week],
+  const {
+    data: mealkits,
+    isLoading,
+    isFetching,
+  } = useQuery<MealKitList | null>({
+    queryKey: ["mealkitQuery", page, week, debouncedSearch],
 
     queryFn: async () => {
-      const res = await getMealKits(page, week);
+      const res = await getMealKits(page, week, debouncedSearch);
+      console.log(res.data);
       return res.data;
     },
   });
 
   const total = mealkits?.total ?? 0;
-  const totalPages = Math.floor(total / 5) === 0 ? 1 : Math.ceil(total / 5);
+  const totalPages = Math.floor(total / 12) === 0 ? 1 : Math.ceil(total / 12);
+
+  console.log(total, totalPages);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
 
   useEffect(() => {
     async function loadCart() {
@@ -59,25 +77,47 @@ export default function MealkitList({ week }: Props) {
     }
   }
 
-  if (!mealkits) {
+  if (isLoading) {
     return (
       <div className="h-screen flex flex-col justify-center items-center">
-        <Image
-          src={loading}
-          height={80}
-          width={80}
-          alt={"Loading"}
-          className="animate-spin"
-        ></Image>
-
+        <div className="flex flex-row gap-4">
+          <Image
+            src={loading}
+            height={80}
+            width={80}
+            alt={"Loading"}
+            className="animate-spin"
+          ></Image>
+        </div>
         <h1 className="mt-5">Fetching Recipes...</h1>
       </div>
     );
   }
 
+  if (!mealkits) {
+    return <div>Something went wrong.</div>;
+  }
+
   if (total === 0) {
     return (
-      <div>
+      <div className="w-full place-self-center mt-8 gap-8">
+        <div className="flex flex-row gap-8">
+          <Input
+            className="w-1/2 ml-85 h-10 ring-1 ring-gray-300"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setSearch(e.target.value);
+            }}
+          ></Input>
+
+          <Button className="h-10 bg-green-600 hover:bg-green-800">
+            Search
+          </Button>
+        </div>
+
         <h1 className="place-self-center my-20 text-lg text-gray-600">
           No recipes found.
         </h1>
@@ -90,11 +130,24 @@ export default function MealkitList({ week }: Props) {
   }
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 mt-15">
+      <div className="w-full place-self-center flex flex-row mt-8 gap-8">
+        <Input
+          className="w-1/2 ml-85 h-10 ring-1 ring-gray-300"
+          placeholder="Search..."
+          value={search}
+          onChange={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setSearch(e.target.value);
+          }}
+        ></Input>
+        <Button className="h-10 bg-green-600 hover:bg-green-800">Search</Button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 mt-8">
         {mealkits.mealkits.map((recipe) => (
           <Link
             key={recipe.recipe_id}
-            href={`/recipes/${recipe.recipe_id}`}
+            href={`/recipes/${recipe.recipe_id}?mealkit=${recipe.mealkit_id}`}
             scroll
             className="block h-full hover:scale-105"
           >

@@ -11,8 +11,10 @@ import {
 
 export async function getRecipes(req: Request, res: Response) {
   console.log(req);
-  const userId = req.user!.userId;
+  const userId = req.authUser.userId;
+  console.log(userId);
   const { id } = req.params;
+  const { mealkitId } = req.query;
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
 
@@ -22,7 +24,11 @@ export async function getRecipes(req: Request, res: Response) {
       return res.status(400).json({ message: "Invalid Recipe ID." });
     }
 
-    const result = await getRecipeDetails(Number(id), userId);
+    const result = await getRecipeDetails(
+      Number(id),
+      userId,
+      Number(mealkitId),
+    );
     return res.status(200).json(result);
   } catch (err: any) {
     return res.status(err.status || 500).json({ message: "Server Error." });
@@ -30,7 +36,7 @@ export async function getRecipes(req: Request, res: Response) {
 }
 
 export async function addFavorite(req: Request, res: Response) {
-  const userId = req.user!.userId;
+  const userId = req.authUser.userId;
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
@@ -50,7 +56,7 @@ export async function addFavorite(req: Request, res: Response) {
 }
 
 export async function deleteFavorite(req: Request, res: Response) {
-  const userId = req.user!.userId;
+  const userId = req.authUser.userId;
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
@@ -82,6 +88,7 @@ export async function createRecipeController(req: Request, res: Response) {
     const result = await createRecipeService(recipe, ingredients, steps);
     return res.status(200).json(result);
   } catch (err: any) {
+    console.log(err);
     return res.status(500).json(err.message);
   }
 }

@@ -31,9 +31,7 @@ export default function LoginForm() {
       const res = await login(email, password);
 
       if (res.ok) {
-        console.log(res.data);
         setUser(res.data.user);
-        localStorage.setItem("accessToken", res.data.accessToken);
         if (res.data.role === "admin") {
           router.push("/admin/dashboard");
         } else {
@@ -122,7 +120,14 @@ export default function LoginForm() {
           </div>
 
           <div className="flex flex-col gap-5 w-full">
-            <button type="submit" className="w-full bg-red-500 h-10 rounded-xl">
+            <button
+              type="submit"
+              className="w-full bg-red-500 h-10 rounded-xl"
+              onClick={() => {
+                window.location.href =
+                  "http://localhost:8080/auth/oauth/google";
+              }}
+            >
               Login with Google
             </button>
             <button

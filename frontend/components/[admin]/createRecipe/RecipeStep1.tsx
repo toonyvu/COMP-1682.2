@@ -31,7 +31,6 @@ type RecipeFormData = {
   prep_time: number;
   cooking_time: number;
   avatar_url: string;
-  price: number;
 };
 
 const defaultFormData: RecipeFormData = {
@@ -42,7 +41,6 @@ const defaultFormData: RecipeFormData = {
   prep_time: 0,
   cooking_time: 0,
   avatar_url: "",
-  price: 0,
 };
 
 export default function RecipeStep1({ setFormStep }: Props) {
@@ -152,22 +150,6 @@ export default function RecipeStep1({ setFormStep }: Props) {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="recipe-name">Price</Label>
-
-          <Input
-            id="recipe-name"
-            placeholder="Enter Price"
-            value={formData.price}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                price: Number(e.target.value),
-              })
-            }
-          />
-        </div>
-
         {/* Servings + Difficulty */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Servings */}
@@ -269,13 +251,13 @@ export default function RecipeStep1({ setFormStep }: Props) {
           />
 
           <h1>Current Image:</h1>
-          {recipeDetails?.avatar_url && (
+          {formData?.avatar_url && (
             <Image
               alt={"Recipe_Image"}
               height={100}
               width={100}
-              src={recipeDetails?.avatar_url}
-              className="w-auto h-auto"
+              src={formData?.avatar_url}
+              className="rounded-md object-cover"
             ></Image>
           )}
         </div>

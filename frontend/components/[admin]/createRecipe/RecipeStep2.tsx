@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "../../ui/label";
+import { uploadIngredientAvatar } from "@/utils/imgUpload";
+import Image from "next/image";
 
 import { Checkbox } from "../../ui/checkbox";
 import {
@@ -25,6 +27,7 @@ export const defaultIngredientForm = {
   is_vegetarian: false,
   is_vegan: false,
   qty: 0,
+  avatar_url: "",
 };
 
 type Props = {
@@ -34,6 +37,7 @@ type Props = {
 export default function RecipeStep2({ setFormStep }: Props) {
   const [ingredientForm, setIngredientForm] = useState(defaultIngredientForm);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const ingredients = useRecipeStore((state) => state.ingredients);
   const addIngredient = useRecipeStore((state) => state.addIngredient);
@@ -52,6 +56,32 @@ export default function RecipeStep2({ setFormStep }: Props) {
       console.error(err);
     }
   };
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.includes("png")) {
+      alert("Only PNG files are allowed");
+      return;
+    }
+
+    try {
+      setUploading(true);
+
+      const imgUrl = await uploadIngredientAvatar(file);
+
+      setIngredientForm((prev) => ({
+        ...prev,
+        avatar_url: imgUrl,
+      }));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   return (
     <div className=" w-full bg-white rounded-2xl p-8">
@@ -194,6 +224,10 @@ export default function RecipeStep2({ setFormStep }: Props) {
                         <SelectItem value="l">l</SelectItem>
 
                         <SelectItem value="unit">unit</SelectItem>
+
+                        <SelectItem value="tbsp">tbsp</SelectItem>
+
+                        <SelectItem value="tsp">tsp</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -278,6 +312,30 @@ export default function RecipeStep2({ setFormStep }: Props) {
                 </div>
               </div>
 
+              <div className="flex flex-col gap-4">
+                <Label htmlFor="img">Ingredient Image (.png)</Label>
+                <Input
+                  id="img"
+                  type="file"
+                  placeholder="2"
+                  accept="image/png"
+                  onChange={(e) => {
+                    handleImageUpload(e);
+                  }}
+                />
+
+                <h1>Current Image:</h1>
+                {ingredientForm?.avatar_url && (
+                  <Image
+                    alt={"Recipe_Image"}
+                    height={100}
+                    width={100}
+                    src={ingredientForm?.avatar_url}
+                    className="rounded-md object-cover"
+                  ></Image>
+                )}
+              </div>
+
               {/* Footer */}
               <footer className="flex gap-4 justify-end pt-4">
                 {editingIndex === null ? (
@@ -358,20 +416,32 @@ export default function RecipeStep2({ setFormStep }: Props) {
                   className="border rounded-xl p-4 shadow-md"
                 >
                   {/* Top Row */}
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="text-lg font-semibold">{item.name}</h2>
+                  <div className="flex items-start justify-between gap-4">
+                    {/* LEFT: image + text */}
+                    <div className="flex items-start gap-3">
+                      {item.avatar_url && (
+                        <Image
+                          src={item.avatar_url}
+                          alt={item.name}
+                          width={60}
+                          height={60}
+                          className="rounded-md object-cover"
+                        />
+                      )}
 
-                      <p className="text-sm text-gray-500 capitalize">
-                        {item.category}
-                      </p>
+                      <div>
+                        <h2 className="text-lg font-semibold">{item.name}</h2>
+                        <p className="text-sm text-gray-500 capitalize">
+                          {item.category}
+                        </p>
+                      </div>
                     </div>
 
+                    {/* RIGHT: quantity */}
                     <div className="text-right">
                       <p className="font-medium">
                         {item.qty} {item.unit_type}
                       </p>
-
                       <p className="text-sm text-gray-500">
                         {item.calories_per_100g} kcal
                       </p>
@@ -387,12 +457,13 @@ export default function RecipeStep2({ setFormStep }: Props) {
                     )}
 
                     {item.is_vegan && (
-                      <div className="text-xs px-3 py-1 rounded-full bg-emerald-100text-emerald-700 font-medium">
+                      <div className="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-medium">
                         Vegan
                       </div>
                     )}
                   </div>
 
+                  {/* Actions */}
                   <div className="flex justify-end mt-4">
                     {editingIndex !== index ? (
                       <>
@@ -407,6 +478,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
                         >
                           Edit
                         </Button>
+
                         <Button
                           variant="destructive"
                           size="sm"
@@ -416,9 +488,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
                         </Button>
                       </>
                     ) : (
-                      <>
-                        <span className="text-xs">Editing...</span>
-                      </>
+                      <span className="text-xs">Editing...</span>
                     )}
                   </div>
                 </div>

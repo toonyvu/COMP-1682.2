@@ -1,3 +1,4 @@
+import { allowedSorts, searchableFields } from "../constants/constants.js";
 import { pool } from "../database.js";
 import Stripe from "stripe";
 
@@ -40,8 +41,12 @@ export async function getOrder(sessionId: string) {
 }
 
 export async function getAllOrders(userId: number) {
-  const ordersResult = await pool.query(
-    `SELECT
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const ordersResult = await client.query(
+      `SELECT
       o.*,
       COALESCE(
         json_agg(
@@ -77,20 +82,32 @@ export async function getAllOrders(userId: number) {
       ON m.recipe_id = r.id
     WHERE o.user_id = $1
     GROUP BY o.id;`,
-    [userId],
-  );
+      [userId],
+    );
 
-  const orders = ordersResult.rows.map((order) => ({
-    ...order,
-    amount_total: order.amount_total / 100,
-  }));
+    console.log(ordersResult.rows);
 
-  return orders;
+    const orders = ordersResult.rows.map((order) => ({
+      ...order,
+      amount_total: order.amount_total / 100,
+    }));
+    await client.query("COMMIT");
+
+    return orders;
+  } catch (err) {
+    console.log(err);
+    await client.query("ROLLBACK");
+  } finally {
+    await client.release();
+  }
 }
 
 export async function getOrderDetails(orderId: string, userId: number) {
-  const result = await pool.query(
-    `
+  const client = await pool.connect();
+
+  try {
+    const result = await pool.query(
+      `
     SELECT
       o.*,
       json_agg(
@@ -116,8 +133,132 @@ export async function getOrderDetails(orderId: string, userId: number) {
       AND o.user_id = $2
     GROUP BY o.id
     `,
-    [orderId, userId],
-  );
+      [orderId, userId],
+    );
+    await client.query("COMMIT");
+    return result.rows[0];
+  } catch (err) {
+    console.log(err);
+    await client.query("ROLLBACK");
+  } finally {
+    await client.release();
+  }
+}
 
-  return result.rows[0];
+export async function getAllOrdersAdmin(
+  searchField: string,
+  search: string,
+  status: string,
+  sort: string,
+  order: string,
+  page: number,
+  limit: number,
+) {
+  const offset = (page - 1) * limit;
+
+  const searchColumn = searchableFields[searchField];
+  const sortColumn = allowedSorts[sort] ?? "o.created_at";
+  const sortDirection = order === "asc" ? "ASC" : "DESC";
+
+  let whereClause: string[] = [];
+  let values: any[] = [];
+
+  if (status) {
+    values.push(status);
+
+    whereClause.push(`o.status = $${values.length}`);
+  }
+
+  if (search && searchColumn) {
+    if (searchField === "orderId" || searchField === "phone") {
+      values.push(search);
+
+      whereClause.push(`${searchColumn} = $${values.length}`);
+    } else {
+      values.push(`%${search}%`);
+      whereClause.push(`${searchColumn} ILIKE $${values.length}`);
+    }
+  }
+
+  const whereSQL =
+    whereClause.length > 0 ? `WHERE ${whereClause.join(" AND ")}` : "";
+
+  values.push(limit);
+  const limitParam = `$${values.length}`;
+
+  values.push(offset);
+  const offsetParam = `$${values.length}`;
+
+  const client = await pool.connect();
+
+  try {
+    const ordersResult = await client.query(
+      `
+      SELECT
+      o.*,
+
+      json_build_object(
+        'id', u.id,
+        'username', u.username,
+        'address', u.address,
+        'phone', u.phone,
+        'first_name', u.first_name,
+        'last_name', u.last_name
+      ) AS customer,
+
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'mealkit_id', oi.mealkit_id,
+            'qty', oi.qty,
+            'price', oi.price,
+            'recipe', json_build_object(
+              'id', r.id,
+              'name', r.name,
+              'avatar_url', r.avatar_url
+            )
+          )
+        ) FILTER (WHERE oi.id IS NOT NULL), '[]'::json
+      ) AS items
+
+      FROM orders o
+
+      LEFT JOIN order_items oi
+        ON oi.order_id = o.id
+
+      LEFT JOIN mealkits mk
+        ON mk.id = oi.mealkit_id
+
+      LEFT JOIN recipes r
+        ON r.id = mk.recipe_id
+
+      LEFT JOIN users u
+        ON u.id = o.user_id
+
+      ${whereSQL}
+
+      GROUP BY o.id, u.id
+
+      ORDER BY ${sortColumn} ${sortDirection}
+
+      LIMIT ${limitParam}
+      OFFSET ${offsetParam}
+      `,
+      values,
+    );
+
+    const orders = ordersResult.rows.map((order) => ({
+      ...order,
+      amount_total: order.amount_total,
+    }));
+
+    await client.query("COMMIT");
+    console.log(orders);
+    return orders;
+  } catch (err) {
+    console.log(err);
+    await client.query("ROLLBACK");
+  } finally {
+    await client.release();
+  }
 }

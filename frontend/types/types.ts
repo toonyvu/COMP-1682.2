@@ -16,6 +16,16 @@ export type Recipe = {
   price: string;
 };
 
+export type mealkitData = {
+  recipe_id: number;
+  week_number: number;
+  available_from: string;
+  available_until: string;
+  year: number;
+  price: number;
+  max_servings: number;
+};
+
 export type RecipeAdmin = {
   id: number;
   mealkit_id: number;
@@ -57,7 +67,6 @@ export type RecipeAdd = {
   difficulty: Difficulty;
   prep_time: number;
   cooking_time: number;
-  price: number;
 };
 
 export type DateInfo = {
@@ -85,6 +94,7 @@ export type Ingredient = {
   is_vegan: boolean;
   unit: string;
   qty: number;
+  avatar_url: string;
 };
 
 export type IngredientAdd = {
@@ -95,6 +105,7 @@ export type IngredientAdd = {
   is_vegetarian: boolean;
   is_vegan: boolean;
   qty: number;
+  avatar_url: string;
 };
 
 export type Steps = {
@@ -111,6 +122,16 @@ export type StepsAdd = {
 };
 
 export type RecipeWithDetails = Recipe & {
+  mealkitData: {
+    recipe_id: number;
+    week_number: number;
+    year: number;
+    price: number;
+    available_from: string;
+    available_until: string;
+    max_servings: number;
+    created_at: string;
+  };
   recipeingredients: Ingredient[];
 
   recipesteps: Steps[];

@@ -1,18 +1,15 @@
-import { checkKey } from "./apiClient";
 import { UserType } from "@/types/types";
+import { apiFetch } from "./apiFetch";
 
 export async function getUser(userId: number) {
-  const token = await checkKey();
-
   if (isNaN(userId)) return;
 
-  const res = await fetch(
+  const res = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     },
   );
@@ -27,20 +24,23 @@ export async function getUser(userId: number) {
 }
 
 export async function updateUser(user: UserType) {
-  const token = await checkKey();
+  const res = await apiFetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/users/update`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/update`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      body: JSON.stringify(user),
     },
-
-    body: JSON.stringify(user),
-  });
+  );
 
   if (!res.ok) {
     const msg = await res.json();
     throw new Error(`${res.status}: ${msg}`);
   }
+
+  const data = await res.json();
+  return data;
 }

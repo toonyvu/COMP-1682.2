@@ -20,6 +20,25 @@ export const uploadAvatar = async (file: File) => {
   return urlData.publicUrl;
 };
 
+export const uploadIngredientAvatar = async (file: File) => {
+  const fileExt = file.name.split(".").pop();
+
+  const filePath = `/ingredients/${crypto.randomUUID()}.${fileExt}`;
+
+  const { data, error } = await supabase.storage
+    .from("avatars")
+    .upload(filePath, file);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(filePath);
+  return urlData.publicUrl;
+};
+
 export const uploadRecipeImg = async (file: File) => {
   const fileExt = file.name.split(".").pop();
 

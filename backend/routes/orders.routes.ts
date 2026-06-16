@@ -4,6 +4,7 @@ import {
   getAllOrdersController,
   getOrderController,
   getOrderDetailsController,
+  getOrdersAdminController,
 } from "../controllers/orders.controller.js";
 import { requireRole } from "../middleware/requireRole.js";
 const router = Router();
@@ -13,6 +14,13 @@ router.get(
   authenticateToken,
   requireRole("user"),
   getOrderController,
+);
+
+router.get(
+  "/admin",
+  authenticateToken,
+  requireRole("admin"),
+  getOrdersAdminController,
 );
 
 router.get("/", authenticateToken, getAllOrdersController);

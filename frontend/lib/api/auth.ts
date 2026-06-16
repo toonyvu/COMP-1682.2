@@ -2,6 +2,7 @@ export async function login(email: string, password: string) {
   console.log(process.env.NEXT_PUBLIC_API_URL);
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -20,6 +21,7 @@ export async function signup(
 ) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -29,4 +31,30 @@ export async function signup(
   const data = await res.json();
 
   return { ok: res.ok, data: data };
+}
+
+export async function logout() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  return data;
+}
+
+export async function getMe() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Not authenticated");
+  }
+
+  const data = await res.json();
+
+  return data;
 }

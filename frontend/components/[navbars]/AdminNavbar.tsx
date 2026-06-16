@@ -11,7 +11,7 @@ import { useUserStore } from "@/stores/userStore";
 
 import Link from "next/link";
 import Image from "next/image";
-import icon from "../../public/icon.png";
+
 export default function AdminNavbar() {
   const user = useUserStore((state) => state.user);
   if (!user) return;

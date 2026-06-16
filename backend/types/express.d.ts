@@ -1,9 +1,11 @@
-import { JwtPayload } from "../middleware/authenticateToken.ts";
+import type { JwtPayload } from "../middleware/authenticateToken";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: JwtPayload;
+      authUser?: JwtPayload;
     }
   }
 }
+
+export {};

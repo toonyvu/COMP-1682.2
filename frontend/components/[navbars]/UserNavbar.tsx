@@ -7,14 +7,14 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
-import { useUserStore } from "@/stores/userStore";
-
 import Link from "next/link";
 import Image from "next/image";
 import icon from "../../public/icon.png";
-import profile from "../../public/profile.png";
+import { logout } from "@/lib/api/auth";
+import { useUserStore } from "@/stores/userStore";
 export default function UserNavbar() {
   const user = useUserStore((state) => state.user);
+  const clearUser = useUserStore((state) => state.clearUser);
   if (!user) return;
   return (
     <div className="w-full h-12 sm:h-16 bg-white flex items-center px-2 lg:px-6 sticky top-0 z-100 shadow-lg">
@@ -59,7 +59,15 @@ export default function UserNavbar() {
                 asChild
                 className=" hover:bg-black hover:text-white"
               >
-                <Link href="/signup" className="text-sm sm:text-xl">
+                <Link
+                  href="/login"
+                  className="text-sm sm:text-xl"
+                  onClick={async () => {
+                    clearUser();
+                    const result = await logout();
+                    console.log(result);
+                  }}
+                >
                   Logout
                 </Link>
               </NavigationMenuLink>

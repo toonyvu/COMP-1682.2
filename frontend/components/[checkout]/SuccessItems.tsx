@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { getOrder } from "@/lib/api/stripe";
 import type { Order } from "@/types/types";
 import { convertDateMonth } from "@/utils/dates";
+import { Button } from "../ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
   session_id: string;
@@ -65,6 +67,16 @@ export default function SuccessItems({ session_id }: Props) {
               <h3 className="text-black text-lg font-black w-16">Phone</h3>
               <p className="">{address?.phone}</p>
             </div>
+          </div>
+
+          <div className="mt-4">
+            <Link
+              href={`http://localhost:3000/profile/orders/${order?.order.order.cus_order_id}`}
+            >
+              <Button className="bg-green-600 text-white h-12 rounded-2xl p-2 w-fit hover:bg-green-800">
+                View Order Status
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

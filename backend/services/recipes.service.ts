@@ -1,7 +1,11 @@
 import { pool } from "../database.js";
 import type { RecipeDetails, Ingredient, Step } from "../types/types.js";
 
-export async function getRecipeDetails(id: number, userId: number) {
+export async function getRecipeDetails(
+  id: number,
+  userId: number,
+  mealkitId: number,
+) {
   const recipeResult = await pool.query("SELECT * FROM recipes WHERE id = $1", [
     id,
   ]);
@@ -18,8 +22,12 @@ export async function getRecipeDetails(id: number, userId: number) {
     [id],
   );
 
-  console.log(stepsResult.rows);
-  console.log("Found steps!");
+  const mealkitResult = await pool.query(
+    `
+    SELECT * FROM mealkits
+    WHERE id = $1`,
+    [mealkitId],
+  );
 
   const ingredientsResult = await pool.query(
     `SELECT 
@@ -31,7 +39,8 @@ export async function getRecipeDetails(id: number, userId: number) {
      i.unit_type,
      i.calories_per_100g,
      i.is_vegetarian,
-     i.is_vegan
+     i.is_vegan,
+     i.avatar_url
    FROM recipe_ingredients ri
    INNER JOIN ingredients i 
      ON ri.ingredient_id = i.id
@@ -52,6 +61,7 @@ export async function getRecipeDetails(id: number, userId: number) {
     ...recipeResult.rows[0],
     recipeingredients: ingredientsResult.rows,
     recipesteps: stepsResult.rows,
+    mealkitData: mealkitResult.rows[0],
     isFavorited,
   };
 
@@ -93,7 +103,7 @@ export async function createRecipeService(
     for (const ingredient of ingredients) {
       const existing = await client.query(
         `
-          SELECT id, name, category, unit_type, calories_per_100g, is_vegetarian, is_vegan
+          SELECT id, name, category, unit_type, calories_per_100g, is_vegetarian, is_vegan, avatar_url
           FROM ingredients
           WHERE name = $1
         `,
@@ -119,8 +129,8 @@ export async function createRecipeService(
 
       const ingredientResult = await client.query(
         `
-        INSERT INTO ingredients(name, category, unit_type, calories_per_100g, is_vegetarian, is_vegan)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO ingredients(name, category, unit_type, calories_per_100g, is_vegetarian, is_vegan, avatar_url)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *
         `,
         [
@@ -130,6 +140,7 @@ export async function createRecipeService(
           ingredient.calories_per_100g,
           ingredient.is_vegetarian,
           ingredient.is_vegan,
+          ingredient.avatar_url,
         ],
       );
 

@@ -114,12 +114,6 @@ export default function RecipeStep4({ setFormStep }: Props) {
 
                   <h3 className="text-xl font-bold">{recipe?.servings}</h3>
                 </div>
-
-                <div className="bg-gray-100 rounded-xl p-4">
-                  <p className="text-sm text-gray-500">Price</p>
-
-                  <h3 className="text-xl font-bold">${recipe?.price}</h3>
-                </div>
               </div>
             </div>
           </div>

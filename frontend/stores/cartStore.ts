@@ -4,7 +4,7 @@ import type { Recipe } from "./../types/types";
 
 type cartStore = {
   cartItems: CartItem[];
-  addItem: (item: Recipe) => void;
+  addItem: (item: Recipe, qty?: number) => void;
   removeItem: (item: Recipe) => void;
   setCart: (items: CartItem[]) => void;
 };
@@ -12,7 +12,7 @@ type cartStore = {
 export const useCartStore = create<cartStore>((set) => ({
   cartItems: [],
 
-  addItem: (recipe: Recipe) =>
+  addItem: (recipe: Recipe, qty = 1) =>
     set((state) => {
       const existing = state.cartItems.find(
         (i) => i.mealkit_id === recipe.mealkit_id,
@@ -21,7 +21,7 @@ export const useCartStore = create<cartStore>((set) => ({
       if (existing) {
         return {
           cartItems: state.cartItems.map((i) =>
-            i.mealkit_id === recipe.mealkit_id ? { ...i, qty: i.qty + 1 } : i,
+            i.mealkit_id === recipe.mealkit_id ? { ...i, qty: i.qty + qty } : i,
           ),
         };
       } else {

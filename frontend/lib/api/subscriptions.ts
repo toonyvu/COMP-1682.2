@@ -1,20 +1,16 @@
 import { subscriptionPlans } from "@/constants/constants";
-import { checkKey } from "./apiClient";
+import { apiFetch } from "./apiFetch";
 
 export async function createSubscriptionSession(
   tier: "free" | "premium" | "deluxe",
 ) {
-  const token = await checkKey();
-
   if (tier === "free") return;
 
-  const res = await fetch(
+  const res = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/create-subscription-session`,
     {
-      method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
 
       body: JSON.stringify({ prodId: subscriptionPlans[tier], tier: tier }),

@@ -5,18 +5,22 @@ type Props = {
   params: Promise<{
     recipeId: string;
   }>;
+
+  searchParams: Promise<{ mealkit?: string }>;
 };
 
-export default async function Recipe({ params }: Props) {
+export default async function Recipe({ params, searchParams }: Props) {
   const { recipeId } = await params;
+  const { mealkit } = await searchParams;
 
   console.log(recipeId);
 
   const id = Number(recipeId);
+  const mealkitId = Number(mealkit);
 
   if (isNaN(id)) {
     throw new Error("Invalid recipe ID");
   }
 
-  return <RecipePage id={id} />;
+  return <RecipePage id={id} mealkitId={mealkitId} />;
 }

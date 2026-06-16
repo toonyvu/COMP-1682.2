@@ -20,6 +20,7 @@ export default function AdminSidebar() {
   const [open, setOpen] = useState({
     recipes: false,
     mealkits: false,
+    orders: false,
   });
 
   const setTab = useAdminTabStore((state) => state.setTab);
@@ -122,7 +123,48 @@ export default function AdminSidebar() {
             </CollapsibleContent>
           </div>
         </Collapsible>
-        <h1>1</h1>
+
+        <Collapsible
+          open={open.orders}
+          onOpenChange={(value) => {
+            setOpen((prev) => ({
+              ...prev,
+              orders: value,
+            }));
+          }}
+        >
+          <div className="content-center">
+            <CollapsibleTrigger className="flex items-center gap-2 w-full">
+              <Image
+                src={recipe_icon}
+                height={25}
+                width={25}
+                alt={"Recipe Icon"}
+              ></Image>
+              <h1 className="text-white text-xl font-medium">Orders</h1>
+              <ChevronRight
+                className={`content-center text-white transition-transform duration-200 ${open.orders ? "rotate-90" : ""}`}
+              />
+            </CollapsibleTrigger>
+
+            <CollapsibleContent>
+              <div className="flex flex-col gap-4 mt-4">
+                <Link
+                  href="/admin/dashboard/orders"
+                  className="text-white hover:bg-green-900 h-8 content-center px-2"
+                  onClick={() => {
+                    setTab("ordersTab");
+                  }}
+                >
+                  View Orders
+                </Link>
+                <h1 className="text-white hover:bg-green-900 h-8 content-center px-2">
+                  Edit Mealkits
+                </h1>
+              </div>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
         <h1>1</h1>
         <h1>1</h1>
       </div>

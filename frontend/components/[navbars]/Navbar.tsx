@@ -11,7 +11,10 @@ import Link from "next/link";
 import Image from "next/image";
 import icon from "../../public/icon.png";
 
+import { useUserStore } from "@/stores/userStore";
+
 export default function Navbar() {
+  const clearUser = useUserStore((state) => state.clearUser);
   return (
     <div className="w-full h-16 bg-white flex items-center px-6 sticky top-0 z-100">
       <div className="flex flex-row items-center">
@@ -48,7 +51,7 @@ export default function Navbar() {
                 asChild
                 className=" hover:bg-black hover:text-white"
               >
-                <Link href="/about" className="text-xl">
+                <Link href="/about" className="text-xl" onClick={() => {}}>
                   About
                 </Link>
               </NavigationMenuLink>

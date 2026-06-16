@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { getUserInfo, updateUserInfo } from "../services/users.service.js";
 
 export async function getUser(req: Request, res: Response) {
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.authUser.userId);
 
   try {
     const result = await getUserInfo(Number(userId));
@@ -14,6 +14,7 @@ export async function getUser(req: Request, res: Response) {
 }
 
 export async function updateUser(req: Request, res: Response) {
+  const userId = Number(req.authUser.userId);
   const {
     username,
     first_name,
@@ -22,7 +23,6 @@ export async function updateUser(req: Request, res: Response) {
     bio,
     address,
     phone,
-    id,
     role,
     avatar_url,
     dob,
@@ -30,9 +30,25 @@ export async function updateUser(req: Request, res: Response) {
     tier,
   } = req.body;
 
+  console.log(
+    username,
+    first_name,
+    last_name,
+    email,
+    bio,
+    address,
+    phone,
+    userId,
+    role,
+    avatar_url,
+    dob,
+    created_at,
+    tier,
+  );
+
   try {
     const result = await updateUserInfo({
-      id,
+      id: userId,
       role,
       username,
       tier,

@@ -1,12 +1,11 @@
-import { checkKey } from "./apiClient";
+import { apiFetch } from "./apiFetch";
 
 export async function addFavorite(id: number) {
-  const token = await checkKey();
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -20,12 +19,11 @@ export async function addFavorite(id: number) {
 }
 
 export async function removeFavorite(id: number) {
-  const token = await checkKey();
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`, {
     method: "DELETE",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
   });
 

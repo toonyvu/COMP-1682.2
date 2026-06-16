@@ -19,9 +19,20 @@ export type Ingredient = {
   is_vegetarian: boolean;
   is_vegan: boolean;
   qty: number;
+  avatar_url: string;
 };
 
 export type Step = {
   step_number: number;
   instruction: string;
+};
+
+export type mealkitData = {
+  recipe_id: number;
+  week_number: number;
+  year: number;
+  available_from: string;
+  available_until: string;
+  price: 0;
+  max_servings: number;
 };

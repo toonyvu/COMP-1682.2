@@ -4,6 +4,8 @@ import { useUserStore } from "@/stores/userStore";
 
 import { getOrderDetails } from "@/lib/api/orders";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@base-ui/react";
+
 import Image from "next/image";
 import React from "react";
 
@@ -45,7 +47,13 @@ export default function OrderDetails({ orderId }: Props) {
 
   return (
     <div className="mx-auto w-full p-6">
-      <h1 className="mb-6 text-3xl font-bold">Order #{order.cus_order_id}</h1>
+      <div className="flex flex-row justify-between">
+        <h1 className="mb-6 text-3xl font-bold">Order #{order.cus_order_id}</h1>
+        <div>
+          <Button>Cancel Order</Button>
+        </div>
+      </div>
+
       <div className="flex items-start">
         {steps.map((step, index) => {
           const completed = index <= currentIndex;

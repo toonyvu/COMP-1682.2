@@ -1,14 +1,12 @@
-import { checkKey } from "./apiClient";
+import { apiFetch } from "./apiFetch";
 
 export async function createCheckoutSession() {
-  const token = await checkKey();
-  const res = await fetch(
+  const res = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     },
   );

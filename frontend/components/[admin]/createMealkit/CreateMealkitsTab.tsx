@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { createMealkit } from "@/lib/api/mealkits";
 
 import Image from "next/image";
 
@@ -18,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import type { RecipeAdmin, RecipePaginated } from "@/types/types";
+import type { mealkitData, RecipeAdmin, RecipePaginated } from "@/types/types";
 
 import PaginationComponent from "@/components/PaginationComponent";
 
@@ -58,13 +59,14 @@ export default function CreateMealkitsTab() {
     return valid;
   };
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<mealkitData>({
     week_number: 0,
     year: 0,
     available_from: "",
     available_until: "",
     price: 0,
     recipe_id: 0,
+    max_servings: 0,
   });
   const [price, setPrice] = useState<number>(0);
 
@@ -91,8 +93,6 @@ export default function CreateMealkitsTab() {
   const total = recipes?.total ?? 0;
   const totalPages = Math.floor(total / 5) === 0 ? 1 : Math.ceil(total / 5);
 
-  console.log(recipes);
-
   const [selectedWeek, setSelectedWeek] = useState<{
     week_number: number;
     year: number;
@@ -101,7 +101,6 @@ export default function CreateMealkitsTab() {
     available_until: string;
   } | null>(null);
   const weeks = getWeeks();
-  console.log(weeks);
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold">Create Mealkits</h1>
@@ -262,7 +261,10 @@ export default function CreateMealkitsTab() {
                       available_until: selectedWeek.available_until,
                       price,
                       recipe_id: recipe.id,
+                      max_servings: recipe.servings,
                     });
+
+                    console.log(formData);
                   }}
                 >
                   {selectedRecipe ? "Recipe Selected" : "Add"}
@@ -292,7 +294,6 @@ export default function CreateMealkitsTab() {
             </div>
           ) : (
             <div className="flex flex-col gap-6">
-              {/* Recipe Preview */}
               <div className="overflow-hidden rounded-xl border">
                 <div className="relative h-56 w-full">
                   <Image
@@ -332,7 +333,6 @@ export default function CreateMealkitsTab() {
                 </div>
               </div>
 
-              {/* Meal Kit Details */}
               <div className="rounded-xl border p-5">
                 <h3 className="font-semibold text-lg mb-4">
                   Meal Kit Information
@@ -377,7 +377,6 @@ export default function CreateMealkitsTab() {
                 </div>
               </div>
 
-              {/* Recipe Stats */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="rounded-xl bg-gray-100 p-4 text-center">
                   <p className="text-sm text-gray-500">Difficulty</p>
@@ -398,10 +397,13 @@ export default function CreateMealkitsTab() {
                 </div>
               </div>
 
-              {/* Submit */}
               <Button
                 size="lg"
                 className="w-full bg-green-600 hover:bg-green-700"
+                onClick={async () => {
+                  const res = await createMealkit(formData);
+                  console.log(res);
+                }}
               >
                 Create Meal Kit
               </Button>

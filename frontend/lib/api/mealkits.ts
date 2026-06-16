@@ -1,27 +1,52 @@
-import { checkKey } from "./apiClient";
 import { limit } from "@/constants/constants";
 
-export async function getMealKits(page: number, week: number) {
-  const token = await checkKey();
+import type { mealkitData } from "@/types/types";
+import { apiFetch } from "./apiFetch";
 
+export async function getMealKits(page: number, week: number, search?: string) {
   console.log(process.env.NEXT_PUBLIC_API_URL);
 
-  const result = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/dashboard?page=${page}&limit=${limit}&week=${week}`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    week: week.toString(),
+  });
+
+  if (search?.trim()) {
+    params.append("search", search);
+  }
+
+  const result = await apiFetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/mealkits?${params}`,
+    { method: "GET" },
   );
 
   const data = await result.json();
-  console.log(data);
 
   if (!result.ok) {
     throw new Error(data.message || "Failed to fetch recipes.");
   }
 
+  return data;
+}
+
+export async function createMealkit(formData: mealkitData) {
+  const result = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL}/mealkits`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ mealkitData: formData }),
+  });
+
+  console.log(process.env.NEXT_PUBLIC_API_URL);
+
+  if (!result.ok) {
+    const text = await result.text();
+    console.log(text);
+    throw new Error(`HTTP ${result.status}`);
+  }
+
+  const data = await result.json();
   return data;
 }

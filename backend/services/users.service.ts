@@ -1,7 +1,7 @@
 import { pool } from "../database.js";
 
 type userInformation = {
-  id: string;
+  id: number;
   role: string;
   username: string;
   tier: string | "free" | "premium" | "deluxe";
@@ -17,14 +17,21 @@ type userInformation = {
 };
 
 export async function getUserInfo(id: number) {
-  console.log("User route hit!");
   const userResult = await pool.query(`SELECT * FROM users WHERE id = $1`, [
     id,
   ]);
 
   if (userResult.rows.length === 0) return null;
 
-  return userResult.rows[0];
+  const data = userResult.rows[0];
+
+  return {
+    ...data,
+    avatar_url:
+      data.avatar_url && data.avatar_url.trim() !== ""
+        ? data.avatar_url
+        : process.env.DEFAULT_AVATAR_URL,
+  };
 }
 
 export async function updateUserInfo({

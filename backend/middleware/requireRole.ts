@@ -3,9 +3,12 @@ import type { Request, Response, NextFunction } from "express";
 //Spread operator lets you combine all variables into a single array without explicitly typing it.
 export function requireRole(...allowedRoles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const user = (req as any).user;
+    const user = (req as any).authUser;
+
+    console.log("authUser:asdas", user);
 
     if (!user) {
+      console.log("Yo");
       return res.status(401).json({
         message: "Unauthorized.",
       });
@@ -16,6 +19,8 @@ export function requireRole(...allowedRoles: string[]) {
         message: "Forbidden.",
       });
     }
+
+    console.log("yoyo");
 
     next();
   };

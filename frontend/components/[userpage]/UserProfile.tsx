@@ -32,9 +32,8 @@ export default function UserProfile() {
   const setUser = useUserStore((state) => state.setUser);
 
   const handleSubmit = async () => {
-    await updateUser(formData);
-
-    const userId = user?.id;
+    const updatedData = await updateUser(formData);
+    const userId = updatedData.result.id;
     const result = await getUser(Number(userId));
     if (!result) return;
     setUser(result.user);

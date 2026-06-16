@@ -1,7 +1,11 @@
 import "dotenv/config";
+import cookieParser from "cookie-parser";
 
 import cors from "cors";
 import express from "express";
+import passport from "passport";
+
+import "./auth/strategies/google.strategy.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import mealkitRoutes from "./routes/mealkits.routes.js";
@@ -15,7 +19,16 @@ import userRoutes from "./routes/users.routes.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  }),
+);
+
+app.use(passport.initialize());
+
+app.use(cookieParser());
 
 app.use("/webhook", express.raw({ type: "application/json" }), webhookRoutes);
 
@@ -24,13 +37,16 @@ app.use(express.json());
 const PORT = process.env.PORT || 8080;
 
 app.use("/auth", authRoutes);
-app.use("/dashboard", mealkitRoutes);
+app.use("/mealkits", mealkitRoutes);
 app.use("/recipes", recipeRoutes);
 app.use("/cart", cartRoutes);
 app.use("/create-checkout-session", checkoutRoutes);
 app.use("/create-subscription-session", subscriptionRoutes);
 app.use("/orders", orderRoutes);
 app.use("/users", userRoutes);
+app.get("/test", (req, res) => {
+  res.json({ working: true });
+});
 
 let ready: Promise<void>;
 async function init() {

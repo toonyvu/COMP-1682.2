@@ -13,6 +13,18 @@ export async function getUser(req: Request, res: Response) {
   }
 }
 
+export async function getUserAdminController(req: Request, res: Response) {
+  const { userId } = req.query;
+
+  try {
+    const result = await getUserInfo(Number(userId));
+
+    res.status(200).json({ result });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 export async function updateUser(req: Request, res: Response) {
   const userId = Number(req.authUser.userId);
   const {

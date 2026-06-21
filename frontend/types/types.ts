@@ -237,10 +237,16 @@ export type UserOrder = {
   cus_order_id: string;
   id: number;
   payment_method: string | null;
-  status: string;
+  status: OrderStatus;
   stripe_payment_intent_id: string;
   stripe_session_id: string;
   user_id: number;
+  line_1: string;
+  line_2: string;
+  city: string;
+  country: string;
+  postal_code: number;
+  state: string;
   items: OrderItems[];
 };
 
@@ -249,4 +255,41 @@ export type OrderStatus =
   | "paid"
   | "preparing"
   | "shipped"
-  | "delivered";
+  | "delivered"
+  | "cancelled";
+
+export type Customer = {
+  address: string | null;
+  first_name: string | null;
+  id: number;
+  last_name: string | null;
+  phone: number | null;
+  username: string;
+};
+
+export type OrderItemsAdmin = {
+  mealkit_id: number;
+  price: number;
+  qty: number;
+  recipe: {
+    avatar_url: string;
+    id: number;
+    name: string;
+  };
+};
+
+export type OrderAdmin = {
+  amount_total: number;
+  card_brand: string | null;
+  created_at: string;
+  currency: string;
+  cus_order_id: string;
+  customer: Customer;
+  id: number;
+  payment_method: string;
+  status: string;
+  stripe_payment_intent_id: string;
+  stripe_session_id: string;
+  user_id: number;
+  items: OrderItemsAdmin[];
+};

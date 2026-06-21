@@ -4,6 +4,7 @@ import {
   getAllOrders,
   getOrderDetails,
   getAllOrdersAdmin,
+  updateOrderStatus,
 } from "../services/orders.service.js";
 
 type Params = {
@@ -68,6 +69,36 @@ export async function getOrderDetailsController(req: Request, res: Response) {
   }
 }
 
+export async function getOrderDetailsAdminController(
+  req: Request,
+  res: Response,
+) {
+  const { orderId } = req.params;
+  const { userId } = req.query;
+
+  const parsedUserId = Number(userId);
+  console.log(userId);
+
+  if (!userId) {
+    return res.status(401).json({ message: "No userId!" });
+  }
+
+  if (!userId || !orderId) {
+    return res.status(401).json({ message: "No UserId or orderId." });
+  }
+
+  if (typeof orderId !== "string") {
+    return res.status(400).json({ message: "Invalid order ID" });
+  }
+
+  try {
+    const order = await getOrderDetails(orderId, parsedUserId);
+    return res.status(200).json(order);
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message });
+  }
+}
+
 export async function getOrdersAdminController(req: Request, res: Response) {
   try {
     const searchField = String(req.query.searchField);
@@ -90,6 +121,29 @@ export async function getOrdersAdminController(req: Request, res: Response) {
       limit,
     );
     return res.status(200).json(orders);
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message });
+  }
+}
+
+export async function updateOrderStatusController(req: Request, res: Response) {
+  const { orderId, status } = req.body;
+
+  console.log(orderId, status);
+
+  const parsedOrderId = Number(orderId);
+  const parsedStatus = String(status);
+
+  if (isNaN(parsedOrderId) || !parsedStatus) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request, OrderId or Status not found." });
+  }
+
+  try {
+    await updateOrderStatus(parsedOrderId, parsedStatus);
+
+    return res.sendStatus(204);
   } catch (err: any) {
     return res.status(500).json({ message: err.message });
   }

@@ -8,9 +8,6 @@ export async function getUser(userId: number) {
     `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
     {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
     },
   );
 
@@ -21,6 +18,25 @@ export async function getUser(userId: number) {
 
   const data = await res.json();
   return data;
+}
+
+export async function getUserAdmin(userId: number) {
+  if (isNaN(userId)) return;
+
+  const res = await apiFetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/users/admin/get?userId=${userId}`,
+    {
+      method: "GET",
+    },
+  );
+
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(`${res.status}: ${msg}`);
+  }
+
+  const data = await res.json();
+  return data.result;
 }
 
 export async function updateUser(user: UserType) {

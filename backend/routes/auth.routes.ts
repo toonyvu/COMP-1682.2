@@ -56,7 +56,6 @@ router.post("/logout", (req, res) => {
 router.post("/refresh", refreshToken);
 
 router.get("/me", authenticateToken, async (req, res) => {
-  console.log(req.authUser);
   const userId = (req as any).authUser.userId;
   const user = await getUserInfo(userId);
   res.json({ user });

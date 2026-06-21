@@ -3,8 +3,10 @@ import { authenticateToken } from "../middleware/authenticateToken.js";
 import {
   getAllOrdersController,
   getOrderController,
+  getOrderDetailsAdminController,
   getOrderDetailsController,
   getOrdersAdminController,
+  updateOrderStatusController,
 } from "../controllers/orders.controller.js";
 import { requireRole } from "../middleware/requireRole.js";
 const router = Router();
@@ -23,7 +25,21 @@ router.get(
   getOrdersAdminController,
 );
 
+router.patch(
+  "/admin/updateStatus",
+  authenticateToken,
+  requireRole("admin"),
+  updateOrderStatusController,
+);
+
 router.get("/", authenticateToken, getAllOrdersController);
+
+router.get(
+  "/admin/:orderId",
+  authenticateToken,
+  requireRole("admin"),
+  getOrderDetailsAdminController,
+);
 
 router.get("/:orderId", authenticateToken, getOrderDetailsController);
 

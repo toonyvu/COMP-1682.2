@@ -11,6 +11,7 @@ import React from "react";
 
 import type { UserOrder } from "@/types/types";
 import type { OrderItems } from "@/types/types";
+import { countryNames } from "@/constants/constants";
 
 type Props = {
   orderId: string;
@@ -182,11 +183,6 @@ export default function OrderDetails({ orderId }: Props) {
               <span>Phone Number</span>
               <span>{user?.phone}</span>
             </div>
-
-            <div className="flex justify-between">
-              <span>Address</span>
-              <span className="w-1/2 text-right">{user?.address}</span>
-            </div>
           </div>
           <hr className="mt-4" />
 
@@ -196,6 +192,33 @@ export default function OrderDetails({ orderId }: Props) {
               {(order.amount_total / 100).toFixed(2)}$
             </span>
           </div>
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-lg border p-4">
+        <h2 className="mb-4 text-xl font-semibold">Shipping Information</h2>
+
+        <div className="space-y-2 text-sm">
+          <p>
+            <strong>Address: </strong> {order.line_1}
+          </p>
+
+          <p>
+            <strong>Apt/Suite/Floor: </strong> {order.line_2}
+          </p>
+
+          <p>
+            <strong>City: </strong> {order.city}
+          </p>
+
+          <p>
+            <strong>Province/State: </strong> {order.state}
+          </p>
+
+          <p>
+            <strong>Country: </strong>{" "}
+            {countryNames[order.country as keyof typeof countryNames]}
+          </p>
         </div>
       </div>
 

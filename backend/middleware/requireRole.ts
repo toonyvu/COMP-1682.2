@@ -5,8 +5,6 @@ export function requireRole(...allowedRoles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).authUser;
 
-    console.log("authUser:asdas", user);
-
     if (!user) {
       console.log("Yo");
       return res.status(401).json({
@@ -19,8 +17,6 @@ export function requireRole(...allowedRoles: string[]) {
         message: "Forbidden.",
       });
     }
-
-    console.log("yoyo");
 
     next();
   };

@@ -102,6 +102,29 @@ export async function getAllOrders(userId: number) {
   }
 }
 
+export async function updateOrderStatus(orderId: number, status: string) {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      `
+      UPDATE orders
+      SET status = $1
+      WHERE id = $2
+      `,
+      [status, orderId],
+    );
+
+    await client.query("COMMIT");
+  } catch (err) {
+    console.log(err);
+    await client.query("ROLLBACK");
+  } finally {
+    await client.release();
+  }
+}
+
 export async function getOrderDetails(orderId: string, userId: number) {
   const client = await pool.connect();
 
@@ -170,7 +193,7 @@ export async function getAllOrdersAdmin(
   }
 
   if (search && searchColumn) {
-    if (searchField === "orderId" || searchField === "phone") {
+    if (searchField === "cus_order_id" || searchField === "phone") {
       values.push(search);
 
       whereClause.push(`${searchColumn} = $${values.length}`);
@@ -205,6 +228,15 @@ export async function getAllOrdersAdmin(
         'first_name', u.first_name,
         'last_name', u.last_name
       ) AS customer,
+
+      json_build_object(
+        'line1', o.line_1,
+        'line1', o.line_2,
+        'city', o.city,
+        'state', o.state,
+        'postalCode', o.postal_code,
+        'country', o.country
+      ) AS shipping_details,
 
       COALESCE(
         json_agg(

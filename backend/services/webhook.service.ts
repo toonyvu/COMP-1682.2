@@ -17,6 +17,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
+      const address = session.collected_information?.shipping_details?.address;
 
       if (session.mode === "payment") {
         const userId = session.metadata?.userId;
@@ -30,7 +31,13 @@ export async function handleStripeEvent(event: Stripe.Event) {
         const paymentMethod =
           await stripe.paymentMethods.retrieve(paymentMethodId);
 
-        console.log(paymentMethod);
+        if (!address) throw new Error("Address information not found!");
+        const line_1 = address.line1;
+        const line_2 = address.line2;
+        const city = address.city;
+        const state = address.state;
+        const postal_code = address.postal_code;
+        const country = address.country;
 
         const existing = await pool.query(
           `SELECT id FROM orders WHERE stripe_session_id = $1`,
@@ -72,9 +79,15 @@ export async function handleStripeEvent(event: Stripe.Event) {
             status,
             cus_order_id,
             payment_method,
-            card_brand
+            card_brand,
+            line_1,
+            line_2,
+            city,
+            state,
+            postal_code,
+            country
           )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
           RETURNING id
           `,
             [
@@ -87,6 +100,12 @@ export async function handleStripeEvent(event: Stripe.Event) {
               `ORD-${customerId}`,
               paymentMethod.type,
               paymentMethod.card?.brand ?? null,
+              line_1,
+              line_2,
+              city,
+              state,
+              postal_code,
+              country,
             ],
           );
 

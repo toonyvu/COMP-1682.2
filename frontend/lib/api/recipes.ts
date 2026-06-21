@@ -1,15 +1,17 @@
-import { checkKey } from "./apiClient";
+import type { RecipeAPIType } from "@/types/types";
+import { apiFetch } from "./apiFetch";
+import { limit } from "@/constants/constants";
 
-export async function getRecipe(id: number) {
-  const token = await checkKey();
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+export async function getRecipe(id: number, mealkitId: number) {
+  const res = await apiFetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}?mealkitId=${mealkitId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 
   const data = await res.json();
 
@@ -20,20 +22,43 @@ export async function getRecipe(id: number) {
   return data;
 }
 
-export async function getSteps(id: number) {
-  const token = await checkKey();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`, {
-    method: "GET",
+export async function createRecipe(recipe: RecipeAPIType) {
+  const res = await apiFetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify(recipe),
   });
 
-  const data = await res.json();
   if (!res.ok) {
-    throw new Error("Failed to get steps");
+    const errorText = await res.json();
+    console.error("Create recipe failed:", errorText);
+
+    throw new Error(errorText || "Failed to create recipe!");
   }
+
+  return res.json();
+}
+
+export async function getRecipesAdmin(page: number, search: string) {
+  const res = await apiFetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/recipes/admin?page=${page}&limit=${limit}&search=${search}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const msg = await res.text();
+    console.log(msg);
+    throw new Error(`${res.status}: ${msg}`);
+  }
+
+  const data = await res.json();
 
   return data;
 }

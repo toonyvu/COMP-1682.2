@@ -6,7 +6,7 @@ export async function createNewSubscriptionSession(
   res: Response,
 ) {
   const { prodId, tier } = req.body;
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.authUser.userId);
 
   try {
     const result = await createSubscriptionSession(userId, prodId, tier);

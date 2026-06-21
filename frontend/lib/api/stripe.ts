@@ -1,15 +1,12 @@
-import { checkKey } from "./apiClient";
+import { apiFetch } from "./apiFetch";
 
 export async function getOrder(sessionId: string) {
-  const token = await checkKey();
   console.log(sessionId);
-  const res = await fetch(
+
+  const res = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/orders/session/${sessionId}`,
     {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     },
   );
 

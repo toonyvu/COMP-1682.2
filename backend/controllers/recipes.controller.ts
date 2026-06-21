@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import { getRecipeDetails } from "../services/recipes.service.js";
+import {
+  getRecipeDetails,
+  createRecipeService,
+  getAllRecipesAdmin,
+} from "../services/recipes.service.js";
 import {
   addRecipeFavorite,
   removeRecipeFavorite,
@@ -7,9 +11,10 @@ import {
 
 export async function getRecipes(req: Request, res: Response) {
   console.log(req);
-  const userId = req.user!.userId;
+  const userId = req.authUser.userId;
+  console.log(userId);
   const { id } = req.params;
-
+  const { mealkitId } = req.query;
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
 
@@ -19,7 +24,11 @@ export async function getRecipes(req: Request, res: Response) {
       return res.status(400).json({ message: "Invalid Recipe ID." });
     }
 
-    const result = await getRecipeDetails(Number(id), userId);
+    const result = await getRecipeDetails(
+      Number(id),
+      userId,
+      Number(mealkitId),
+    );
     return res.status(200).json(result);
   } catch (err: any) {
     return res.status(err.status || 500).json({ message: "Server Error." });
@@ -27,7 +36,7 @@ export async function getRecipes(req: Request, res: Response) {
 }
 
 export async function addFavorite(req: Request, res: Response) {
-  const userId = req.user!.userId;
+  const userId = req.authUser.userId;
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
@@ -47,7 +56,7 @@ export async function addFavorite(req: Request, res: Response) {
 }
 
 export async function deleteFavorite(req: Request, res: Response) {
-  const userId = req.user!.userId;
+  const userId = req.authUser.userId;
   const { id } = req.params;
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
@@ -66,5 +75,35 @@ export async function deleteFavorite(req: Request, res: Response) {
     return res
       .status(500)
       .json({ message: "Failed to add recipe to favorites." });
+  }
+}
+
+export async function createRecipeController(req: Request, res: Response) {
+  const { recipe, ingredients, steps } = req.body;
+  console.log(recipe);
+  console.log(ingredients);
+  console.log(steps);
+
+  try {
+    const result = await createRecipeService(recipe, ingredients, steps);
+    return res.status(200).json(result);
+  } catch (err: any) {
+    console.log(err);
+    return res.status(500).json(err.message);
+  }
+}
+
+export async function getRecipesAdminController(req: Request, res: Response) {
+  const limit = Number(req.query.limit) || 20;
+  const page = Number(req.query.page) || 1;
+  const search = String(req.query.search);
+
+  console.log("Controller reached");
+
+  try {
+    const result = await getAllRecipesAdmin(page, limit, search);
+    return res.status(200).json(result);
+  } catch (err: any) {
+    return res.status(500).json(err.message);
   }
 }

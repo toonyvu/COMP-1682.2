@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, DM_Sans } from "next/font/google";
+
+import Providers from "./providers";
+
 import "./globals.css";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -31,7 +34,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ScrollToTop></ScrollToTop>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

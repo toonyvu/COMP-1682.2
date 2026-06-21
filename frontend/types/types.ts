@@ -1,6 +1,6 @@
-type Difficulty = "Easy" | "Medium" | "Hard";
+export type Difficulty = "Easy" | "Medium" | "Hard";
 
-export type Subscriptions = "premium" | "deluxe";
+export type Subscriptions = "free" | "premium" | "deluxe";
 
 export type Recipe = {
   recipe_id: number;
@@ -14,6 +14,59 @@ export type Recipe = {
   cooking_time: number;
   created_at: string;
   price: string;
+};
+
+export type mealkitData = {
+  recipe_id: number;
+  week_number: number;
+  available_from: string;
+  available_until: string;
+  year: number;
+  price: number;
+  max_servings: number;
+};
+
+export type RecipeAdmin = {
+  id: number;
+  mealkit_id: number;
+  name: string;
+  description: string;
+  avatar_url: string;
+  servings: number;
+  difficulty: Difficulty;
+  prep_time: number;
+  cooking_time: number;
+  created_at: string;
+  price: string;
+};
+
+export type RecipePaginated = {
+  total: number;
+  recipes: RecipeAdmin[];
+};
+
+export type RecipeStore = {
+  recipe: RecipeAdd | null;
+  ingredients: IngredientAdd[];
+  steps: StepsAdd[];
+};
+
+export type RecipeAPIType = {
+  recipe: RecipeAdd;
+
+  ingredients: IngredientAdd[];
+
+  steps: StepsAdd[];
+};
+
+export type RecipeAdd = {
+  name: string;
+  description: string;
+  avatar_url: string;
+  servings: number;
+  difficulty: Difficulty;
+  prep_time: number;
+  cooking_time: number;
 };
 
 export type DateInfo = {
@@ -41,6 +94,18 @@ export type Ingredient = {
   is_vegan: boolean;
   unit: string;
   qty: number;
+  avatar_url: string;
+};
+
+export type IngredientAdd = {
+  name: string;
+  category: string;
+  unit_type: string;
+  calories_per_100g: number;
+  is_vegetarian: boolean;
+  is_vegan: boolean;
+  qty: number;
+  avatar_url: string;
 };
 
 export type Steps = {
@@ -51,7 +116,22 @@ export type Steps = {
   created_at: string;
 };
 
+export type StepsAdd = {
+  step_number: number;
+  instruction: string;
+};
+
 export type RecipeWithDetails = Recipe & {
+  mealkitData: {
+    recipe_id: number;
+    week_number: number;
+    year: number;
+    price: number;
+    available_from: string;
+    available_until: string;
+    max_servings: number;
+    created_at: string;
+  };
   recipeingredients: Ingredient[];
 
   recipesteps: Steps[];
@@ -105,6 +185,111 @@ export type Order = {
       stripe_payment_intent_id: string;
       stripe_session_id: string;
       user_id: number;
+      cus_order_id: string;
     };
+
+    paymentBrand: string;
+    paymentType: string;
+    wallet: string | null;
   };
+};
+
+export type UserType = {
+  id: string;
+  role: string;
+  username: string;
+  tier: string | "free" | "premium" | "deluxe";
+  email: string;
+  bio: string;
+  avatar_url: string;
+  dob: string;
+  created_at: string;
+  address: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+};
+
+export type OrderItems = {
+  max_servings: number;
+  mealkit_id: number;
+  price: number;
+  qty: number;
+  week_number: number;
+  year: number;
+  recipe: {
+    avatar_url: string;
+    cooking_time: number;
+    description: number;
+    difficulty: Difficulty;
+    id: number;
+    name: string;
+    prep_time: string;
+    servings: number;
+  };
+};
+
+export type UserOrder = {
+  amount_total: number;
+  card_brand: string;
+  created_at: string;
+  currency: string;
+  cus_order_id: string;
+  id: number;
+  payment_method: string | null;
+  status: OrderStatus;
+  stripe_payment_intent_id: string;
+  stripe_session_id: string;
+  user_id: number;
+  line_1: string;
+  line_2: string;
+  city: string;
+  country: string;
+  postal_code: number;
+  state: string;
+  items: OrderItems[];
+};
+
+export type OrderStatus =
+  | "pending"
+  | "paid"
+  | "preparing"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
+
+export type Customer = {
+  address: string | null;
+  first_name: string | null;
+  id: number;
+  last_name: string | null;
+  phone: number | null;
+  username: string;
+};
+
+export type OrderItemsAdmin = {
+  mealkit_id: number;
+  price: number;
+  qty: number;
+  recipe: {
+    avatar_url: string;
+    id: number;
+    name: string;
+  };
+};
+
+export type OrderAdmin = {
+  amount_total: number;
+  card_brand: string | null;
+  created_at: string;
+  currency: string;
+  cus_order_id: string;
+  customer: Customer;
+  id: number;
+  payment_method: string;
+  status: string;
+  stripe_payment_intent_id: string;
+  stripe_session_id: string;
+  user_id: number;
+  items: OrderItemsAdmin[];
 };

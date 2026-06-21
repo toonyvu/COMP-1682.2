@@ -3,7 +3,7 @@ import * as cartService from "../services/cart.service.js";
 
 export async function addItem(req: Request, res: Response) {
   const { mealkitId } = req.body;
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.authUser.userId);
 
   console.log("Adding item!");
   try {
@@ -18,7 +18,7 @@ export async function addItem(req: Request, res: Response) {
 
 export async function removeItem(req: Request, res: Response) {
   const { mealkitId } = req.body;
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.authUser.userId);
   try {
     await cartService.removeItem(userId, mealkitId);
     const result = await cartService.getFullCart(userId);
@@ -31,7 +31,7 @@ export async function removeItem(req: Request, res: Response) {
 
 export async function alterQty(req: Request, res: Response) {
   const { mealkitId, qty } = req.body;
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.authUser.userId);
 
   try {
     await cartService.updateQty(Number(userId), Number(mealkitId), Number(qty));
@@ -44,7 +44,8 @@ export async function alterQty(req: Request, res: Response) {
 }
 
 export async function getCart(req: Request, res: Response) {
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.authUser.userId);
+  console.log(userId);
 
   try {
     const result = await cartService.getFullCart(userId);
@@ -56,7 +57,7 @@ export async function getCart(req: Request, res: Response) {
 }
 
 export async function clearCart(req: Request, res: Response) {
-  const userId = Number(req.user?.userId);
+  const userId = Number(req.authUser.userId);
 
   try {
     await cartService.clearCart(userId);

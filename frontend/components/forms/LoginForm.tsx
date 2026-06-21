@@ -8,6 +8,7 @@ import Image from "next/image";
 import logo from "../../public/icon.png";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUserStore } from "@/stores/userStore";
 
 import { login } from "@/lib/api/auth";
 
@@ -16,6 +17,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const setUser = useUserStore((state) => state.setUser);
 
   const router = useRouter();
 
@@ -28,10 +31,9 @@ export default function LoginForm() {
       const res = await login(email, password);
 
       if (res.ok) {
-        console.log(res.data);
-        localStorage.setItem("accessToken", res.data.accessToken);
+        setUser(res.data.user);
         if (res.data.role === "admin") {
-          router.push("/admin");
+          router.push("/admin/dashboard");
         } else {
           router.push("/dashboard");
         }
@@ -118,7 +120,14 @@ export default function LoginForm() {
           </div>
 
           <div className="flex flex-col gap-5 w-full">
-            <button type="submit" className="w-full bg-red-500 h-10 rounded-xl">
+            <button
+              type="submit"
+              className="w-full bg-red-500 h-10 rounded-xl"
+              onClick={() => {
+                window.location.href =
+                  "http://localhost:8080/auth/oauth/google";
+              }}
+            >
               Login with Google
             </button>
             <button

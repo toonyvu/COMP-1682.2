@@ -1,6 +1,8 @@
 import * as authService from "../services/auth.service.js";
-
+import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
+
+import type { JwtPayload } from "jsonwebtoken";
 
 //LOGIN FLOW:
 /* 
@@ -20,15 +22,21 @@ export async function login(req: Request, res: Response) {
       req.body.password,
     );
 
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 15 * 60 * 1000,
+    });
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.json({
-      accessToken,
       user,
       role,
     });
@@ -58,4 +66,77 @@ export async function signup(req: Request, res: Response) {
     console.log(err.message);
     return res.status(err.status || 500).json({ error: "Signup failed." });
   }
+}
+
+export async function googleCallback(req: Request, res: Response) {
+  const user = req.user as any;
+
+  const accessToken = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.ACCESS_TOKEN_SECRET!,
+    { expiresIn: "15m" },
+  );
+
+  const refreshToken = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.REFRESH_TOKEN_SECRET!,
+    { expiresIn: "7d" },
+  );
+
+  await authService.storeRefreshToken(user.id, refreshToken);
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    maxAge: 15 * 60 * 1000,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.redirect("http://localhost:3000/oauth/callback");
+}
+
+export function refreshToken(req: Request, res: Response) {
+  console.log("refresh reached");
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({
+      message: "Missing refresh token",
+    });
+  }
+
+  const decoded = jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET!,
+  ) as JwtPayload;
+
+  const accessToken = jwt.sign(
+    {
+      userId: decoded.userId,
+      role: decoded.role,
+    },
+    process.env.ACCESS_TOKEN_SECRET!,
+    {
+      expiresIn: "15m",
+    },
+  );
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    maxAge: 15 * 60 * 1000,
+  });
+  console.log("refreshed");
+
+  return res.json({
+    message: "Refreshed",
+  });
 }

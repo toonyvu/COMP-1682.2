@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 
 export interface JwtPayload {
   userId: number;
+  role: string;
   iat: number;
   exp: number;
 }
@@ -12,16 +13,10 @@ export function authenticateToken(
   res: Response,
   next: NextFunction,
 ) {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return res.status(401).json({ message: "No token provided." });
-  }
-
-  const token = authHeader.split(" ")[1];
+  const token = req.cookies?.accessToken;
 
   if (!token) {
-    return res.status(401).json({ message: "Malformed token." });
+    return res.status(401).json({ message: "Not authenticated." });
   }
 
   try {
@@ -30,10 +25,11 @@ export function authenticateToken(
       process.env.ACCESS_TOKEN_SECRET!,
     ) as JwtPayload;
 
-    (req as any).user = decoded;
+    (req as any).authUser = decoded;
 
+    console.log("Complete");
     next();
   } catch (err) {
-    return res.status(403).json({ message: "Invalid or expired token." });
+    return res.status(401).json({ message: "Invalid or expired token." });
   }
 }

@@ -1,6 +1,11 @@
 import { pool } from "../database.js";
+import type { RecipeDetails, Ingredient, Step } from "../types/types.js";
 
-export async function getRecipeDetails(id: number, userId: number) {
+export async function getRecipeDetails(
+  id: number,
+  userId: number,
+  mealkitId: number,
+) {
   const recipeResult = await pool.query("SELECT * FROM recipes WHERE id = $1", [
     id,
   ]);
@@ -17,8 +22,12 @@ export async function getRecipeDetails(id: number, userId: number) {
     [id],
   );
 
-  console.log(stepsResult.rows);
-  console.log("Found steps!");
+  const mealkitResult = await pool.query(
+    `
+    SELECT * FROM mealkits
+    WHERE id = $1`,
+    [mealkitId],
+  );
 
   const ingredientsResult = await pool.query(
     `SELECT 
@@ -30,7 +39,8 @@ export async function getRecipeDetails(id: number, userId: number) {
      i.unit_type,
      i.calories_per_100g,
      i.is_vegetarian,
-     i.is_vegan
+     i.is_vegan,
+     i.avatar_url
    FROM recipe_ingredients ri
    INNER JOIN ingredients i 
      ON ri.ingredient_id = i.id
@@ -51,8 +61,168 @@ export async function getRecipeDetails(id: number, userId: number) {
     ...recipeResult.rows[0],
     recipeingredients: ingredientsResult.rows,
     recipesteps: stepsResult.rows,
+    mealkitData: mealkitResult.rows[0],
     isFavorited,
   };
 
   return result;
+}
+
+export async function createRecipeService(
+  recipe: RecipeDetails,
+  ingredients: Ingredient[],
+  steps: Step[],
+) {
+  const client = await pool.connect();
+  console.log("Create recipe function hit!");
+
+  try {
+    await client.query("BEGIN");
+
+    const recipeResult = await client.query(
+      `
+      INSERT INTO recipes(name, description, servings, difficulty, prep_time, cooking_time, avatar_url)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING * 
+      `,
+      [
+        recipe.name,
+        recipe.description,
+        recipe.servings,
+        recipe.difficulty,
+        recipe.prep_time,
+        recipe.cooking_time,
+        recipe.avatar_url,
+      ],
+    );
+
+    const createdRecipe = recipeResult.rows[0];
+
+    const recipeId = createdRecipe.id;
+    let ingredientsList = [];
+    for (const ingredient of ingredients) {
+      const existing = await client.query(
+        `
+          SELECT id, name, category, unit_type, calories_per_100g, is_vegetarian, is_vegan, avatar_url
+          FROM ingredients
+          WHERE name = $1
+        `,
+        [ingredient.name],
+      );
+
+      if (existing.rows.length > 0) {
+        const ingredientResult = await client.query(
+          `
+        INSERT INTO recipe_ingredients(recipe_id, ingredient_id, qty, unit)
+        VALUES ($1, $2, $3, $4) RETURNING *
+        `,
+          [recipeId, existing.rows[0].id, ingredient.qty, ingredient.unit_type],
+        );
+
+        ingredientsList.push({
+          ...existing.rows[0],
+          qty: ingredient.qty,
+          unit_type: ingredient.unit_type,
+        });
+        continue;
+      }
+
+      const ingredientResult = await client.query(
+        `
+        INSERT INTO ingredients(name, category, unit_type, calories_per_100g, is_vegetarian, is_vegan, avatar_url)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *
+        `,
+        [
+          ingredient.name,
+          ingredient.category,
+          ingredient.unit_type,
+          ingredient.calories_per_100g,
+          ingredient.is_vegetarian,
+          ingredient.is_vegan,
+          ingredient.avatar_url,
+        ],
+      );
+
+      const createdIngredient = ingredientResult.rows[0];
+      ingredientsList.push({
+        ...createdIngredient,
+        qty: ingredient.qty,
+      });
+
+      await client.query(
+        `
+        INSERT INTO recipe_ingredients(recipe_id, ingredient_id, qty, unit)
+        VALUES ($1, $2, $3, $4)
+        `,
+        [recipeId, createdIngredient.id, ingredient.qty, ingredient.unit_type],
+      );
+    }
+
+    const stepsList = [];
+    for (const step of steps) {
+      const stepResult = await client.query(
+        `
+        INSERT INTO recipe_steps(recipe_id, step_number, instruction)
+        VALUES ($1, $2, $3) RETURNING *`,
+        [recipeId, step.step_number, step.instruction],
+      );
+      const { recipe_id, ...filtered } = stepResult.rows[0];
+
+      stepsList.push(filtered);
+    }
+
+    await client.query("COMMIT");
+
+    return {
+      recipe: createdRecipe,
+      ingredients: ingredientsList,
+      steps: stepsList,
+    };
+  } catch (err: any) {
+    console.log(err);
+    await client.query("ROLLBACK");
+  } finally {
+    client.release();
+  }
+}
+
+export async function getAllRecipesAdmin(
+  page: number,
+  limit: number,
+  search?: string,
+) {
+  const offset = (page - 1) * limit;
+  console.log("Service reached");
+
+  if (!search?.trim()) {
+    const recipeResult = await pool.query(
+      `SELECT * FROM recipes ORDER BY id ASC LIMIT $1 OFFSET $2`,
+      [limit, offset],
+    );
+
+    const countResult = await pool.query(
+      `SELECT COUNT(*) as count FROM recipes`,
+    );
+
+    return {
+      recipes: recipeResult.rows,
+      total: countResult.rows[0].count,
+    };
+  }
+
+  const recipeResult = await pool.query(
+    `SELECT * FROM recipes WHERE name ILIKE $1 ORDER BY id ASC LIMIT $2 OFFSET $3`,
+    [`%${search}%`, limit, offset],
+  );
+
+  const countResult = await pool.query(
+    `SELECT COUNT(*) as count FROM recipes WHERE name ILIKE $1`,
+    [`%${search}%`],
+  );
+
+  return {
+    recipes: recipeResult.rows,
+    total: countResult.rows[0].count,
+  };
 }

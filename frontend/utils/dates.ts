@@ -55,3 +55,50 @@ export function getWeekRange(date: Date) {
   return { start, end, range };
 }
 
+export function convertDateMonth(dateString?: string) {
+  if (!dateString) return;
+
+  const date = new Date(dateString);
+  const day = date.getUTCDate();
+  const year = date.getUTCFullYear();
+  const month = date.toLocaleString("en-GB", {
+    month: "long",
+    timeZone: "UTC",
+  });
+
+  function getOrdinal(n: number) {
+    if (n > 3 && n < 21) return "th";
+    switch (n % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+
+      default:
+        return "th";
+    }
+  }
+
+  const formatted: string = `${day}${getOrdinal(day)} ${month}, ${year}`;
+
+  return formatted;
+}
+
+export function TimestampToDate(timestamp: string) {
+  const date = new Date(timestamp);
+
+  const datePart = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+
+  return `${timePart}, ${datePart}`;
+}

@@ -16,7 +16,7 @@ import { useUserStore } from "@/stores/userStore";
 export default function Navbar() {
   const clearUser = useUserStore((state) => state.clearUser);
   return (
-    <div className="w-full h-16 bg-white flex items-center px-6 sticky top-0 z-100">
+    <div className="w-full h-16 bg-white flex items-center px-6 sticky top-0 z-100 shadow-md">
       <div className="flex flex-row items-center">
         <Image src={icon} width={50} height={50} alt={"Company Logo"}></Image>
         <h1 className="text-xl font-bold text-green-600">GoodRecipes</h1>

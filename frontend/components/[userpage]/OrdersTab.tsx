@@ -250,7 +250,9 @@ export default function OrdersTab() {
                   key={item.mealkit_id}
                   className="flex gap-4 p-4"
                   onClick={() => {
-                    router.push(`/recipes/${item.recipe.id}`);
+                    router.push(
+                      `/recipes/${item.recipe.id}?mealkit=${item.mealkit_id}`,
+                    );
                   }}
                 >
                   <Image

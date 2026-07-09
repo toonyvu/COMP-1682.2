@@ -8,6 +8,15 @@ import { useEffect, useState } from "react";
 import PaginationComponent from "@/components/PaginationComponent";
 import { showToast } from "nextjs-toast-notify";
 import { Input } from "../ui/input";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Card, CardContent } from "@/components/ui/card";
+import { ChevronRight } from "lucide-react";
 
 import { getMealKits } from "@/lib/api/mealkits";
 
@@ -20,7 +29,6 @@ import CartSheet from "./CartSheet";
 import { Button } from "@/components/ui/button";
 
 import { useCartStore } from "@/stores/cartStore";
-import { useUserStore } from "@/stores/userStore";
 
 import { useQuery } from "@tanstack/react-query";
 
@@ -101,21 +109,19 @@ export default function MealkitList({ week }: Props) {
   if (total === 0) {
     return (
       <div className="w-full place-self-center mt-8 gap-8">
-        <div className="flex flex-row gap-8">
-          <Input
-            className="w-1/2 ml-85 h-10 ring-1 ring-gray-300"
-            placeholder="Search..."
-            value={search}
-            onChange={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              setSearch(e.target.value);
-            }}
-          ></Input>
+        <div className="w-full flex justify-center">
+          <div className="flex gap-2">
+            <Input
+              className="h-10 w-80 ring-1 ring-gray-300"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
 
-          <Button className="h-10 bg-green-600 hover:bg-green-800">
-            Search
-          </Button>
+            <Button className="h-10 bg-green-600 hover:bg-green-800">
+              Search
+            </Button>
+          </div>
         </div>
 
         <h1 className="place-self-center my-20 text-lg text-gray-600">
@@ -130,20 +136,137 @@ export default function MealkitList({ week }: Props) {
   }
   return (
     <>
-      <div className="w-full place-self-center flex flex-row mt-8 gap-8">
-        <Input
-          className="w-1/2 ml-85 h-10 ring-1 ring-gray-300"
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            setSearch(e.target.value);
-          }}
-        ></Input>
-        <Button className="h-10 bg-green-600 hover:bg-green-800">Search</Button>
+      <div className="w-full flex justify-center mt-8">
+        <div className="flex gap-2 mx-auto">
+          <Input
+            className="h-10 ring-1 ring-gray-300 w-300"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <Button className="h-10 bg-green-600 hover:bg-green-800">
+            Search
+          </Button>
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+
+      <div className="w-1/2 place-self-center mt-4">
+        <Card>
+          <CardContent>
+            <Collapsible>
+              <CollapsibleTrigger className="w-full">
+                <div className="font-semibold text-xl flex flex-row w-full justify-between">
+                  <h3 className="text-2xl">Tag Filters</h3>
+                  <ChevronRight></ChevronRight>
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                      Cooking Time
+                    </h3>
+                    <div className="flex flex-row gap-4">
+                      <ToggleGroup variant="outline" type="multiple">
+                        <ToggleGroupItem value="15 minutes or less">
+                          15 Minutes or Less
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="30 minutes or less">
+                          30 Minutes or Less
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Weekend Project">
+                          Weekend Project
+                        </ToggleGroupItem>
+                      </ToggleGroup>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                      Recipe Type
+                    </h3>
+                    <div className="flex flex-row gap-4">
+                      <ToggleGroup variant="outline" type="multiple">
+                        <ToggleGroupItem value="Vegetarian">
+                          Vegetarian
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Vegan">Vegan</ToggleGroupItem>
+                        <ToggleGroupItem value="Pescatarian">
+                          Pescatarian
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Gluten Free">
+                          Gluten Free
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Dairy Free">
+                          Dairy Free
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Halal">Halal</ToggleGroupItem>
+                        <ToggleGroupItem value="Low Carb">
+                          Low Carb
+                        </ToggleGroupItem>
+                      </ToggleGroup>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                      Cuisine
+                    </h3>
+                    <div className="flex flex-row gap-4">
+                      <ToggleGroup variant="outline" type="multiple">
+                        <ToggleGroupItem value="Italian">
+                          Italian
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Japanese">
+                          Japanese
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Korean">Korean</ToggleGroupItem>
+                        <ToggleGroupItem value="Chinese">
+                          Chinese
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Vietnamese">
+                          Vietnamese
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Thai">Thai</ToggleGroupItem>
+                        <ToggleGroupItem value="Indian">Indian</ToggleGroupItem>
+                        <ToggleGroupItem value="IndianMexican">
+                          Mexican
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="French">French</ToggleGroupItem>
+                      </ToggleGroup>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                      Flavor
+                    </h3>
+                    <div className="flex flex-row gap-4">
+                      <ToggleGroup variant="outline" type="multiple">
+                        <ToggleGroupItem value="Spicy">Spicy</ToggleGroupItem>
+                        <ToggleGroupItem value="Mild">Mild</ToggleGroupItem>
+                        <ToggleGroupItem value="Sweet">Sweet</ToggleGroupItem>
+                        <ToggleGroupItem value="Savoury">
+                          Savoury
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="Tangy">Tangy</ToggleGroupItem>
+                        <ToggleGroupItem value="Smoky">Smoky</ToggleGroupItem>
+                        <ToggleGroupItem value="Creamy">Creamy</ToggleGroupItem>
+                        <ToggleGroupItem value="Herby">Herby</ToggleGroupItem>
+                        <ToggleGroupItem value="Garlicky">
+                          Garlicky
+                        </ToggleGroupItem>
+                      </ToggleGroup>
+                    </div>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto sm:px-6 mt-8">
         {mealkits.mealkits.map((recipe) => (
           <Link
             key={recipe.recipe_id}
@@ -175,6 +298,16 @@ export default function MealkitList({ week }: Props) {
                 <p className="text-sm text-gray-500 line-clamp-2">
                   {recipe.description}
                 </p>
+
+                <h3 className="text-md font-semibold">
+                  Tags:{" "}
+                  {recipe.tags.map((tag, index) => (
+                    <span key={tag} className="text-sm text-gray-500">
+                      {index > 0 && ", "}
+                      {tag}
+                    </span>
+                  ))}
+                </h3>
 
                 <div className="text-sm font-semibold text-gray-800 mt-auto">
                   <p>Servings: {recipe.servings}</p>

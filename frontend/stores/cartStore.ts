@@ -25,7 +25,7 @@ export const useCartStore = create<cartStore>((set) => ({
           ),
         };
       } else {
-        const item = { ...recipe, qty: 1 };
+        const item = { ...recipe, qty };
         return {
           cartItems: [...state.cartItems, item],
         };

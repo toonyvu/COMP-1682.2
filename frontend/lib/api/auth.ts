@@ -58,3 +58,19 @@ export async function getMe() {
 
   return data;
 }
+
+export async function forgotPassword(email: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`,
+    {
+      method: "POST",
+      credentials: "include", // optional here
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    },
+  );
+
+  return res.json();
+}

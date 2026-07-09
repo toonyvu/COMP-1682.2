@@ -14,6 +14,7 @@ export type Recipe = {
   cooking_time: number;
   created_at: string;
   price: string;
+  tags: string[];
 };
 
 export type mealkitData = {
@@ -292,4 +293,10 @@ export type OrderAdmin = {
   stripe_session_id: string;
   user_id: number;
   items: OrderItemsAdmin[];
+  line_1: string | null;
+  line_2: string | null;
+  city: string | null;
+  country: string | null;
+  postal_code: number | null;
+  state: string | null;
 };

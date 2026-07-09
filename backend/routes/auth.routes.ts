@@ -2,8 +2,10 @@ import { Router } from "express";
 import {
   login,
   signup,
-  googleCallback,
+  Callback,
   refreshToken,
+  forgotPassword,
+  logout,
 } from "../controllers/auth.controller.js";
 import { authenticateToken } from "../middleware/authenticateToken.js";
 import passport from "passport";
@@ -23,13 +25,24 @@ router.get(
   }),
 );
 
+router.get("/oauth/facebook", passport.authenticate("facebook"));
+
+router.get(
+  "/oauth/facebook/callback",
+  passport.authenticate("facebook", {
+    session: false,
+    failureRedirect: "http://localhost:3000/login",
+  }),
+  Callback,
+);
+
 router.get(
   "/oauth/google/callback",
   passport.authenticate("google", {
     session: false,
     failureRedirect: "http://localhost:3000/login",
   }),
-  googleCallback,
+  Callback,
 );
 
 router.post("/signup", (req, res) => {
@@ -37,7 +50,11 @@ router.post("/signup", (req, res) => {
   signup(req, res);
 });
 
-router.post("/logout", (req, res) => {
+router.post("/forgot-password", (req, res) => {
+  forgotPassword(req, res);
+});
+
+router.post("/logout", logout, (req, res) => {
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: true,

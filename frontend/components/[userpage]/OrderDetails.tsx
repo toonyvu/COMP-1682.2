@@ -49,7 +49,7 @@ export default function OrderDetails({ orderId }: Props) {
   return (
     <div className="mx-auto w-full p-6">
       <div className="flex flex-row justify-between">
-        <h1 className="mb-6 text-3xl font-bold">Order #{order.cus_order_id}</h1>
+        <h1 className="mb-6 text-4xl font-bold">Order #{order.cus_order_id}</h1>
         <div>
           <Button>Cancel Order</Button>
         </div>
@@ -70,7 +70,7 @@ export default function OrderDetails({ orderId }: Props) {
                   }`}
                 />
 
-                <span className="mt-2 text-sm font-bold capitalize">
+                <span className="mt-2 text-md font-bold capitalize">
                   {step}
                 </span>
               </div>
@@ -90,33 +90,33 @@ export default function OrderDetails({ orderId }: Props) {
       </div>
 
       <div className="w-full bg-white border rounded-lg p-2 mt-4">
-        <h2 className="font-semibold text-xl my-2 ml-4">Basic Details</h2>
+        <h2 className="font-semibold text-2xl my-2 ml-4">Basic Details</h2>
         <hr />
         <div className="flex flex-row justify-between p-4">
           <div>
-            <h3 className="text-md font-semibold text-gray-600">Order ID</h3>
-            <span className="font-bold text-lg">{order.cus_order_id}</span>
+            <h3 className="text-lg font-semibold text-gray-600">Order ID</h3>
+            <span className="font-bold text-xl">{order.cus_order_id}</span>
           </div>
 
           <div>
-            <h3 className="text-md font-semibold text-gray-600">Order Date</h3>
-            <span className="font-bold text-lg">
+            <h3 className="text-lg font-semibold text-gray-600">Order Date</h3>
+            <span className="font-bold text-xl">
               {new Date(order.created_at).toLocaleString()}
             </span>
           </div>
 
           <div>
-            <h3 className="text-md font-semibold text-gray-600">
+            <h3 className="text-lg font-semibold text-gray-600">
               Payment Method
             </h3>
-            <span className="font-bold text-lg capitalize">
+            <span className="font-bold text-xl capitalize">
               {order.payment_method}
             </span>
           </div>
 
           <div>
-            <h3 className="text-md font-semibold text-gray-600">Card Brand</h3>
-            <span className="font-bold text-lg capitalize">
+            <h3 className="text-lg font-semibold text-gray-600">Card Brand</h3>
+            <span className="font-bold text-xl capitalize">
               {order.card_brand ?? "-"}
             </span>
           </div>
@@ -126,7 +126,7 @@ export default function OrderDetails({ orderId }: Props) {
       <div className="grid gap-6 md:grid-cols-3 mt-4">
         {/* Order Summary */}
         <div className="rounded-lg border p-4 md:col-span-2">
-          <h2 className="mb-4 text-xl font-semibold">Items Purchased</h2>
+          <h2 className="mb-4 text-2xl font-semibold">Items Purchased</h2>
 
           <div className="space-y-4">
             {order.items.map((item: OrderItems) => (
@@ -143,16 +143,16 @@ export default function OrderDetails({ orderId }: Props) {
                 />
 
                 <div className="flex-1">
-                  <h3 className="font-medium">{item.recipe.name}</h3>
+                  <h3 className="font-medium text-lg">{item.recipe.name}</h3>
 
-                  <p className="text-sm text-gray-500">Quantity: {item.qty}</p>
+                  <p className="text-md text-gray-500">Quantity: {item.qty}</p>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-md text-gray-500">
                     ${item.price.toFixed(2)} each
                   </p>
                 </div>
 
-                <div className="font-semibold">
+                <div className="font-semibold text-xl">
                   ${(item.qty * item.price).toFixed(2)}
                 </div>
               </div>
@@ -162,8 +162,8 @@ export default function OrderDetails({ orderId }: Props) {
 
         {/* User Info, Order Totals */}
         <div className="rounded-lg border p-4">
-          <h2 className="mb-4 text-xl font-semibold">Customer Information</h2>
-          <div className="space-y-4 text-sm">
+          <h2 className="mb-4 text-2xl font-semibold">Customer Information</h2>
+          <div className="space-y-4 text-md">
             <div className="flex justify-between">
               <span>First Name</span>
               <span className="font-medium capitalize">{user?.first_name}</span>
@@ -187,8 +187,8 @@ export default function OrderDetails({ orderId }: Props) {
           <hr className="mt-4" />
 
           <div className="mt-4 flex flex-row justify-between">
-            <h2 className="mb-4 text-xl font-semibold">Order Total: </h2>
-            <span className="font-bold text-xl">
+            <h2 className="mb-4 text-2xl font-semibold">Order Total: </h2>
+            <span className="font-bold text-2xl">
               {(order.amount_total / 100).toFixed(2)}$
             </span>
           </div>
@@ -196,9 +196,9 @@ export default function OrderDetails({ orderId }: Props) {
       </div>
 
       <div className="mt-6 rounded-lg border p-4">
-        <h2 className="mb-4 text-xl font-semibold">Shipping Information</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Shipping Information</h2>
 
-        <div className="space-y-2 text-sm">
+        <div className="space-y-2 text-md">
           <p>
             <strong>Address: </strong> {order.line_1}
           </p>
@@ -224,9 +224,9 @@ export default function OrderDetails({ orderId }: Props) {
 
       {/* Additional Details */}
       <div className="mt-6 rounded-lg border p-4">
-        <h2 className="mb-4 text-xl font-semibold">Order Information</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Order Information</h2>
 
-        <div className="space-y-2 text-sm">
+        <div className="space-y-2 text-md">
           <p>
             <strong>Order ID:</strong> {order.cus_order_id}
           </p>

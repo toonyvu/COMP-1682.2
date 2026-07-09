@@ -35,13 +35,16 @@
   "dependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/passport-facebook": "^3.0.4",
     "@types/pg": "^8.20.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "passport": "^0.7.0",
+    "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.20.0",
+    "resend": "^6.16.0",
     "stripe": "^22.1.0"
   }
 }

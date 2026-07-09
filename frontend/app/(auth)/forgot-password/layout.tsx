@@ -1,6 +1,6 @@
 import Navbar from "@/components/[navbars]/Navbar";
 
-export default function LoginLayout({
+export default function ForgotPasswordLayout({
   children,
 }: {
   children: React.ReactNode;

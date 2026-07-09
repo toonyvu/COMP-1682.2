@@ -6,6 +6,7 @@ import express from "express";
 import passport from "passport";
 
 import "./auth/strategies/google.strategy.js";
+import "./auth/strategies/facebook.strategy.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import mealkitRoutes from "./routes/mealkits.routes.js";

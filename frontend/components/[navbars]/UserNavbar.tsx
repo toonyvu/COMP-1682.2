@@ -60,7 +60,7 @@ export default function UserNavbar() {
                 className=" hover:bg-black hover:text-white"
               >
                 <Link
-                  href="/login"
+                  href="/"
                   className="text-sm sm:text-xl"
                   onClick={async () => {
                     clearUser();

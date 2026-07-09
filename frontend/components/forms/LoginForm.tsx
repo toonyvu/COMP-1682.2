@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 import Link from "next/link";
 
-import Image from "next/image";
-import logo from "../../public/icon.png";
+import ScrollItems from "../ScrollItems";
+
+import { MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useUserStore } from "@/stores/userStore";
+import { Button } from "../ui/button";
 
 import { login } from "@/lib/api/auth";
 
@@ -52,16 +54,20 @@ export default function LoginForm() {
     <div className="min-h-screen flex">
       <div className="w-1/2 flex items-center">
         <Card className="w-full h-full flex flex-col p-20">
-          <Image
-            src={logo}
-            width={150}
-            height={150}
-            alt="App Icon"
-            className="mt-5"
-          />
+          <div className="flex flex-row items-center">
+            <MoveLeft />
+            <Button
+              className="w-24 bg-white text-black text-lg hover:bg-gray-100"
+              onClick={() => {
+                router.push("/");
+              }}
+            >
+              Go Back
+            </Button>
+          </div>
           <CardHeader className="space-y-1 mt-5">
-            <CardTitle className="text-2xl">Login to your account</CardTitle>
-            <p>
+            <CardTitle className="text-3xl">Login to your account</CardTitle>
+            <p className="text-lg">
               {"Don't have an account?"}{" "}
               <Link
                 href="/signup"
@@ -75,7 +81,9 @@ export default function LoginForm() {
           <CardContent className=" flex flex-col mt-3">
             <form className="space-y-6" onSubmit={handleLogin}>
               <div className="flex flex-col gap-3">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email" className="text-lg">
+                  Email
+                </label>
                 <input
                   id="email"
                   type="email"
@@ -89,8 +97,13 @@ export default function LoginForm() {
 
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="password">Password</label>
-                  <a href="#" className="text-sm underline">
+                  <label htmlFor="password" className="text-lg">
+                    Password
+                  </label>
+                  <a
+                    href="/forgot-password"
+                    className="text-md underline hover:text-blue-600"
+                  >
                     Forgot password?
                   </a>
                 </div>
@@ -104,13 +117,13 @@ export default function LoginForm() {
                 />
               </div>
               {error && <p className="text-red-500">{error}</p>}
-              <button
+              <Button
                 type="submit"
-                className="w-full bg-green-500 h-10 rounded-xl mt-3 transition duration-100 hover:bg-green-700 hover:text-white"
+                className="w-full bg-green-500 h-10 rounded-xl mt-3 transition duration-100 hover:bg-green-700 hover:text-white text-lg"
                 disabled={loading}
               >
                 {loading ? "Logging in..." : "Login"}
-              </button>
+              </Button>
             </form>
           </CardContent>
           <div className="flex items-center gap-4">
@@ -120,27 +133,39 @@ export default function LoginForm() {
           </div>
 
           <div className="flex flex-col gap-5 w-full">
-            <button
-              type="submit"
-              className="w-full bg-red-500 h-10 rounded-xl"
+            <Button
+              type="button"
+              className="w-full bg-red-500 h-10 rounded-xl hover:bg-red-800 text-lg"
+              disabled={loading}
               onClick={() => {
                 window.location.href =
                   "http://localhost:8080/auth/oauth/google";
               }}
             >
-              Login with Google
-            </button>
-            <button
+              {loading ? "Logging in..." : "Login with Google"}
+            </Button>
+            <Button
               type="button"
-              className="w-full bg-blue-500 h-10 rounded-xl"
+              className="w-full bg-blue-500 hover:bg-blue-800 h-10 rounded-xl text-lg"
+              onClick={() => {
+                window.location.href =
+                  "http://localhost:8080/auth/oauth/facebook";
+              }}
             >
               Login with Facebook
-            </button>
+            </Button>
           </div>
         </Card>
       </div>
 
-      <div className="w-1/2 hidden md:block bg-linear-to-b from-green-700 to-green-900" />
+      <div className="w-1/2 hidden md:block bg-linear-to-b from-green-700 to-green-900 px-8">
+        <ScrollItems />
+        <ScrollItems reverse />
+        <ScrollItems />
+        <ScrollItems reverse />
+        <ScrollItems />
+        <ScrollItems reverse />
+      </div>
     </div>
   );
 }

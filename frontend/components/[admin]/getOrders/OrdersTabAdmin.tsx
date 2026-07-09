@@ -8,6 +8,8 @@ import type { OrderAdmin, OrderItemsAdmin } from "@/types/types";
 
 import { useRouter } from "next/navigation";
 
+import { countryNames } from "@/constants/constants";
+
 import {
   Select,
   SelectContent,
@@ -63,11 +65,13 @@ export default function OrdersTabAdmin() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  console.log(orders);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <h1 className="text-bold font-bold text-3xl pt-10 ml-10">Orders</h1>
-      <div className="flex flex-row">
-        <div className="mx-auto w-1/2 space-y-6 px-4 py-8">
+      <div className="flex flex-col">
+        <div className="mx-auto w-2/3 space-y-6 px-4 py-8">
           <div className="rounded-xl border bg-white p-6 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row">
               {/* Search Field */}
@@ -235,8 +239,20 @@ export default function OrdersTabAdmin() {
 
                       {order.customer.phone && <p>{order.customer.phone}</p>}
 
-                      {order.customer.address && (
-                        <p>{order.customer.address}</p>
+                      {order.line_1 && <p>{order.line_1}</p>}
+
+                      {order.line_2 && <p>{order.line_2}</p>}
+
+                      {order.city && <p>{order.city}</p>}
+
+                      {order.country && (
+                        <p>
+                          {
+                            countryNames[
+                              order.country as keyof typeof countryNames
+                            ]
+                          }
+                        </p>
                       )}
                     </div>
                   </div>

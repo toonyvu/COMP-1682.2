@@ -6,13 +6,15 @@ export type Props = {
 };
 
 import { showToast } from "nextjs-toast-notify";
-import type { Order, UserOrder } from "@/types/types";
+import type { UserOrder } from "@/types/types";
+import loading from "@/public/loading.svg";
 import type { OrderItems } from "@/types/types";
 import type { OrderStatus } from "@/types/types";
+import { countryNames } from "@/constants/constants";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { getOrderDetailsAdmin } from "@/lib/api/orders";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -74,6 +76,23 @@ export default function OrderDetailsAdmin({ orderId, userId }: Props) {
 
   if (!order) {
     return <div>Order not found.</div>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex flex-col justify-center items-center">
+        <div className="flex flex-row gap-4">
+          <Image
+            src={loading}
+            height={80}
+            width={80}
+            alt={"Loading"}
+            className="animate-spin"
+          ></Image>
+        </div>
+        <h1 className="mt-5">Fetching Recipes...</h1>
+      </div>
+    );
   }
 
   const currentStatus = status ?? order.status;
@@ -142,7 +161,16 @@ export default function OrderDetailsAdmin({ orderId, userId }: Props) {
               <p>Username: {user?.username}</p>
               <p>First Name: {user?.first_name ?? "N/A"}</p>
               <p>Last Name: {user?.last_name ?? "N/A"}</p>
-              <p>Address: {user?.address ?? "N/A"}</p>
+              <p>Address: {order.line_1 ?? "N/A"}</p>
+              <p>Apt/Suite/Floor: {order.line_2 ?? "N/A"}</p>
+              <p>City: {order.city ?? "N/A"}</p>
+              <p>State: {order.state ?? "N/A"}</p>
+              <p>
+                Country:{" "}
+                {countryNames[order.country as keyof typeof countryNames] ??
+                  "N/A"}
+              </p>
+              <p>Postal Code: {order.postal_code ?? "N/A"}</p>
               <p>Email: {user?.email ?? "N/A"}</p>
               <p>Phone: {user?.phone ?? "N/A"}</p>
             </div>

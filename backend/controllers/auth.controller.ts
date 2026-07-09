@@ -64,11 +64,24 @@ export async function signup(req: Request, res: Response) {
     return res.status(201).json(user);
   } catch (err: any) {
     console.log(err.message);
-    return res.status(err.status || 500).json({ error: "Signup failed." });
+    return res.status(err.status || 500).json({ error: err.message });
   }
 }
 
-export async function googleCallback(req: Request, res: Response) {
+export async function logout(req: Request, res: Response) {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (refreshToken) {
+    await authService.deleteRefreshToken(refreshToken);
+  }
+
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+
+  res.status(200).json({ message: "Logged out successfully." });
+}
+
+export async function Callback(req: Request, res: Response) {
   const user = req.user as any;
 
   const accessToken = jwt.sign(
@@ -102,7 +115,7 @@ export async function googleCallback(req: Request, res: Response) {
   res.redirect("http://localhost:3000/oauth/callback");
 }
 
-export function refreshToken(req: Request, res: Response) {
+export async function refreshToken(req: Request, res: Response) {
   console.log("refresh reached");
   const refreshToken = req.cookies.refreshToken;
 
@@ -112,31 +125,68 @@ export function refreshToken(req: Request, res: Response) {
     });
   }
 
-  const decoded = jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_SECRET!,
-  ) as JwtPayload;
+  try {
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET!,
+    ) as JwtPayload;
 
-  const accessToken = jwt.sign(
-    {
-      userId: decoded.userId,
-      role: decoded.role,
-    },
-    process.env.ACCESS_TOKEN_SECRET!,
-    {
-      expiresIn: "15m",
-    },
-  );
+    const getTokenResult = await authService.getRefreshToken(refreshToken);
 
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 15 * 60 * 1000,
-  });
-  console.log("refreshed");
+    if (!getTokenResult) {
+      return res.status(401).json({
+        message: "Invalid refresh token.",
+      });
+    }
 
-  return res.json({
-    message: "Refreshed",
-  });
+    const accessToken = jwt.sign(
+      {
+        userId: decoded.userId,
+        role: decoded.role,
+      },
+      process.env.ACCESS_TOKEN_SECRET!,
+      {
+        expiresIn: "15m",
+      },
+    );
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 15 * 60 * 1000,
+    });
+    console.log("refreshed");
+
+    return res.json({
+      message: "Refreshed",
+    });
+  } catch {
+    return res.status(401).json({
+      message: "Invalid or expired refresh token.",
+    });
+  }
+}
+
+export async function forgotPassword(req: Request, res: Response) {
+  const email = req.body.email;
+  console.log(email);
+
+  if (!email) {
+    return res.status(401).json({ message: "Email is required." });
+  }
+
+  try {
+    await authService.forgotPassword(email);
+
+    return res.status(200).json({
+      message:
+        "If an account exists for that email address, we've sent a password reset link.",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Internal server error.",
+    });
+  }
 }

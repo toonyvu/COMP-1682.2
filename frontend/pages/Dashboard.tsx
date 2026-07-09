@@ -26,7 +26,7 @@ export default function Dashboard() {
           Welcome, {user?.username}!
         </h1>
         <h2 className="text-2xl font-semibold mt-2 place-self-center">
-          See what&apos;s available on the menu
+          Select a recipe you want to cook.
         </h2>
       </div>
 

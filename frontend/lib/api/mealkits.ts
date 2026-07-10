@@ -1,9 +1,14 @@
 import { limit } from "@/constants/constants";
 
-import type { mealkitData } from "@/types/types";
+import type { mealkitData, TagFilters } from "@/types/types";
 import { apiFetch } from "./apiFetch";
 
-export async function getMealKits(page: number, week: number, search?: string) {
+export async function getMealKits(
+  page: number,
+  week: number,
+  filters: TagFilters,
+  search?: string,
+) {
   console.log(process.env.NEXT_PUBLIC_API_URL);
 
   const params = new URLSearchParams({
@@ -12,13 +17,26 @@ export async function getMealKits(page: number, week: number, search?: string) {
     week: week.toString(),
   });
 
+  const ids = [
+    ...filters.cookingTimes,
+    ...filters.cuisines,
+    ...filters.flavors,
+    ...filters.recipeTypes,
+  ].map(Number);
+
+  ids.forEach((id) => {
+    params.append("ids", id.toString());
+  });
+
   if (search?.trim()) {
     params.append("search", search);
   }
 
   const result = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/mealkits?${params}`,
-    { method: "GET" },
+    {
+      method: "GET",
+    },
   );
 
   const data = await result.json();

@@ -17,6 +17,13 @@ export type Recipe = {
   tags: string[];
 };
 
+export type TagFilters = {
+  cookingTimes: string[];
+  recipeTypes: string[];
+  cuisines: string[];
+  flavors: string[];
+};
+
 export type mealkitData = {
   recipe_id: number;
   week_number: number;

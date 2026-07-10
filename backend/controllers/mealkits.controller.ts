@@ -1,16 +1,21 @@
-import { create } from "node:domain";
 import { getAllMealkits, createMealkit } from "../services/mealkits.service.js";
 
 import type { Request, Response } from "express";
 
-export async function getMealKits(req: Request, res: Response): Promise<void> {
+export async function getMealKits(req: Request, res: Response) {
   try {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 20;
     const week = Number(req.query.week);
     const search = String(req.query.search ?? "");
+    const tagIds =
+      req.query.ids === undefined
+        ? []
+        : Array.isArray(req.query.ids)
+          ? req.query.ids.map(Number)
+          : [Number(req.query.ids)];
 
-    const result = await getAllMealkits(page, limit, week, search);
+    const result = await getAllMealkits(page, limit, week, search, tagIds);
     res.status(200).json({
       data: result,
     });

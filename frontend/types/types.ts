@@ -70,6 +70,7 @@ export type RecipeAPIType = {
 export type RecipeAdd = {
   name: string;
   description: string;
+  tags: string[];
   avatar_url: string;
   servings: number;
   difficulty: Difficulty;

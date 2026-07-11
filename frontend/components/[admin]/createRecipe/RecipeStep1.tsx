@@ -10,6 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+import { ChevronRight } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useRecipeStore } from "@/stores/recipeStore";
 import { useState, useEffect } from "react";
@@ -18,6 +26,7 @@ import { uploadRecipeImg } from "@/utils/imgUpload";
 import Image from "next/image";
 
 import type { Difficulty } from "@/types/types";
+import type { TagFilters } from "@/types/types";
 
 type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
@@ -31,6 +40,7 @@ type RecipeFormData = {
   prep_time: number;
   cooking_time: number;
   avatar_url: string;
+  tags: string[];
 };
 
 const defaultFormData: RecipeFormData = {
@@ -41,11 +51,19 @@ const defaultFormData: RecipeFormData = {
   prep_time: 0,
   cooking_time: 0,
   avatar_url: "",
+  tags: [],
 };
 
 export default function RecipeStep1({ setFormStep }: Props) {
   const recipeDetails = useRecipeStore((state) => state.recipe);
   const [formData, setFormData] = useState(defaultFormData);
+  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filters, setFilters] = useState<TagFilters>({
+    cookingTimes: [] as string[],
+    recipeTypes: [] as string[],
+    cuisines: [] as string[],
+    flavors: [] as string[],
+  });
 
   useEffect(() => {
     if (recipeDetails) {
@@ -79,7 +97,17 @@ export default function RecipeStep1({ setFormStep }: Props) {
   }
 
   const handleSubmit = () => {
-    setRecipeDetails(formData);
+    const tags = [
+      ...filters.cookingTimes,
+      ...filters.cuisines,
+      ...filters.flavors,
+      ...filters.recipeTypes,
+    ];
+
+    setRecipeDetails({
+      ...formData,
+      tags,
+    });
   };
   return (
     <div className=" w-full bg-white rounded-2xl p-8">
@@ -198,6 +226,148 @@ export default function RecipeStep1({ setFormStep }: Props) {
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        <div className="w-full place-self-center mt-4">
+          <Card>
+            <CardContent>
+              <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+                <CollapsibleTrigger className="w-full">
+                  <div className="text-md flex flex-row w-full justify-between">
+                    <h3 className="">Tag Filters</h3>
+                    <ChevronRight></ChevronRight>
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Cooking Time
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.cookingTimes}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              cookingTimes: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="28">
+                            15 Minutes or Less
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="27">
+                            30 Minutes or Less
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="26">
+                            Weekend Project
+                          </ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Recipe Type
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.recipeTypes}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              recipeTypes: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="25">
+                            Vegetarian
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="24">Vegan</ToggleGroupItem>
+                          <ToggleGroupItem value="23">
+                            Pescatarian
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="22">
+                            Gluten Free
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="21">
+                            Dairy Free
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="20">Halal</ToggleGroupItem>
+                          <ToggleGroupItem value="19">Low Carb</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Cuisine
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.cuisines}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              cuisines: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="18">Italian</ToggleGroupItem>
+                          <ToggleGroupItem value="17">Japanese</ToggleGroupItem>
+                          <ToggleGroupItem value="16">Korean</ToggleGroupItem>
+                          <ToggleGroupItem value="15">Chinese</ToggleGroupItem>
+                          <ToggleGroupItem value="14">
+                            Vietnamese
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="13">Thai</ToggleGroupItem>
+                          <ToggleGroupItem value="12">Indian</ToggleGroupItem>
+                          <ToggleGroupItem value="11">Mexican</ToggleGroupItem>
+                          <ToggleGroupItem value="10">French</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Flavor
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.flavors}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              flavors: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="9">Spicy</ToggleGroupItem>
+                          <ToggleGroupItem value="8">Mild</ToggleGroupItem>
+                          <ToggleGroupItem value="7">Sweet</ToggleGroupItem>
+                          <ToggleGroupItem value="6">Savoury</ToggleGroupItem>
+                          <ToggleGroupItem value="5">Tangy</ToggleGroupItem>
+                          <ToggleGroupItem value="4">Smoky</ToggleGroupItem>
+                          <ToggleGroupItem value="3">Creamy</ToggleGroupItem>
+                          <ToggleGroupItem value="2">Herby</ToggleGroupItem>
+                          <ToggleGroupItem value="1">Garlicky</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Prep Time + Cooking Time */}

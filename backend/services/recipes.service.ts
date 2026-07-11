@@ -74,7 +74,7 @@ export async function createRecipeService(
   steps: Step[],
 ) {
   const client = await pool.connect();
-  console.log("Create recipe function hit!");
+  const tagIds = recipe.tags.map(Number);
 
   try {
     await client.query("BEGIN");
@@ -99,6 +99,31 @@ export async function createRecipeService(
     const createdRecipe = recipeResult.rows[0];
 
     const recipeId = createdRecipe.id;
+
+    if (tagIds.length > 0) {
+      await client.query(
+        `
+        INSERT INTO recipe_tags(recipe_id, tag_id)
+        SELECT $1, UNNEST($2::int[])
+        RETURNING recipe_id, tag_id
+        `,
+        [recipeId, tagIds],
+      );
+    }
+
+    const tagResult = await client.query(
+      `
+        SELECT t.id, t.name
+        FROM recipe_tags rt
+        JOIN tags t
+        ON rt.tag_id = t.id
+        WHERE rt.recipe_id = $1
+        `,
+      [recipeId],
+    );
+
+    const tags = tagResult.rows;
+
     let ingredientsList = [];
     for (const ingredient of ingredients) {
       const existing = await client.query(
@@ -175,7 +200,7 @@ export async function createRecipeService(
     await client.query("COMMIT");
 
     return {
-      recipe: createdRecipe,
+      recipe: { ...createdRecipe, tags },
       ingredients: ingredientsList,
       steps: stepsList,
     };

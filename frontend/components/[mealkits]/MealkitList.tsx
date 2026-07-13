@@ -1,6 +1,6 @@
 "use client";
 
-import type { MealKitList } from "@/types/types";
+import type { MealKitList, TagFilters } from "@/types/types";
 import Link from "next/link";
 import Image from "next/image";
 import { difficultyColor } from "@/constants/constants";
@@ -39,6 +39,14 @@ export default function MealkitList({ week }: Props) {
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+  const [filters, setFilters] = useState<TagFilters>({
+    cookingTimes: [] as string[],
+    recipeTypes: [] as string[],
+    cuisines: [] as string[],
+    flavors: [] as string[],
+  });
+  const [filtersOpen, setFiltersOpen] = useState(true);
+
   const addItem = useCartStore((state) => state.addItem);
   const setCart = useCartStore((state) => state.setCart);
 
@@ -47,10 +55,10 @@ export default function MealkitList({ week }: Props) {
     isLoading,
     isFetching,
   } = useQuery<MealKitList | null>({
-    queryKey: ["mealkitQuery", page, week, debouncedSearch],
+    queryKey: ["mealkitQuery", page, week, debouncedSearch, filters],
 
     queryFn: async () => {
-      const res = await getMealKits(page, week, debouncedSearch);
+      const res = await getMealKits(page, week, filters, debouncedSearch);
       console.log(res.data);
       return res.data;
     },
@@ -154,7 +162,7 @@ export default function MealkitList({ week }: Props) {
       <div className="w-1/2 place-self-center mt-4">
         <Card>
           <CardContent>
-            <Collapsible>
+            <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
               <CollapsibleTrigger className="w-full">
                 <div className="font-semibold text-xl flex flex-row w-full justify-between">
                   <h3 className="text-2xl">Tag Filters</h3>
@@ -168,14 +176,24 @@ export default function MealkitList({ week }: Props) {
                       Cooking Time
                     </h3>
                     <div className="flex flex-row gap-4">
-                      <ToggleGroup variant="outline" type="multiple">
-                        <ToggleGroupItem value="15 minutes or less">
+                      <ToggleGroup
+                        variant="outline"
+                        type="multiple"
+                        value={filters.cookingTimes}
+                        onValueChange={(value) => {
+                          setFilters((prev) => ({
+                            ...prev,
+                            cookingTimes: value,
+                          }));
+                        }}
+                      >
+                        <ToggleGroupItem value="28">
                           15 Minutes or Less
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="30 minutes or less">
+                        <ToggleGroupItem value="27">
                           30 Minutes or Less
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="Weekend Project">
+                        <ToggleGroupItem value="26">
                           Weekend Project
                         </ToggleGroupItem>
                       </ToggleGroup>
@@ -187,24 +205,28 @@ export default function MealkitList({ week }: Props) {
                       Recipe Type
                     </h3>
                     <div className="flex flex-row gap-4">
-                      <ToggleGroup variant="outline" type="multiple">
-                        <ToggleGroupItem value="Vegetarian">
-                          Vegetarian
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="Vegan">Vegan</ToggleGroupItem>
-                        <ToggleGroupItem value="Pescatarian">
+                      <ToggleGroup
+                        variant="outline"
+                        type="multiple"
+                        value={filters.recipeTypes}
+                        onValueChange={(value) => {
+                          setFilters((prev) => ({
+                            ...prev,
+                            recipeTypes: value,
+                          }));
+                        }}
+                      >
+                        <ToggleGroupItem value="25">Vegetarian</ToggleGroupItem>
+                        <ToggleGroupItem value="24">Vegan</ToggleGroupItem>
+                        <ToggleGroupItem value="23">
                           Pescatarian
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="Gluten Free">
+                        <ToggleGroupItem value="22">
                           Gluten Free
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="Dairy Free">
-                          Dairy Free
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="Halal">Halal</ToggleGroupItem>
-                        <ToggleGroupItem value="Low Carb">
-                          Low Carb
-                        </ToggleGroupItem>
+                        <ToggleGroupItem value="21">Dairy Free</ToggleGroupItem>
+                        <ToggleGroupItem value="20">Halal</ToggleGroupItem>
+                        <ToggleGroupItem value="19">Low Carb</ToggleGroupItem>
                       </ToggleGroup>
                     </div>
                   </div>
@@ -214,26 +236,26 @@ export default function MealkitList({ week }: Props) {
                       Cuisine
                     </h3>
                     <div className="flex flex-row gap-4">
-                      <ToggleGroup variant="outline" type="multiple">
-                        <ToggleGroupItem value="Italian">
-                          Italian
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="Japanese">
-                          Japanese
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="Korean">Korean</ToggleGroupItem>
-                        <ToggleGroupItem value="Chinese">
-                          Chinese
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="Vietnamese">
-                          Vietnamese
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="Thai">Thai</ToggleGroupItem>
-                        <ToggleGroupItem value="Indian">Indian</ToggleGroupItem>
-                        <ToggleGroupItem value="IndianMexican">
-                          Mexican
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="French">French</ToggleGroupItem>
+                      <ToggleGroup
+                        variant="outline"
+                        type="multiple"
+                        value={filters.cuisines}
+                        onValueChange={(value) => {
+                          setFilters((prev) => ({
+                            ...prev,
+                            cuisines: value,
+                          }));
+                        }}
+                      >
+                        <ToggleGroupItem value="18">Italian</ToggleGroupItem>
+                        <ToggleGroupItem value="17">Japanese</ToggleGroupItem>
+                        <ToggleGroupItem value="16">Korean</ToggleGroupItem>
+                        <ToggleGroupItem value="15">Chinese</ToggleGroupItem>
+                        <ToggleGroupItem value="14">Vietnamese</ToggleGroupItem>
+                        <ToggleGroupItem value="13">Thai</ToggleGroupItem>
+                        <ToggleGroupItem value="12">Indian</ToggleGroupItem>
+                        <ToggleGroupItem value="11">Mexican</ToggleGroupItem>
+                        <ToggleGroupItem value="10">French</ToggleGroupItem>
                       </ToggleGroup>
                     </div>
                   </div>
@@ -243,20 +265,26 @@ export default function MealkitList({ week }: Props) {
                       Flavor
                     </h3>
                     <div className="flex flex-row gap-4">
-                      <ToggleGroup variant="outline" type="multiple">
-                        <ToggleGroupItem value="Spicy">Spicy</ToggleGroupItem>
-                        <ToggleGroupItem value="Mild">Mild</ToggleGroupItem>
-                        <ToggleGroupItem value="Sweet">Sweet</ToggleGroupItem>
-                        <ToggleGroupItem value="Savoury">
-                          Savoury
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="Tangy">Tangy</ToggleGroupItem>
-                        <ToggleGroupItem value="Smoky">Smoky</ToggleGroupItem>
-                        <ToggleGroupItem value="Creamy">Creamy</ToggleGroupItem>
-                        <ToggleGroupItem value="Herby">Herby</ToggleGroupItem>
-                        <ToggleGroupItem value="Garlicky">
-                          Garlicky
-                        </ToggleGroupItem>
+                      <ToggleGroup
+                        variant="outline"
+                        type="multiple"
+                        value={filters.flavors}
+                        onValueChange={(value) => {
+                          setFilters((prev) => ({
+                            ...prev,
+                            flavors: value,
+                          }));
+                        }}
+                      >
+                        <ToggleGroupItem value="9">Spicy</ToggleGroupItem>
+                        <ToggleGroupItem value="8">Mild</ToggleGroupItem>
+                        <ToggleGroupItem value="7">Sweet</ToggleGroupItem>
+                        <ToggleGroupItem value="6">Savoury</ToggleGroupItem>
+                        <ToggleGroupItem value="5">Tangy</ToggleGroupItem>
+                        <ToggleGroupItem value="4">Smoky</ToggleGroupItem>
+                        <ToggleGroupItem value="3">Creamy</ToggleGroupItem>
+                        <ToggleGroupItem value="2">Herby</ToggleGroupItem>
+                        <ToggleGroupItem value="1">Garlicky</ToggleGroupItem>
                       </ToggleGroup>
                     </div>
                   </div>

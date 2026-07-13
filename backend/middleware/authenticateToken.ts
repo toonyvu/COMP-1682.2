@@ -27,7 +27,6 @@ export function authenticateToken(
 
     (req as any).authUser = decoded;
 
-    console.log("Complete");
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token." });

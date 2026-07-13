@@ -52,7 +52,7 @@ export default function CartSheet() {
       </SheetTrigger>
       <SheetContent className="z-100 flex flex-col">
         <SheetHeader>
-          <SheetTitle>Your Cart</SheetTitle>
+          <SheetTitle className="text-2xl font-bold mt-2">Your Cart</SheetTitle>
         </SheetHeader>
 
         {/* Cart Items */}

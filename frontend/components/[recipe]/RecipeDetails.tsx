@@ -91,7 +91,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
   const [favorited, setFavorited] = useState<boolean>(false);
   const [qty, setQty] = useState<number>(1);
 
-  console.log(recipeDetails?.recipeingredients);
+  console.log(recipeDetails?.recipeTags);
 
   if (!recipeDetails) return;
   const available_from = TimestampToDate(
@@ -133,123 +133,157 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
 
   return (
     <div className="px-10">
-      <div className="mx-auto mt-10 flex w-full items-start gap-12 px-8">
-        <div className="flex flex-1 items-start gap-8">
-          <div className="w-[420px] shrink-0">
-            <Image
-              src={recipeDetails.avatar_url}
-              alt={recipeDetails.name}
-              width={600}
-              height={600}
-              className="w-full h-auto rounded-lg object-cover"
-            />
+      <div className="flex flex-row">
+        <div>
+          <div className="mx-auto mt-10 flex w-full items-start gap-12 px-8">
+            <div className="flex flex-1 items-start gap-8">
+              <div className="w-[420px] shrink-0">
+                <Image
+                  src={recipeDetails.avatar_url}
+                  alt={recipeDetails.name}
+                  width={600}
+                  height={600}
+                  className="w-full h-auto rounded-lg object-cover"
+                />
+              </div>
+
+              <div className="flex flex-1 flex-col gap-4">
+                <div className="flex flex-row items-center gap-4">
+                  <h1 className="font-bold text-3xl">{recipeDetails.name}</h1>
+
+                  <span
+                    className={`h-6 w-24 sm:h-8 px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center justify-center ${
+                      difficultyColor[recipeDetails.difficulty]
+                    }`}
+                  >
+                    {recipeDetails.difficulty}
+                  </span>
+                </div>
+
+                <span className="font-semibold text-4xl text-blue-700">
+                  ${recipeDetails.mealkitData.price}
+                </span>
+
+                <span className="font-semibold text-gray-600">
+                  Tags:{" "}
+                  {recipeDetails.recipeTags.map((tag) => tag.name).join(", ")}
+                </span>
+
+                <span className="font-semibold text-gray-600">
+                  Week:{" "}
+                  <span className="text-black">
+                    {recipeDetails.mealkitData.week_number}
+                  </span>
+                </span>
+
+                <span className="font-semibold text-gray-600">
+                  Year:{" "}
+                  <span className="text-black">
+                    {recipeDetails.mealkitData.year}
+                  </span>
+                </span>
+
+                <span className="font-semibold text-gray-600">
+                  Servings:{" "}
+                  <span className="text-black">
+                    {recipeDetails.mealkitData.max_servings}
+                  </span>
+                </span>
+
+                <span className="font-semibold text-gray-600">
+                  Available From:{" "}
+                  <span className="text-black">
+                    {available_from} - {available_until}
+                  </span>
+                </span>
+
+                <span className="font-semibold text-gray-600">
+                  Prep Time:{" "}
+                  <span className="text-black">{recipeDetails.prep_time}</span>{" "}
+                  minutes
+                </span>
+
+                <span className="font-semibold text-gray-600">
+                  Cooking Time:{" "}
+                  <span className="text-black">
+                    {recipeDetails.cooking_time}
+                  </span>{" "}
+                  minutes
+                </span>
+
+                <div className="flex flex-row font-semibold gap-4">
+                  <Label htmlFor="qty" className="text-md text-gray-600">
+                    Quantity:{" "}
+                  </Label>
+                  <Input
+                    id="qty"
+                    onClick={() => {
+                      setIsError(false);
+                      setErrMsg({ qty: "" });
+                    }}
+                    min={1}
+                    type="number"
+                    value={qty}
+                    onChange={(e) => setQty(Number(e.target.value))}
+                    className={`w-16 ${
+                      isError
+                        ? "border-red-500 ring-1 ring-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }`}
+                  ></Input>
+                  {isError && <p className="text-red-600">{errMsg.qty}</p>}
+                </div>
+
+                <hr />
+
+                <div className="  ">
+                  <h2 className="font-bold text-2xl">Description:</h2>
+                  <p className="text-md mt-4">{recipeDetails.description}</p>
+                </div>
+
+                <hr />
+
+                <Button
+                  className="bg-green-600 hover:bg-green-800 h-10 w-1/4"
+                  onClick={() => {
+                    handleAdd(qty);
+                  }}
+                >
+                  Add To Cart
+                </Button>
+              </div>
+
+              <div className="fixed bottom-4 right-8 z-50">
+                <CartSheet />
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-1 flex-col gap-4">
-            <h1 className="font-bold text-3xl">{recipeDetails.name}</h1>
-            <span
-              className={`h-6 sm:h-8 px-3 py-1 rounded-full text-xs sm:text-sm font-medium text-center content-center ${
-                difficultyColor[recipeDetails.difficulty]
-              }`}
-            >
-              {recipeDetails.difficulty}
-            </span>
+          <div className="flex flex-col gap-8">
+            <div className="px-10 mt-10">
+              <h2 className="font-bold text-2xl mb-6">Cooking Steps</h2>
 
-            <span className="font-semibold text-4xl text-blue-700">
-              ${recipeDetails.mealkitData.price}
-            </span>
+              <div className="space-y-6">
+                {recipeDetails.recipesteps.map((step) => (
+                  <div key={step.id} className="flex gap-4 border-b pb-6">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-600 text-white font-bold">
+                      {step.step_number}
+                    </div>
 
-            <span className="font-semibold text-gray-600">
-              Week:{" "}
-              <span className="text-black">
-                {recipeDetails.mealkitData.week_number}
-              </span>
-            </span>
-
-            <span className="font-semibold text-gray-600">
-              Year:{" "}
-              <span className="text-black">
-                {recipeDetails.mealkitData.year}
-              </span>
-            </span>
-
-            <span className="font-semibold text-gray-600">
-              Servings:{" "}
-              <span className="text-black">
-                {recipeDetails.mealkitData.max_servings}
-              </span>
-            </span>
-
-            <span className="font-semibold text-gray-600">
-              Available From:{" "}
-              <span className="text-black">
-                {available_from} - {available_until}
-              </span>
-            </span>
-
-            <span className="font-semibold text-gray-600">
-              Prep Time:{" "}
-              <span className="text-black">{recipeDetails.prep_time}</span>{" "}
-              minutes
-            </span>
-
-            <span className="font-semibold text-gray-600">
-              Cooking Time:{" "}
-              <span className="text-black">{recipeDetails.cooking_time}</span>{" "}
-              minutes
-            </span>
-
-            <div className="flex flex-row font-semibold gap-4">
-              <Label htmlFor="qty" className="text-md text-gray-600">
-                Quantity:{" "}
-              </Label>
-              <Input
-                id="qty"
-                onClick={() => {
-                  setIsError(false);
-                  setErrMsg({ qty: "" });
-                }}
-                min={1}
-                type="number"
-                value={qty}
-                onChange={(e) => setQty(Number(e.target.value))}
-                className={`w-16 ${
-                  isError
-                    ? "border-red-500 ring-1 ring-red-500 focus-visible:ring-red-500"
-                    : ""
-                }`}
-              ></Input>
-              {isError && <p className="text-red-600">{errMsg.qty}</p>}
+                    <p className="text-gray-700 leading-relaxed">
+                      {step.instruction}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-
-            <hr />
-
-            <div className="  ">
-              <h2 className="font-bold text-2xl">Description:</h2>
-              <p className="text-md mt-4">{recipeDetails.description}</p>
-            </div>
-
-            <hr />
-
-            <Button
-              className="bg-green-600 hover:bg-green-800 h-10"
-              onClick={() => {
-                handleAdd(qty);
-              }}
-            >
-              Add To Cart
-            </Button>
-          </div>
-
-          <div className="fixed bottom-4 right-8 z-50">
-            <CartSheet />
           </div>
         </div>
 
-        <div className=" w-[420px] shrink-0">
+        <div className=" w-[420px] shrink-0 mt-5 ml-20">
           <h2 className="mb-6 text-2xl font-bold">Ingredients</h2>
 
-          <ScrollArea className="max-h-[450px]">
+          <ScrollArea className="max-h-112.5">
             <div className="flex flex-col gap-4">
               {recipeDetails.recipeingredients.map((ing) => (
                 <div
@@ -292,26 +326,6 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
               ))}
             </div>
           </ScrollArea>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-8">
-        <div className="px-10 mt-10">
-          <h2 className="font-bold text-2xl mb-6">Cooking Steps</h2>
-
-          <div className="space-y-6">
-            {recipeDetails.recipesteps.map((step) => (
-              <div key={step.id} className="flex gap-4 border-b pb-6">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-600 text-white font-bold">
-                  {step.step_number}
-                </div>
-
-                <p className="text-gray-700 leading-relaxed">
-                  {step.instruction}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>

@@ -17,6 +17,18 @@ export type Recipe = {
   tags: string[];
 };
 
+export type Tag = {
+  id: number;
+  name: string;
+};
+
+export type TagFilters = {
+  cookingTimes: string[];
+  recipeTypes: string[];
+  cuisines: string[];
+  flavors: string[];
+};
+
 export type mealkitData = {
   recipe_id: number;
   week_number: number;
@@ -63,6 +75,7 @@ export type RecipeAPIType = {
 export type RecipeAdd = {
   name: string;
   description: string;
+  tags: string[];
   avatar_url: string;
   servings: number;
   difficulty: Difficulty;
@@ -136,6 +149,8 @@ export type RecipeWithDetails = Recipe & {
   recipeingredients: Ingredient[];
 
   recipesteps: Steps[];
+
+  recipeTags: Tag[];
 
   isFavorited: boolean;
 };

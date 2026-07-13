@@ -9,6 +9,7 @@ export type RecipeDetails = {
   cooking_time: number;
   avatar_url: string;
   price: number;
+  tags: string[];
 };
 
 export type Ingredient = {

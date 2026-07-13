@@ -65,6 +65,14 @@ export default function RecipeStep1({ setFormStep }: Props) {
     flavors: [] as string[],
   });
 
+  const [errors, setErrors] = useState({
+    recipeName: "",
+    description: "",
+    tags: "",
+    prepAndCookTime: "",
+    avatarUrl: "",
+  });
+
   useEffect(() => {
     if (recipeDetails) {
       setFormData(recipeDetails);
@@ -104,10 +112,52 @@ export default function RecipeStep1({ setFormStep }: Props) {
       ...filters.recipeTypes,
     ];
 
-    setRecipeDetails({
-      ...formData,
-      tags,
-    });
+    const newErrors = {
+      recipeName: "",
+      description: "",
+      tags: "",
+      prepAndCookTime: "",
+      avatarUrl: "",
+    };
+
+    let valid = true;
+
+    if (!formData.name || formData.name.length < 4) {
+      newErrors.recipeName = "Recipe name must contain at least 4 characters.";
+      valid = false;
+    }
+
+    if (!formData.avatar_url) {
+      newErrors.avatarUrl = "Recipe include a recipe picture.";
+      valid = false;
+    }
+
+    if (tags.length == 0) {
+      newErrors.tags = "Recipe must contain at least one tag.";
+      valid = false;
+    }
+
+    if (!formData.description) {
+      newErrors.description = "Recipe must contain a description.";
+      valid = false;
+    }
+
+    if (formData.cooking_time == 0 && formData.prep_time == 0) {
+      newErrors.prepAndCookTime =
+        "Only either prep time or cooking time can be 0.";
+      valid = false;
+    }
+
+    if (valid) {
+      setRecipeDetails({
+        ...formData,
+        tags,
+      });
+      setFormStep(2);
+    } else {
+      setErrors(newErrors);
+      return;
+    }
   };
   return (
     <div className=" w-full bg-white rounded-2xl p-8">
@@ -133,7 +183,6 @@ export default function RecipeStep1({ setFormStep }: Props) {
             onClick={() => {
               setRecipeDetails(formData);
               handleSubmit();
-              setFormStep(2);
             }}
           >
             Next
@@ -151,6 +200,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
             id="recipe-name"
             placeholder="Enter recipe name"
             value={formData.name}
+            className={`${errors.recipeName ? "border-red-500" : ""}`}
             onChange={(e) =>
               setFormData({
                 ...formData,
@@ -158,6 +208,10 @@ export default function RecipeStep1({ setFormStep }: Props) {
               })
             }
           />
+
+          {errors.recipeName && (
+            <p className="text-red-600">{errors.recipeName}</p>
+          )}
         </div>
 
         {/* Description */}
@@ -168,6 +222,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
             id="description"
             rows={5}
             placeholder="Describe your recipe..."
+            className={`${errors.description ? "border-red-500" : ""}`}
             value={formData.description}
             onChange={(e) =>
               setFormData({
@@ -176,6 +231,10 @@ export default function RecipeStep1({ setFormStep }: Props) {
               })
             }
           />
+
+          {errors.description && (
+            <p className="text-red-600">{errors.description}</p>
+          )}
         </div>
 
         {/* Servings + Difficulty */}
@@ -187,6 +246,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
             <Input
               id="servings"
               type="number"
+              min={1}
               placeholder="4"
               value={formData.servings}
               onChange={(e) =>
@@ -229,7 +289,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
         </div>
 
         <div className="w-full place-self-center mt-4">
-          <Card>
+          <Card className={`${errors.tags ? "outline-red-600" : ""}`}>
             <CardContent>
               <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
                 <CollapsibleTrigger className="w-full">
@@ -368,6 +428,8 @@ export default function RecipeStep1({ setFormStep }: Props) {
               </Collapsible>
             </CardContent>
           </Card>
+
+          {errors.tags && <p className="text-red-600">{errors.tags}</p>}
         </div>
 
         {/* Prep Time + Cooking Time */}
@@ -379,7 +441,9 @@ export default function RecipeStep1({ setFormStep }: Props) {
             <Input
               id="prep-time"
               type="number"
+              min={1}
               placeholder="15"
+              className={`${errors.prepAndCookTime ? "border-red-500" : ""}`}
               value={formData.prep_time}
               onChange={(e) =>
                 setFormData({
@@ -388,6 +452,10 @@ export default function RecipeStep1({ setFormStep }: Props) {
                 })
               }
             />
+
+            {errors.prepAndCookTime && (
+              <p className="text-red-600">{errors.prepAndCookTime}</p>
+            )}
           </div>
 
           {/* Cooking Time */}
@@ -397,8 +465,10 @@ export default function RecipeStep1({ setFormStep }: Props) {
             <Input
               id="cook-time"
               type="number"
+              min={1}
               placeholder="30"
               value={formData.cooking_time}
+              className={`${errors.prepAndCookTime ? "border-red-500" : ""}`}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -417,8 +487,13 @@ export default function RecipeStep1({ setFormStep }: Props) {
             id="image"
             type="file"
             accept="image/*"
+            className={`${errors.avatarUrl ? "border-red-500" : ""}`}
             onChange={handleImageUpload}
           />
+
+          {errors.avatarUrl && (
+            <p className="text-red-600">{errors.avatarUrl}</p>
+          )}
 
           <h1>Current Image:</h1>
           {formData?.avatar_url && (
@@ -431,9 +506,6 @@ export default function RecipeStep1({ setFormStep }: Props) {
             ></Image>
           )}
         </div>
-
-        {/* Footer Buttons */}
-        <div className="flex justify-end mt-4 gap-4"></div>
       </div>
     </div>
   );

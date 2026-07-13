@@ -17,6 +17,11 @@ export type Recipe = {
   tags: string[];
 };
 
+export type Tag = {
+  id: number;
+  name: string;
+};
+
 export type TagFilters = {
   cookingTimes: string[];
   recipeTypes: string[];
@@ -144,6 +149,8 @@ export type RecipeWithDetails = Recipe & {
   recipeingredients: Ingredient[];
 
   recipesteps: Steps[];
+
+  recipeTags: Tag[];
 
   isFavorited: boolean;
 };

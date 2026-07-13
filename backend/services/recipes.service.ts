@@ -29,6 +29,17 @@ export async function getRecipeDetails(
     [mealkitId],
   );
 
+  const tagsResult = await pool.query(
+    `
+    SELECT t.id, t.name
+    FROM tags t
+    JOIN recipe_tags rt
+    ON t.id = rt.tag_id
+    WHERE rt.recipe_id = $1
+    `,
+    [id],
+  );
+
   const ingredientsResult = await pool.query(
     `SELECT 
      ri.ingredient_id,
@@ -62,6 +73,7 @@ export async function getRecipeDetails(
     recipeingredients: ingredientsResult.rows,
     recipesteps: stepsResult.rows,
     mealkitData: mealkitResult.rows[0],
+    recipeTags: tagsResult.rows,
     isFavorited,
   };
 

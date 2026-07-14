@@ -9,10 +9,52 @@ import { useEffect, useState } from "react";
 import { showToast } from "nextjs-toast-notify";
 
 import { uploadAvatar } from "@/utils/imgUpload";
+import type { UserType } from "@/types/types";
+
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Field, FieldLabel } from "@/components/ui/field";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const genders = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+  { label: "Other", value: "other" },
+];
+
+const initialErrors = {
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  address: "",
+};
 
 export default function UserProfile() {
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
+  });
+
+  const [dobOpen, setDobOpen] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
   const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserType>({
     username: "",
     first_name: "",
     last_name: "",
@@ -23,26 +65,63 @@ export default function UserProfile() {
     id: "",
     role: "",
     avatar_url: "",
-    dob: "",
+    dob: undefined,
     created_at: "",
     tier: "free",
+    gender: "male",
   });
 
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
 
   const handleSubmit = async () => {
-    const updatedData = await updateUser(formData);
-    const userId = updatedData.result.id;
-    const result = await getUser(Number(userId));
-    if (!result) return;
-    setUser(result.user);
-    showToast.success(`User information updated!`, {
-      position: "top-left",
-      duration: 3000,
-      transition: "slideInUp",
-    });
-    setEditing(false);
+    let valid = true;
+    const newErrors = {
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      address: "",
+    };
+    if (!formData.first_name) {
+      newErrors.firstName = "First name cannot be empty!";
+      valid = false;
+    }
+
+    if (!formData.last_name) {
+      newErrors.lastName = "Last name cannot be empty!";
+
+      valid = false;
+    }
+
+    if (formData.phone.length < 10) {
+      newErrors.phoneNumber = "Phone number must contain at least 10 numbers.";
+
+      valid = false;
+    }
+
+    if (!formData.address) {
+      newErrors.address = "Address cannot be empty!";
+
+      valid = false;
+    }
+
+    if (valid) {
+      const updatedData = await updateUser(formData);
+      const userId = updatedData.result.id;
+      const result = await getUser(Number(userId));
+      if (!result) return;
+      setUser(result.user);
+      showToast.success(`User information updated!`, {
+        position: "top-left",
+        duration: 3000,
+        transition: "slideInUp",
+      });
+      setErrors(initialErrors);
+      valid = true;
+      setEditing(false);
+    } else {
+      setErrors(newErrors);
+    }
   };
 
   useEffect(() => {
@@ -52,30 +131,55 @@ export default function UserProfile() {
       const result = await getUser(Number(userId));
 
       if (!result) return;
-      setUser(result.user);
-      setFormData(result.user);
+      const fetchedUser = result.user;
+      setUser(fetchedUser);
 
-      if (user) {
-        setFormData({
-          username: user.username || "",
-          first_name: user.first_name || "",
-          last_name: user.last_name || "",
-          email: user.email || "",
-          bio: user.bio || "",
-          address: user.address || "",
-          phone: user.phone || "",
-          id: user.id || "",
-          role: user.role || "",
-          avatar_url: user.avatar_url || "",
-          dob: user.dob || "",
-          created_at: user.created_at || "",
-          tier: user.tier || "free",
-        });
-      }
+      setFormData({
+        username: fetchedUser.username || "",
+        first_name: fetchedUser.first_name || "",
+        last_name: fetchedUser.last_name || "",
+        email: fetchedUser.email || "",
+        bio: fetchedUser.bio || "",
+        address: fetchedUser.address || "",
+        phone: fetchedUser.phone || "",
+        id: fetchedUser.id || "",
+        role: fetchedUser.role || "",
+        avatar_url: fetchedUser.avatar_url || "",
+        dob: fetchedUser.dob || undefined,
+        created_at: fetchedUser.created_at || "",
+        tier: fetchedUser.tier || "free",
+        gender: fetchedUser.gender || "male",
+      });
+
+      setDate(fetchedUser.dob ? new Date(fetchedUser.dob) : undefined);
     }
 
     getUserInfo();
   }, [user?.id]);
+
+  const resetForm = () => {
+    if (!user) return;
+
+    setFormData({
+      username: user.username || "",
+      first_name: user.first_name || "",
+      last_name: user.last_name || "",
+      email: user.email || "",
+      bio: user.bio || "",
+      address: user.address || "",
+      phone: user.phone || "",
+      id: user.id || "",
+      role: user.role || "",
+      avatar_url: user.avatar_url || "",
+      dob: user.dob || undefined,
+      created_at: user.created_at || "",
+      tier: user.tier || "free",
+      gender: user.gender || "male",
+    });
+
+    setDate(user.dob ? new Date(user.dob) : undefined);
+    setErrors(initialErrors);
+  };
 
   return (
     <div className="relative w-full bg-gray-100">
@@ -138,11 +242,15 @@ export default function UserProfile() {
               onClick={() => {
                 setEditing(!editing);
                 if (editing) {
+                  resetForm();
+                  setEditing(false);
                   showToast.info(`User editing cancelled.`, {
                     position: "top-left",
                     duration: 3000,
                     transition: "slideInUp",
                   });
+                } else {
+                  setEditing(true);
                 }
               }}
             >
@@ -169,8 +277,12 @@ export default function UserProfile() {
               onChange={(e) =>
                 setFormData({ ...formData, first_name: e.target.value })
               }
-              className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"}`}
+              className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"} ${errors.firstName ? "outline-1 outline-red-600" : ""}`}
             />
+
+            {errors.firstName && (
+              <p className="text-red-600">{errors.firstName}</p>
+            )}
           </div>
 
           <div className="w-1/2 flex flex-col gap-4">
@@ -182,23 +294,45 @@ export default function UserProfile() {
               onChange={(e) =>
                 setFormData({ ...formData, last_name: e.target.value })
               }
-              className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"}`}
+              className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"} ${errors.lastName ? "outline-1 outline-red-600" : ""}`}
             />
+            {errors.lastName && (
+              <p className="text-red-600">{errors.lastName}</p>
+            )}
           </div>
         </div>
 
         <div className="flex mt-8">
           <div className="w-1/2 flex flex-col gap-4">
-            <h1 className="text-xl font-bold">Email</h1>
-            <input
-              type="text"
-              value={formData.email || ""}
-              readOnly={!editing}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+            <h1 className="text-xl font-bold">Gender</h1>
+            <Select
+              value={formData.gender}
+              onValueChange={(value) =>
+                setFormData({ ...formData, gender: value })
               }
-              className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"}`}
-            />
+              disabled={!editing}
+            >
+              <SelectTrigger
+                className={`w-2/3 shadow-md rounded-md outline-1 text-xl h-12 ${
+                  !editing ? "bg-gray-300" : "bg-white"
+                }`}
+              >
+                <SelectValue
+                  placeholder="Select a gender"
+                  className="text-xl"
+                ></SelectValue>
+              </SelectTrigger>
+
+              <SelectContent position="popper">
+                <SelectGroup>
+                  {genders.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="w-1/2 flex flex-col gap-4">
@@ -210,9 +344,45 @@ export default function UserProfile() {
               onChange={(e) =>
                 setFormData({ ...formData, phone: e.target.value })
               }
-              className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"}`}
+              className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"} ${errors.phoneNumber ? "outline-1 outline-red-600" : ""}`}
             />
+            {errors.phoneNumber && (
+              <p className="text-red-600">{errors.phoneNumber}</p>
+            )}
           </div>
+        </div>
+
+        <div className="gap-4 mt-8">
+          <h1 className="text-xl font-bold mb-4">Date of Birth</h1>
+          <Popover open={dobOpen} onOpenChange={setDobOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                disabled={!editing}
+                variant="outline"
+                id="date"
+                className={`justify-start font-normal w-48 text-xl h-10 ${!editing ? "bg-gray-300" : "bg-white"}`}
+              >
+                {date ? date.toLocaleDateString() : "Select date"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Calendar
+                mode="single"
+                selected={date}
+                defaultMonth={date}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  console.log(date);
+                  setDate(date);
+                  setFormData({
+                    ...formData,
+                    dob: date,
+                  });
+                  setDobOpen(false);
+                }}
+              ></Calendar>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className=" flex flex-col gap-4 mt-8">
@@ -224,8 +394,12 @@ export default function UserProfile() {
             onChange={(e) =>
               setFormData({ ...formData, address: e.target.value })
             }
-            className={`w-full outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"}`}
+            className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"} ${errors.address ? "outline-1 outline-red-600" : ""}`}
           />
+
+          {errors.phoneNumber && (
+            <p className="text-red-600">{errors.phoneNumber}</p>
+          )}
         </div>
 
         <div className=" flex flex-col gap-4 mt-8">

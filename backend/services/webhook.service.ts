@@ -88,7 +88,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
             country
           )
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-          RETURNING id
+          RETURNING id, cus_order_id
           `,
             [
               userId,
@@ -110,6 +110,27 @@ export async function handleStripeEvent(event: Stripe.Event) {
           );
 
           const orderId = orderResult.rows[0].id;
+          const createdOrderId = orderResult.rows[0].cus_order_id;
+
+          await client.query(
+            `
+            INSERT INTO notifications (
+              user_id,
+              title,
+              message,
+              type,
+              action_url
+            )
+            VALUES ($1, $2, $3, $4, $5)
+            `,
+            [
+              userId,
+              `Order  ${createdOrderId} placed`,
+              `Your order has been created! Check the link for details.`,
+              "order",
+              `/profile/orders/${createdOrderId}`,
+            ],
+          );
 
           const cart = await getFullCart(Number(userId));
 

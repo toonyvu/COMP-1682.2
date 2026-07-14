@@ -17,6 +17,7 @@ import orderRoutes from "./routes/orders.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
 import subscriptionRoutes from "./routes/subscriptions.routes.js";
 import userRoutes from "./routes/users.routes.js";
+import notificationRoutes from "./routes/notifications.routes.js";
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use("/create-checkout-session", checkoutRoutes);
 app.use("/create-subscription-session", subscriptionRoutes);
 app.use("/orders", orderRoutes);
 app.use("/users", userRoutes);
+app.use("/notifications", notificationRoutes);
 app.get("/test", (req, res) => {
   res.json({ working: true });
 });

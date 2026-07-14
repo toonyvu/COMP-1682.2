@@ -40,23 +40,8 @@ export async function updateUser(req: Request, res: Response) {
     dob,
     created_at,
     tier,
+    gender,
   } = req.body;
-
-  console.log(
-    username,
-    first_name,
-    last_name,
-    email,
-    bio,
-    address,
-    phone,
-    userId,
-    role,
-    avatar_url,
-    dob,
-    created_at,
-    tier,
-  );
 
   try {
     const result = await updateUserInfo({
@@ -73,6 +58,7 @@ export async function updateUser(req: Request, res: Response) {
       first_name,
       last_name,
       phone,
+      gender,
     });
 
     res.status(201).json({ result });

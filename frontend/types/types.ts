@@ -218,12 +218,13 @@ export type UserType = {
   email: string;
   bio: string;
   avatar_url: string;
-  dob: string;
+  dob: Date | undefined;
   created_at: string;
   address: string;
   first_name: string;
   last_name: string;
   phone: string;
+  gender: string;
 };
 
 export type OrderItems = {

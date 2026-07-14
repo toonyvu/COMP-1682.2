@@ -19,6 +19,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import type { mealkitData, RecipeAdmin, RecipePaginated } from "@/types/types";
 
 import PaginationComponent from "@/components/PaginationComponent";

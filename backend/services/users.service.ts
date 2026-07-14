@@ -8,12 +8,13 @@ type userInformation = {
   email: string;
   bio: string;
   avatar_url: string;
-  dob: string;
-  created_at: string;
+  dob: Date;
+  created_at: Date;
   address: string;
   first_name: string;
   last_name: string;
   phone: string;
+  gender: string;
 };
 
 export async function getUserInfo(id: number) {
@@ -48,7 +49,10 @@ export async function updateUserInfo({
   first_name,
   last_name,
   phone,
+  gender,
 }: userInformation) {
+  console.log(dob);
+
   try {
     const insertResult = await pool.query(
       `
@@ -61,8 +65,10 @@ export async function updateUserInfo({
         bio = $5,
         address = $6,
         phone = $7,
-        avatar_url = $8
-      WHERE id = $9
+        avatar_url = $8,
+        gender = $9,
+        dob = $10
+      WHERE id = $11
       RETURNING *;
       `,
       [
@@ -74,6 +80,8 @@ export async function updateUserInfo({
         address,
         phone,
         avatar_url,
+        gender,
+        dob,
         id,
       ],
     );

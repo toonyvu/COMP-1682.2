@@ -227,6 +227,17 @@ export type UserType = {
   gender: string;
 };
 
+export type Notificaiton = {
+  user_id: number;
+  type: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  id: number;
+  created_at: string;
+  action_url: string;
+};
+
 export type OrderItems = {
   max_servings: number;
   mealkit_id: number;

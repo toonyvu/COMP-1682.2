@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { createMealkit } from "@/lib/api/mealkits";
 
+import { showToast } from "nextjs-toast-notify";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,16 @@ export default function CreateMealkitsTab() {
     setErrors(newErrors);
 
     return valid;
+  };
+
+  const defaultFormData = {
+    week_number: 0,
+    year: 0,
+    available_from: "",
+    available_until: "",
+    price: 0,
+    recipe_id: 0,
+    max_servings: 0,
   };
 
   const [formData, setFormData] = useState<mealkitData>({
@@ -319,6 +330,13 @@ export default function CreateMealkitsTab() {
                     <Button
                       variant="destructive"
                       onClick={() => {
+                        showToast.info(
+                          `${selectedRecipe.name} has been removed.`,
+                          {
+                            position: "top-left",
+                            duration: 3000,
+                          },
+                        );
                         setSelectedRecipe(null);
 
                         setFormData((prev) => ({
@@ -402,7 +420,13 @@ export default function CreateMealkitsTab() {
                 className="w-full bg-green-600 hover:bg-green-700"
                 onClick={async () => {
                   const res = await createMealkit(formData);
+                  showToast.success(`${selectedRecipe.name} has been added!`, {
+                    position: "top-left",
+                    duration: 3000,
+                  });
+                  setFormData(defaultFormData);
                   console.log(res);
+                  setSelectedRecipe(null);
                 }}
               >
                 Create Meal Kit

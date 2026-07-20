@@ -29,6 +29,18 @@ import { getUserAdmin } from "@/lib/api/users";
 import type { UserType } from "@/types/types";
 import { updateOrderStatus } from "@/lib/api/orders";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { allowedStatuses } from "@/constants/constants";
 
 export default function OrderDetailsAdmin({ orderId, userId }: Props) {
@@ -136,18 +148,44 @@ export default function OrderDetailsAdmin({ orderId, userId }: Props) {
                 </SelectContent>
               </Select>
 
-              <Button
-                className="mt-4 w-36 bg-green-600 hover:bg-green-800"
-                onClick={() => {
-                  if (!status) return;
-                  updateStatusMutation.mutate({
-                    orderId: order.id,
-                    currentStatus: status,
-                  });
-                }}
-              >
-                {updateStatusMutation.isPending ? "Saving..." : "Save Order"}
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="mt-4 w-36 bg-green-600 hover:bg-green-800">
+                    {updateStatusMutation.isPending
+                      ? "Saving..."
+                      : "Save Order"}
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently change
+                      the order status!
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogCancel
+                    onClick={() => {
+                      setStatus(null);
+                    }}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-green-600"
+                    onClick={() => {
+                      if (!status) return;
+                      updateStatusMutation.mutate({
+                        orderId: order.id,
+                        currentStatus: status,
+                      });
+                    }}
+                  >
+                    Save
+                  </AlertDialogAction>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </div>

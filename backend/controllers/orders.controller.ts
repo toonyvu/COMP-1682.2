@@ -5,6 +5,7 @@ import {
   getOrderDetails,
   getAllOrdersAdmin,
   updateOrderStatus,
+  cancelOrders,
 } from "../services/orders.service.js";
 
 type Params = {
@@ -66,6 +67,24 @@ export async function getOrderDetailsController(req: Request, res: Response) {
     return res.status(200).json(order);
   } catch (err: any) {
     return res.status(500).json({ message: err.message });
+  }
+}
+
+export async function cancelOrderController(req: Request, res: Response) {
+  const { orderId, status } = req.body;
+  console.log(orderId, status);
+
+  if (!orderId || !status) {
+    return res.status(400).json({ message: "No orderId or Status." });
+  }
+
+  try {
+    await cancelOrders(Number(orderId), status);
+    return res.status(200).json({ message: "Order cancelled successfully" });
+  } catch (err: any) {
+    return res.status(500).json({
+      message: err.message || "Failed to cancel order.",
+    });
   }
 }
 

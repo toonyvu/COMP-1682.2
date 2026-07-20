@@ -9,7 +9,6 @@ import {
   PaginationLink,
 } from "./ui/pagination";
 
-
 type Props = {
   page: number;
   totalPages: number;

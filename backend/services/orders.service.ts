@@ -40,6 +40,94 @@ export async function getOrder(sessionId: string) {
   };
 }
 
+export async function cancelOrders(orderId: number) {
+  const client = await pool.connect();
+
+  console.log("Cancel orders reached");
+  try {
+    await client.query("BEGIN");
+    const getOrderResult = await client.query(
+      `
+    SELECT stripe_payment_intent_id, amount_total, refunded, status, cus_order_id
+    FROM orders
+    WHERE id = $1
+    `,
+      [orderId],
+    );
+
+    if (getOrderResult.rows.length === 0) {
+      throw new Error("Order not found.");
+    }
+
+    if (getOrderResult.rows[0].refunded) {
+      throw new Error("Order has already been refunded.");
+    }
+
+    const amountTotal = getOrderResult.rows[0].amount_total;
+    const cusIntentId = getOrderResult.rows[0].stripe_payment_intent_id;
+    const status = getOrderResult.rows[0].status;
+
+    if (status === "paid") {
+      const refund = await stripe.refunds.create({
+        payment_intent: cusIntentId,
+      });
+
+      if (refund.status === "succeeded") {
+        await client.query(
+          `
+          UPDATE orders
+          SET
+            status = 'cancelled',
+            stripe_refund_id = $1,
+            refunded = TRUE,
+            refunded_amount = $2,
+            refunded_at = NOW()
+          WHERE id = $3
+          `,
+          [refund.id, refund.amount, orderId],
+        );
+      } else {
+        throw new Error("Error: Cannot refund for order.");
+      }
+    } else if (status === "preparing") {
+      const refundAmount = Math.floor(amountTotal / 2);
+      const refund = await stripe.refunds.create({
+        payment_intent: cusIntentId,
+        amount: refundAmount,
+      });
+
+      if (refund.status === "succeeded") {
+        await client.query(
+          `
+          UPDATE orders
+          SET
+            status = 'cancelled',
+            stripe_refund_id = $1,
+            refunded = TRUE,
+            refunded_amount = $2,
+            refunded_at = NOW()
+          WHERE id = $3
+          `,
+          [refund.id, refund.amount, orderId],
+        );
+      } else {
+        throw new Error("Error: Cannot refund for order.");
+      }
+    } else {
+      throw new Error("This order cannot be cancelled.");
+    }
+
+    await client.query("COMMIT");
+    return;
+  } catch (err: any) {
+    console.log(err);
+    await client.query("ROLLBACK");
+    throw new Error(err.message);
+  } finally {
+    await client.release();
+  }
+}
+
 export async function getAllOrders(userId: number) {
   const client = await pool.connect();
 

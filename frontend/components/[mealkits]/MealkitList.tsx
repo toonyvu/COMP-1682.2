@@ -175,7 +175,7 @@ export default function MealkitList({ week }: Props) {
                     <h3 className="text-lg font-semibold text-gray-500 mb-2">
                       Cooking Time
                     </h3>
-                    <div className="flex flex-row gap-4">
+                    <div className="flex flex-row gap-4 text-lg">
                       <ToggleGroup
                         variant="outline"
                         type="multiple"
@@ -187,7 +187,7 @@ export default function MealkitList({ week }: Props) {
                           }));
                         }}
                       >
-                        <ToggleGroupItem value="28">
+                        <ToggleGroupItem value="28" className="">
                           15 Minutes or Less
                         </ToggleGroupItem>
                         <ToggleGroupItem value="27">
@@ -319,25 +319,25 @@ export default function MealkitList({ week }: Props) {
                   {recipe.difficulty}
                 </span>
 
-                <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+                <h2 className="text-xl font-semibold text-gray-800 line-clamp-1">
                   {recipe.name}
                 </h2>
 
-                <p className="text-sm text-gray-500 line-clamp-2">
+                <p className="text-lg text-gray-500 line-clamp-2">
                   {recipe.description}
                 </p>
 
                 <h3 className="text-md font-semibold">
                   Tags:{" "}
                   {recipe.tags.map((tag, index) => (
-                    <span key={tag} className="text-sm text-gray-500">
+                    <span key={tag} className="text-md text-gray-500">
                       {index > 0 && ", "}
                       {tag}
                     </span>
                   ))}
                 </h3>
 
-                <div className="text-sm font-semibold text-gray-800 mt-auto">
+                <div className="text-md font-semibold text-gray-800 mt-auto">
                   <p>Servings: {recipe.servings}</p>
                   <div className="flex flex-row">
                     <div>

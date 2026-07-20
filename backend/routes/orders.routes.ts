@@ -7,6 +7,7 @@ import {
   getOrderDetailsController,
   getOrdersAdminController,
   updateOrderStatusController,
+  cancelOrderController,
 } from "../controllers/orders.controller.js";
 import { requireRole } from "../middleware/requireRole.js";
 const router = Router();
@@ -31,6 +32,8 @@ router.patch(
   requireRole("admin"),
   updateOrderStatusController,
 );
+
+router.patch("/cancelOrder", authenticateToken, cancelOrderController);
 
 router.get("/", authenticateToken, getAllOrdersController);
 

@@ -165,8 +165,6 @@ export default function AdminSidebar() {
             </CollapsibleContent>
           </div>
         </Collapsible>
-        <h1>1</h1>
-        <h1>1</h1>
       </div>
     </div>
   );

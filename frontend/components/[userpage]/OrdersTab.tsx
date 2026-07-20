@@ -181,7 +181,7 @@ export default function OrdersTab() {
               <SelectValue placeholder="Filter search" />
             </SelectTrigger>
 
-            <SelectContent>
+            <SelectContent position="popper">
               <SelectGroup>
                 <SelectLabel>Search</SelectLabel>
                 <SelectItem value="orderId">Order ID</SelectItem>
@@ -197,7 +197,7 @@ export default function OrdersTab() {
               <SelectValue placeholder="Sort..." />
             </SelectTrigger>
 
-            <SelectContent>
+            <SelectContent position="popper">
               <SelectGroup>
                 <SelectLabel>Sort</SelectLabel>
                 <SelectItem value="newest">Newest</SelectItem>

@@ -134,7 +134,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
   return (
     <div className="px-10">
       <div className="flex flex-row">
-        <div>
+        <div className="w-4/5">
           <div className="mx-auto mt-10 flex w-full items-start gap-12 px-8">
             <div className="flex flex-1 items-start gap-8">
               <div className="w-[420px] shrink-0">
@@ -149,10 +149,10 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
 
               <div className="flex flex-1 flex-col gap-4">
                 <div className="flex flex-row items-center gap-4">
-                  <h1 className="font-bold text-3xl">{recipeDetails.name}</h1>
+                  <h1 className="font-bold text-4xl">{recipeDetails.name}</h1>
 
                   <span
-                    className={`h-6 w-24 sm:h-8 px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center justify-center ${
+                    className={`h-6 w-24 sm:h-8 px-3 py-1 rounded-full text-xs sm:text-md font-medium flex items-center justify-center ${
                       difficultyColor[recipeDetails.difficulty]
                     }`}
                   >
@@ -212,7 +212,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
                 </span>
 
                 <div className="flex flex-row font-semibold gap-4">
-                  <Label htmlFor="qty" className="text-md text-gray-600">
+                  <Label htmlFor="qty" className="text-lg text-gray-600">
                     Quantity:{" "}
                   </Label>
                   <Input
@@ -237,8 +237,8 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
                 <hr />
 
                 <div className="  ">
-                  <h2 className="font-bold text-2xl">Description:</h2>
-                  <p className="text-md mt-4">{recipeDetails.description}</p>
+                  <h2 className="font-bold text-3xl">Description:</h2>
+                  <p className="text-lg mt-4">{recipeDetails.description}</p>
                 </div>
 
                 <hr />
@@ -261,7 +261,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
 
           <div className="flex flex-col gap-8">
             <div className="px-10 mt-10">
-              <h2 className="font-bold text-2xl mb-6">Cooking Steps</h2>
+              <h2 className="font-bold text-3xl mb-6">Cooking Steps</h2>
 
               <div className="space-y-6">
                 {recipeDetails.recipesteps.map((step) => (
@@ -281,7 +281,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
         </div>
 
         <div className=" w-[420px] shrink-0 mt-5 ml-20">
-          <h2 className="mb-6 text-2xl font-bold">Ingredients</h2>
+          <h2 className="mb-6 text-3xl font-bold">Ingredients</h2>
 
           <ScrollArea className="max-h-112.5">
             <div className="flex flex-col gap-4">
@@ -302,7 +302,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
                     <div className="flex flex-row gap-4">
                       <h3 className="font-semibold">{ing.name}</h3>
 
-                      <div className="flex gap-2 text-xs sm:text-sm">
+                      <div className="flex gap-2 text-xs sm:text-md">
                         {ing.is_vegetarian && (
                           <span className="px-1.5 py-0.5 md:px-2 md:py-1 bg-green-100 text-green-700 rounded-full text-xs">
                             Vegetarian
@@ -316,7 +316,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
                       </div>
                     </div>
 
-                    <p className="text-sm text-gray-500">{ing.category}</p>
+                    <p className="text-md text-gray-500">{ing.category}</p>
 
                     <p className="font-medium">
                       {ing.qty} {ing.unit}

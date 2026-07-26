@@ -204,6 +204,42 @@ export async function updateOrderStatus(orderId: number, status: string) {
       [status, orderId],
     );
 
+    const getUserResult = await client.query(
+      `
+      SELECT cus_order_id, user_id
+      FROM orders
+      WHERE id = $1
+      `,
+      [orderId],
+    );
+
+    if (getUserResult.rows.length === 0) {
+      await client.query("ROLLBACK");
+      return;
+    }
+
+    const customerOrderId = getUserResult.rows[0].cus_order_id;
+    const userId = getUserResult.rows[0].user_id;
+
+    await client.query(
+      `
+        INSERT INTO notifications (
+        user_id,
+        title,
+        message,
+        type,
+        action_url
+        ) VALUES ($1, $2, $3, $4, $5)
+      `,
+      [
+        userId,
+        `Your order ${customerOrderId} has been ${status}.`,
+        `Your order is now ${status}! Click on the link for details.`,
+        "order",
+        `/profile/orders/${customerOrderId}`,
+      ],
+    );
+
     await client.query("COMMIT");
   } catch (err) {
     console.log(err);

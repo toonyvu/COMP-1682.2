@@ -132,6 +132,148 @@ export default function MealkitList({ week }: Props) {
           </div>
         </div>
 
+        <div className="w-1/2 place-self-center mt-4">
+          <Card>
+            <CardContent>
+              <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+                <CollapsibleTrigger className="w-full">
+                  <div className="font-semibold text-xl flex flex-row w-full justify-between">
+                    <h3 className="text-2xl">Tag Filters</h3>
+                    <ChevronRight></ChevronRight>
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Cooking Time
+                      </h3>
+                      <div className="flex flex-row gap-4 text-lg">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.cookingTimes}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              cookingTimes: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="28" className="">
+                            15 Minutes or Less
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="27">
+                            30 Minutes or Less
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="26">
+                            Weekend Project
+                          </ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Recipe Type
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.recipeTypes}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              recipeTypes: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="25">
+                            Vegetarian
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="24">Vegan</ToggleGroupItem>
+                          <ToggleGroupItem value="23">
+                            Pescatarian
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="22">
+                            Gluten Free
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="21">
+                            Dairy Free
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="20">Halal</ToggleGroupItem>
+                          <ToggleGroupItem value="19">Low Carb</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Cuisine
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.cuisines}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              cuisines: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="18">Italian</ToggleGroupItem>
+                          <ToggleGroupItem value="17">Japanese</ToggleGroupItem>
+                          <ToggleGroupItem value="16">Korean</ToggleGroupItem>
+                          <ToggleGroupItem value="15">Chinese</ToggleGroupItem>
+                          <ToggleGroupItem value="14">
+                            Vietnamese
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="13">Thai</ToggleGroupItem>
+                          <ToggleGroupItem value="12">Indian</ToggleGroupItem>
+                          <ToggleGroupItem value="11">Mexican</ToggleGroupItem>
+                          <ToggleGroupItem value="10">French</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Flavor
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.flavors}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              flavors: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="9">Spicy</ToggleGroupItem>
+                          <ToggleGroupItem value="8">Mild</ToggleGroupItem>
+                          <ToggleGroupItem value="7">Sweet</ToggleGroupItem>
+                          <ToggleGroupItem value="6">Savoury</ToggleGroupItem>
+                          <ToggleGroupItem value="5">Tangy</ToggleGroupItem>
+                          <ToggleGroupItem value="4">Smoky</ToggleGroupItem>
+                          <ToggleGroupItem value="3">Creamy</ToggleGroupItem>
+                          <ToggleGroupItem value="2">Herby</ToggleGroupItem>
+                          <ToggleGroupItem value="1">Garlicky</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </CardContent>
+          </Card>
+        </div>
+
         <h1 className="place-self-center my-20 text-lg text-gray-600">
           No recipes found.
         </h1>
@@ -294,6 +436,7 @@ export default function MealkitList({ week }: Props) {
           </CardContent>
         </Card>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto sm:px-6 mt-8">
         {mealkits.mealkits.map((recipe) => (
           <Link

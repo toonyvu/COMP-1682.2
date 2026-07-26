@@ -3,8 +3,7 @@
 import { difficultyColor } from "@/constants/constants";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { ScrollArea } from "../ui/scroll-area";
 import { useCartStore } from "@/stores/cartStore";
 import { showToast } from "nextjs-toast-notify";
 import CartSheet from "../[mealkits]/CartSheet";
@@ -137,7 +136,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
         <div className="w-4/5">
           <div className="mx-auto mt-10 flex w-full items-start gap-12 px-8">
             <div className="flex flex-1 items-start gap-8">
-              <div className="w-[420px] shrink-0">
+              <div className="w-105 shrink-0">
                 <Image
                   src={recipeDetails.avatar_url}
                   alt={recipeDetails.name}
@@ -287,7 +286,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
             <div className="flex flex-col gap-4">
               {recipeDetails.recipeingredients.map((ing) => (
                 <div
-                  key={ing.ingredient_id}
+                  key={ing.id}
                   className="flex items-center gap-4 rounded-lg border p-4"
                 >
                   <Image

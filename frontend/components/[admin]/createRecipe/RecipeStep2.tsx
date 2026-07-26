@@ -1,9 +1,12 @@
 "use client";
 
+import { limit } from "@/constants/constants";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "../../ui/label";
 import { uploadIngredientAvatar } from "@/utils/imgUpload";
+import type { Ingredient } from "@/types/types";
+import { getIngredients } from "@/lib/api/ingredients";
 import Image from "next/image";
 
 import { Checkbox } from "../../ui/checkbox";
@@ -16,8 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { useQuery } from "@tanstack/react-query";
+
 import { Button } from "../../ui/button";
 import { useRecipeStore } from "@/stores/recipeStore";
+import PaginationComponent from "@/components/PaginationComponent";
 
 export const defaultIngredientForm = {
   name: "",
@@ -35,9 +41,30 @@ type Props = {
 };
 
 export default function RecipeStep2({ setFormStep }: Props) {
+  console.log("Form mounted.");
+  const [page, setPage] = useState(1);
   const [ingredientForm, setIngredientForm] = useState(defaultIngredientForm);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  const {
+    data: availableIngredients,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["ingredientsQuery", page],
+
+    queryFn: async () => {
+      console.log("Hi");
+      const result = await getIngredients(page, limit);
+      return result;
+    },
+  });
+
+  const total = availableIngredients?.total ?? 0;
+  const totalPages =
+    Math.floor(total / limit) === 0 ? 1 : Math.ceil(total / limit);
+  console.log(availableIngredients);
 
   const ingredients = useRecipeStore((state) => state.ingredients);
   const addIngredient = useRecipeStore((state) => state.addIngredient);
@@ -496,6 +523,78 @@ export default function RecipeStep2({ setFormStep }: Props) {
             </div>
           </section>
         </div>
+      </div>
+
+      <h1 className="text-3xl font-bold">Ingredients List</h1>
+
+      <PaginationComponent
+        page={page}
+        setPage={setPage}
+        totalPages={totalPages}
+      ></PaginationComponent>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        {availableIngredients?.ingredients.map((ingredient: Ingredient) => (
+          <div
+            key={ingredient.id}
+            className="flex gap-4 p-4 rounded-lg border bg-white shadow-sm hover:shadow-md transition"
+          >
+            {/* Image */}
+            <Image
+              src={ingredient.avatar_url}
+              alt={ingredient.name}
+              width={80}
+              height={80}
+              className="rounded-lg object-contain"
+            />
+
+            {/* Details */}
+            <div className="flex flex-col">
+              <h2 className="text-lg font-semibold">{ingredient.name}</h2>
+
+              <p className="text-sm text-gray-500">
+                Category: {ingredient.category}
+              </p>
+
+              <p className="text-sm text-gray-500">
+                Unit: {ingredient.unit_type}
+              </p>
+
+              <p className="text-sm text-gray-500">
+                Calories: {ingredient.calories_per_100g} kcal / 100g
+              </p>
+
+              <div className="flex gap-2 mt-3">
+                {ingredient.is_vegetarian && (
+                  <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                    Vegetarian
+                  </span>
+                )}
+
+                {ingredient.is_vegan && (
+                  <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">
+                    Vegan
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-1 items-center justify-end">
+              <Button
+                className="w-16 bg-green-600 hover:bg-green-800"
+                onClick={() =>
+                  setIngredientForm({
+                    ...ingredient,
+                    unit_type: ingredient.unit_type,
+                    qty: 0,
+                  })
+                }
+              >
+                Add
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

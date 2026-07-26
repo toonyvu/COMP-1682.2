@@ -10,6 +10,7 @@ import "./auth/strategies/facebook.strategy.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import mealkitRoutes from "./routes/mealkits.routes.js";
+import ingredientRoutes from "./routes/ingredients.routes.js";
 import recipeRoutes from "./routes/recipes.routes.js";
 import cartRoutes from "./routes/carts.routes.js";
 import checkoutRoutes from "./routes/checkout.routes.js";
@@ -46,6 +47,7 @@ app.use("/create-checkout-session", checkoutRoutes);
 app.use("/create-subscription-session", subscriptionRoutes);
 app.use("/orders", orderRoutes);
 app.use("/users", userRoutes);
+app.use("/ingredients", ingredientRoutes);
 app.use("/notifications", notificationRoutes);
 app.get("/test", (req, res) => {
   res.json({ working: true });

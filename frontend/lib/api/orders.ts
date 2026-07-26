@@ -52,7 +52,6 @@ export async function updateOrderStatus(orderId: number, status: string) {
         },
         body: JSON.stringify({
           orderId: orderId,
-          status: status,
         }),
       },
     );

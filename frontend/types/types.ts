@@ -72,6 +72,14 @@ export type RecipeAPIType = {
   steps: StepsAdd[];
 };
 
+export type RecipeAdminEdit = {
+  recipe: RecipeEdit;
+
+  ingredients: IngredientEdit[];
+
+  steps: StepEdit[];
+};
+
 export type RecipeAdd = {
   name: string;
   description: string;
@@ -81,6 +89,10 @@ export type RecipeAdd = {
   difficulty: Difficulty;
   prep_time: number;
   cooking_time: number;
+};
+
+export type RecipeEdit = RecipeAdd & {
+  id?: number;
 };
 
 export type DateInfo = {
@@ -99,7 +111,7 @@ export type MealKitList = {
 };
 
 export type Ingredient = {
-  ingredient_id: number;
+  id: number;
   name: string;
   category: string;
   unit_type: string;
@@ -112,6 +124,7 @@ export type Ingredient = {
 };
 
 export type IngredientAdd = {
+  id?: number;
   name: string;
   category: string;
   unit_type: string;
@@ -122,6 +135,9 @@ export type IngredientAdd = {
   avatar_url: string;
 };
 
+export type IngredientEdit = IngredientAdd & {
+  id?: number;
+};
 export type Steps = {
   id: number;
   recipe_id: number;
@@ -131,8 +147,13 @@ export type Steps = {
 };
 
 export type StepsAdd = {
+  id?: number;
   step_number: number;
   instruction: string;
+};
+
+export type StepEdit = StepsAdd & {
+  id?: number;
 };
 
 export type RecipeWithDetails = Recipe & {

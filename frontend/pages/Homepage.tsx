@@ -15,16 +15,6 @@ export default function Homepage() {
               Discover simple, delicious recipes you can cook in under 30
               minutes. No stress. No complicated steps. Just great food.
             </p>
-
-            <div className="mt-8 flex justify-center md:justify-start gap-4">
-              <button className="px-6 py-3 rounded-xl bg-black text-white font-semibold shadow-lg hover:bg-white hover:text-black transition">
-                See Plans
-              </button>
-
-              <button className="px-6 py-3 rounded-xl bg-white/20 backdrop-blur text-white font-semibold border border-white/40 hover:bg-white hover:text-black transition">
-                Browse Recipes
-              </button>
-            </div>
           </div>
 
           <div className="flex-1 flex justify-center">

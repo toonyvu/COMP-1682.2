@@ -1,7 +1,7 @@
 "use client";
 
 import { limit } from "@/constants/constants";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "../../ui/label";
 import { uploadIngredientAvatar } from "@/utils/imgUpload";
@@ -40,29 +40,12 @@ type Props = {
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const defaultErrors = {
-  ingredient_name: "",
-  category: "",
-  unit_type: "",
-  qty: "",
-  avatar_url: "",
-};
-
-export default function RecipeStep2({ setFormStep }: Props) {
-  console.log("Form mounted.");
+export default function EditRecipeStep2({ setFormStep }: Props) {
+  const recipe = useRecipeStore((state) => state.recipe);
   const [page, setPage] = useState(1);
   const [ingredientForm, setIngredientForm] = useState(defaultIngredientForm);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState({
-    ingredient_name: "",
-    category: "",
-    unit_type: "",
-    qty: "",
-    avatar_url: "",
-  });
-
-  const nameRegex = /^[A-Za-z0-9 ]{1,50}$/;
 
   const {
     data: availableIngredients,
@@ -72,11 +55,25 @@ export default function RecipeStep2({ setFormStep }: Props) {
     queryKey: ["ingredientsQuery", page],
 
     queryFn: async () => {
-      console.log("Hi");
       const result = await getIngredients(page, limit);
       return result;
     },
   });
+
+  useEffect(() => {
+    if (!recipe) return;
+
+    setIngredientForm({
+      name: "",
+      category: "",
+      unit_type: "",
+      calories_per_100g: 0,
+      is_vegetarian: false,
+      is_vegan: false,
+      qty: 0,
+      avatar_url: "",
+    });
+  }, [recipe]);
 
   const total = availableIngredients?.total ?? 0;
   const totalPages =
@@ -92,53 +89,10 @@ export default function RecipeStep2({ setFormStep }: Props) {
     setIngredientForm(defaultIngredientForm);
   };
 
-  const checkValidity = () => {
-    let valid = true;
-    const newErrors = {
-      ingredient_name: "",
-      category: "",
-      unit_type: "",
-      qty: "",
-      avatar_url: "",
-    };
-
-    if (!nameRegex.test(ingredientForm.name)) {
-      newErrors.ingredient_name = "Invalid name.";
-      valid = false;
-    }
-
-    if (!ingredientForm.category) {
-      newErrors.category = "Invalid Category.";
-      valid = false;
-    }
-
-    if (!ingredientForm.unit_type) {
-      newErrors.unit_type = "Invalid unit type.";
-      valid = false;
-    }
-
-    if (ingredientForm.qty < 1) {
-      newErrors.qty = "Quantity can't be less than 1.";
-      valid = false;
-    }
-
-    if (!ingredientForm.avatar_url) {
-      newErrors.avatar_url = "Provide a PNG picture.";
-      valid = false;
-    }
-    setError(newErrors);
-    return valid;
-  };
-
   const handleAdd = () => {
-    const valid = checkValidity();
-
     try {
-      if (valid) {
-        addIngredient(ingredientForm);
-        setIngredientForm(defaultIngredientForm);
-        setError(defaultErrors);
-      }
+      addIngredient(ingredientForm);
+      setIngredientForm(defaultIngredientForm);
     } catch (err) {
       console.error(err);
     }
@@ -222,7 +176,6 @@ export default function RecipeStep2({ setFormStep }: Props) {
                   id="ingredient-name"
                   type="text"
                   placeholder="Enter ingredient..."
-                  className={`${error.ingredient_name ? "border-red-500" : ""}`}
                   value={ingredientForm.name}
                   onChange={(e) => {
                     setIngredientForm({
@@ -231,10 +184,6 @@ export default function RecipeStep2({ setFormStep }: Props) {
                     });
                   }}
                 />
-
-                {error.ingredient_name && (
-                  <p className="text-red-600">{error.ingredient_name}</p>
-                )}
               </div>
 
               {/* Category + Unit Type */}
@@ -252,9 +201,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
                       })
                     }
                   >
-                    <SelectTrigger
-                      className={`${error.category ? "border-red-500" : ""}`}
-                    >
+                    <SelectTrigger>
                       <SelectValue placeholder="Choose category..." />
                     </SelectTrigger>
 
@@ -286,10 +233,6 @@ export default function RecipeStep2({ setFormStep }: Props) {
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-
-                  {error.category && (
-                    <p className="text-red-600">{error.category}</p>
-                  )}
                 </div>
 
                 {/* Unit Type */}
@@ -305,9 +248,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
                       })
                     }
                   >
-                    <SelectTrigger
-                      className={`${error.unit_type ? "border-red-500" : ""}`}
-                    >
+                    <SelectTrigger>
                       <SelectValue placeholder="Choose unit..." />
                     </SelectTrigger>
 
@@ -331,14 +272,12 @@ export default function RecipeStep2({ setFormStep }: Props) {
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-
-                  {error.unit_type && (
-                    <p className="text-red-600">{error.unit_type}</p>
-                  )}
                 </div>
               </div>
 
+              {/* Calories + Quantity */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Calories */}
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="calories-per-100g">Calories per 100g</Label>
 
@@ -346,7 +285,6 @@ export default function RecipeStep2({ setFormStep }: Props) {
                     id="calories-per-100g"
                     type="number"
                     placeholder="100"
-                    min={0}
                     value={ingredientForm.calories_per_100g}
                     onChange={(e) => {
                       setIngredientForm({
@@ -357,6 +295,7 @@ export default function RecipeStep2({ setFormStep }: Props) {
                   />
                 </div>
 
+                {/* Quantity */}
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="qty">Quantity</Label>
 
@@ -364,8 +303,6 @@ export default function RecipeStep2({ setFormStep }: Props) {
                     id="qty"
                     type="number"
                     placeholder="2"
-                    className={`${error.qty ? "border-red-500" : ""}`}
-                    min={1}
                     value={ingredientForm.qty}
                     onChange={(e) => {
                       setIngredientForm({
@@ -374,8 +311,6 @@ export default function RecipeStep2({ setFormStep }: Props) {
                       });
                     }}
                   />
-
-                  {error.qty && <p className="text-red-600">{error.qty}</p>}
                 </div>
               </div>
 
@@ -424,16 +359,11 @@ export default function RecipeStep2({ setFormStep }: Props) {
                   id="img"
                   type="file"
                   placeholder="2"
-                  className={`${error.avatar_url ? "border-red-500" : ""}`}
                   accept="image/png"
                   onChange={(e) => {
                     handleImageUpload(e);
                   }}
                 />
-
-                {error.avatar_url && (
-                  <p className="text-red-600">{error.avatar_url}</p>
-                )}
 
                 <h1>Current Image:</h1>
                 {ingredientForm?.avatar_url && (
@@ -481,14 +411,9 @@ export default function RecipeStep2({ setFormStep }: Props) {
                     <Button
                       className="w-20 bg-green-600 hover:bg-green-800"
                       onClick={() => {
-                        const valid = checkValidity();
-                        if (valid) {
-                          editIngredient(editingIndex, ingredientForm);
-                          setIngredientForm(defaultIngredientForm);
-                          setEditingIndex(null);
-                        } else {
-                          return;
-                        }
+                        editIngredient(editingIndex, ingredientForm);
+                        setIngredientForm(defaultIngredientForm);
+                        setEditingIndex(null);
                       }}
                     >
                       Edit

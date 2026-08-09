@@ -1,7 +1,14 @@
-"use client";
+import { useRecipeStore } from "@/stores/recipeStore";
+type Props = {
+  setFormStep: React.Dispatch<React.SetStateAction<number>>;
+};
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useState, useEffect } from "react";
+import { uploadRecipeImg } from "@/utils/imgUpload";
+
 import {
   Select,
   SelectContent,
@@ -10,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Collapsible,
@@ -18,21 +26,13 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Textarea } from "@/components/ui/textarea";
-import { useRecipeStore } from "@/stores/recipeStore";
-import { useState, useEffect } from "react";
-
-import { uploadRecipeImg } from "@/utils/imgUpload";
 import Image from "next/image";
 
 import type { Difficulty } from "@/types/types";
 import type { TagFilters } from "@/types/types";
 
-type Props = {
-  setFormStep: React.Dispatch<React.SetStateAction<number>>;
-};
-
 type RecipeFormData = {
+  id?: number;
   name: string;
   description: string;
   servings: number;
@@ -44,6 +44,7 @@ type RecipeFormData = {
 };
 
 const defaultFormData: RecipeFormData = {
+  id: 0,
   name: "",
   description: "",
   servings: 1,
@@ -54,10 +55,14 @@ const defaultFormData: RecipeFormData = {
   tags: [],
 };
 
-export default function RecipeStep1({ setFormStep }: Props) {
-  const recipeDetails = useRecipeStore((state) => state.recipe);
-  const [formData, setFormData] = useState(defaultFormData);
+export default function EditRecipeStep1({ setFormStep }: Props) {
+  const recipe = useRecipeStore((state) => state.recipe);
+
+  const [uploading, setUploading] = useState(false);
+
   const [filtersOpen, setFiltersOpen] = useState(true);
+  const setRecipeDetails = useRecipeStore((state) => state.setRecipeDetails);
+  const [formData, setFormData] = useState(defaultFormData);
   const [filters, setFilters] = useState<TagFilters>({
     cookingTimes: [] as string[],
     recipeTypes: [] as string[],
@@ -68,22 +73,82 @@ export default function RecipeStep1({ setFormStep }: Props) {
   const [errors, setErrors] = useState({
     recipeName: "",
     description: "",
-    servings: "",
     tags: "",
     prepAndCookTime: "",
     avatarUrl: "",
   });
 
-  const nameRegex = /^[A-Za-z0-9 ]{4,100}$/;
-  useEffect(() => {
-    if (recipeDetails) {
-      setFormData(recipeDetails);
+  const handleSubmit = () => {
+    const tags = [
+      ...filters.cookingTimes,
+      ...filters.cuisines,
+      ...filters.flavors,
+      ...filters.recipeTypes,
+    ];
+
+    const newErrors = {
+      recipeName: "",
+      description: "",
+      tags: "",
+      prepAndCookTime: "",
+      avatarUrl: "",
+    };
+
+    let valid = true;
+
+    if (!formData.name || formData.name.length < 4) {
+      newErrors.recipeName = "Recipe name must contain at least 4 characters.";
+      valid = false;
     }
-  }, [recipeDetails]);
 
-  const [uploading, setUploading] = useState(false);
+    if (!formData.avatar_url) {
+      newErrors.avatarUrl = "Recipe include a recipe picture.";
+      valid = false;
+    }
 
-  const setRecipeDetails = useRecipeStore((state) => state.setRecipeDetails);
+    if (tags.length == 0) {
+      newErrors.tags = "Recipe must contain at least one tag.";
+      valid = false;
+    }
+
+    if (!formData.description) {
+      newErrors.description = "Recipe must contain a description.";
+      valid = false;
+    }
+
+    if (formData.cooking_time == 0 && formData.prep_time == 0) {
+      newErrors.prepAndCookTime =
+        "Only either prep time or cooking time can be 0.";
+      valid = false;
+    }
+
+    if (valid) {
+      setRecipeDetails({
+        ...formData,
+        tags,
+      });
+      setFormStep(2);
+    } else {
+      setErrors(newErrors);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (!recipe) return;
+
+    setFormData({
+      id: recipe.id,
+      name: recipe.name,
+      description: recipe.description,
+      servings: recipe.servings,
+      difficulty: recipe.difficulty,
+      prep_time: recipe.prep_time,
+      cooking_time: recipe.cooking_time,
+      avatar_url: recipe.avatar_url,
+      tags: recipe.tags,
+    });
+  }, [recipe]);
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -106,67 +171,8 @@ export default function RecipeStep1({ setFormStep }: Props) {
     }
   }
 
-  const handleSubmit = () => {
-    const tags = [
-      ...filters.cookingTimes,
-      ...filters.cuisines,
-      ...filters.flavors,
-      ...filters.recipeTypes,
-    ];
+  if (!recipe) return <div>Recipe not found.</div>;
 
-    const newErrors = {
-      recipeName: "",
-      description: "",
-      servings: "",
-      tags: "",
-      prepAndCookTime: "",
-      avatarUrl: "",
-    };
-
-    let valid = true;
-
-    if (!nameRegex.test(formData.name)) {
-      newErrors.recipeName = "Recipe name must contain at least 4 characters.";
-      valid = false;
-    }
-
-    if (!formData.avatar_url) {
-      newErrors.avatarUrl = "Recipe include a recipe picture.";
-      valid = false;
-    }
-
-    if (tags.length == 0) {
-      newErrors.tags = "Recipe must contain at least one tag.";
-      valid = false;
-    }
-
-    if (formData.servings == 0) {
-      newErrors.servings = "Serving cannot be 0.";
-      valid = false;
-    }
-
-    if (formData.description.trim().length < 10) {
-      newErrors.description = "Recipe must contain a description.";
-      valid = false;
-    }
-
-    if (formData.cooking_time == 0 && formData.prep_time == 0) {
-      newErrors.prepAndCookTime =
-        "Only either prep time or cooking time can be 0.";
-      valid = false;
-    }
-
-    if (valid) {
-      setRecipeDetails({
-        ...formData,
-        tags,
-      });
-      setFormStep(2);
-    } else {
-      setErrors(newErrors);
-      return;
-    }
-  };
   return (
     <div className=" w-full bg-white rounded-2xl p-8">
       {/* Header */}
@@ -245,7 +251,9 @@ export default function RecipeStep1({ setFormStep }: Props) {
           )}
         </div>
 
+        {/* Servings + Difficulty */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Servings */}
           <div className="flex flex-col gap-2">
             <Label htmlFor="servings">Servings</Label>
 
@@ -254,7 +262,6 @@ export default function RecipeStep1({ setFormStep }: Props) {
               type="number"
               min={1}
               placeholder="4"
-              className={`${errors.servings ? "border-red-500" : ""}`}
               value={formData.servings}
               onChange={(e) =>
                 setFormData({
@@ -263,10 +270,6 @@ export default function RecipeStep1({ setFormStep }: Props) {
                 })
               }
             />
-
-            {errors.servings && (
-              <p className="text-red-600">{errors.servings}</p>
-            )}
           </div>
 
           {/* Difficulty */}

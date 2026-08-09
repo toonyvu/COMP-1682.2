@@ -33,7 +33,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
   const addItem = useCartStore((state) => state.addItem);
 
   const { data: recipeDetails } = useQuery<RecipeWithDetails | null>({
-    queryKey: ["recipe", id],
+    queryKey: ["recipe", id, mealkitId],
 
     queryFn: async () => getRecipe(id, mealkitId),
   });
@@ -86,6 +86,8 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
       console.log(err);
     }
   };
+
+  console.log(recipeDetails);
 
   const [favorited, setFavorited] = useState<boolean>(false);
   const [qty, setQty] = useState<number>(1);

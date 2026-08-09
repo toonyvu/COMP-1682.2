@@ -4,7 +4,9 @@ import { useUserStore } from "@/stores/userStore";
 
 import { getOrderDetails } from "@/lib/api/orders";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@base-ui/react";
+import { useState } from "react";
+import { Button } from "../ui/button";
+import { updateOrderStatus } from "@/lib/api/orders";
 
 import Image from "next/image";
 import React from "react";
@@ -12,18 +14,33 @@ import React from "react";
 import type { UserOrder } from "@/types/types";
 import type { OrderItems } from "@/types/types";
 import { countryNames } from "@/constants/constants";
+import type { OrderStatus } from "@/types/types";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type Props = {
   orderId: string;
 };
 
 export default function OrderDetails({ orderId }: Props) {
+  const [status, setStatus] = useState<OrderStatus | null>(null);
   const user = useUserStore((state) => state.user);
 
   const {
     data: order,
     error,
     isLoading,
+    refetch,
   } = useQuery<UserOrder>({
     queryKey: ["orderDetailQuery", orderId],
     queryFn: () => getOrderDetails(orderId),
@@ -43,15 +60,61 @@ export default function OrderDetails({ orderId }: Props) {
     return <div>Order not found.</div>;
   }
 
+  const canCancel = order.status === "paid" || order.status === "preparing";
+
   const steps = ["pending", "paid", "preparing", "shipped", "delivered"];
   const currentIndex = steps.indexOf(order.status);
 
   return (
     <div className="mx-auto w-full p-6">
       <div className="flex flex-row justify-between">
-        <h1 className="mb-6 text-4xl font-bold">Order #{order.cus_order_id}</h1>
+        <div className="flex flex-col">
+          <h1 className="mb-6 text-4xl font-bold">
+            Order #{order.cus_order_id}
+          </h1>
+          <h2 className="text-3xl font-semibold mb-6 capitalize">
+            Status: {order.status}
+          </h2>
+        </div>
+
         <div>
-          <Button>Cancel Order</Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                disabled={!canCancel}
+                className="bg-green-600 hover:bg-green-800 p-4 h-10 rounded-xl text-lg font-semibold text-white"
+              >
+                Cancel Order
+              </Button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogDescription>
+                This action cannot be undone. This will cancel the order and
+                initiate a refund. Deductions in refund will be present based on
+                order status.
+              </AlertDialogDescription>
+              <AlertDialogCancel
+                onClick={() => {
+                  setStatus(null);
+                }}
+              >
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-green-600"
+                onClick={async () => {
+                  await updateOrderStatus(order.id, "cancelled");
+                  await refetch();
+                }}
+              >
+                Cancel Order
+              </AlertDialogAction>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 

@@ -3,11 +3,9 @@ import {
   getRecipeDetails,
   createRecipeService,
   getAllRecipesAdmin,
+  getRecipeAdmin,
+  editRecipeService,
 } from "../services/recipes.service.js";
-import {
-  addRecipeFavorite,
-  removeRecipeFavorite,
-} from "../services/recipeFavorites.service.js";
 
 export async function getRecipes(req: Request, res: Response) {
   console.log(req);
@@ -24,57 +22,13 @@ export async function getRecipes(req: Request, res: Response) {
       return res.status(400).json({ message: "Invalid Recipe ID." });
     }
 
-    const result = await getRecipeDetails(
-      Number(id),
-      userId,
-      Number(mealkitId),
-    );
+    const result = await getRecipeDetails(Number(id), userId);
     return res.status(200).json(result);
   } catch (err: any) {
-    return res.status(err.status || 500).json({ message: "Server Error." });
-  }
-}
-
-export async function addFavorite(req: Request, res: Response) {
-  const userId = req.authUser.userId;
-  const { id } = req.params;
-
-  if (!id) return res.status(400).json({ message: "Invalid request." });
-
-  try {
-    if (!Number.isInteger(Number(id))) {
-      return res.status(400).json({ message: "Invalid Recipe ID." });
-    }
-
-    await addRecipeFavorite(Number(id), userId);
-    return res.status(200).json({ message: "Recipe added to favorites." });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ message: "Failed to add recipe to favorites." });
-  }
-}
-
-export async function deleteFavorite(req: Request, res: Response) {
-  const userId = req.authUser.userId;
-  const { id } = req.params;
-
-  if (!id) return res.status(400).json({ message: "Invalid request." });
-
-  try {
-    if (!Number.isInteger(Number(id))) {
-      return res.status(400).json({ message: "Invalid Recipe ID." });
-    }
-
-    const deleted = await removeRecipeFavorite(Number(id), userId);
-    if (deleted === 0) {
-      return res.status(404).json({ message: "No favorite recipe founds." });
-    }
-    return res.status(200).json({ message: "Recipe added to favorites." });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ message: "Failed to add recipe to favorites." });
+    console.log(err);
+    return res.status(500).json({
+      message: err.message,
+    });
   }
 }
 
@@ -98,11 +52,31 @@ export async function getRecipesAdminController(req: Request, res: Response) {
   const page = Number(req.query.page) || 1;
   const search = String(req.query.search);
 
-  console.log("Controller reached");
-
   try {
     const result = await getAllRecipesAdmin(page, limit, search);
     return res.status(200).json(result);
+  } catch (err: any) {
+    return res.status(500).json(err.message);
+  }
+}
+
+export async function getRecipeAdminController(req: Request, res: Response) {
+  const { id } = await req.params;
+
+  try {
+    const result = await getRecipeAdmin(Number(id));
+    return res.status(200).json(result);
+  } catch (err: any) {
+    return res.status(500).json(err.message);
+  }
+}
+
+export async function editRecipeAdminController(req: Request, res: Response) {
+  const { recipe, ingredients, steps } = req.body;
+
+  try {
+    await editRecipeService(recipe, ingredients, steps);
+    return res.sendStatus(204);
   } catch (err: any) {
     return res.status(500).json(err.message);
   }

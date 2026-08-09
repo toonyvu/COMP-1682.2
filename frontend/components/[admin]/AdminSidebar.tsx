@@ -13,6 +13,9 @@ import {
 
 import { ChevronRight } from "lucide-react";
 import { useAdminTabStore } from "@/stores/adminTabStore";
+import { usePathname } from "next/navigation";
+
+import { useRecipeStore } from "@/stores/recipeStore";
 
 import Link from "next/link";
 
@@ -23,10 +26,13 @@ export default function AdminSidebar() {
     orders: false,
   });
 
+  const resetRecipeStore = useRecipeStore((state) => state.resetRecipeStore);
+
   const setTab = useAdminTabStore((state) => state.setTab);
+  const pathname = usePathname();
 
   return (
-    <div className="bg-linear-to-b from-green-700 to-green-800 h-screen">
+    <div className={`bg-linear-to-b from-green-700 to-green-900 h-screen`}>
       <div className="flex flex-row items-center">
         <Image
           src={iconw}
@@ -67,15 +73,26 @@ export default function AdminSidebar() {
               <div className="flex flex-col gap-4 mt-4">
                 <Link
                   href="/admin/dashboard/recipes/create"
-                  className="text-white hover:bg-green-900 h-8 content-center px-2"
+                  className={`text-white h-8 content-center px-2 ${pathname === "/admin/dashboard/recipes/create" ? "bg-green-900" : "hover:bg-green-900"}`}
                   onClick={() => {
+                    resetRecipeStore();
                     setTab("createRecipe");
                   }}
                 >
                   Create Recipes
                 </Link>
-                <h1 className="text-white hover:bg-green-900 h-8 content-center px-2">
-                  Edit Recipes
+                <h1
+                  className={`text-white hover:bg-green-900 h-8 content-center px-2 ${pathname === "/admin/dashboard/recipes/edit" ? "bg-green-900" : "hover:bg-green-900"}`}
+                >
+                  <Link
+                    href="/admin/dashboard/recipes/edit"
+                    className={`text-white h-8 content-center `}
+                    onClick={() => {
+                      setTab("editRecipe");
+                    }}
+                  >
+                    Edit Recipes
+                  </Link>
                 </h1>
               </div>
             </CollapsibleContent>
@@ -116,9 +133,6 @@ export default function AdminSidebar() {
                 >
                   Create Mealkits
                 </Link>
-                <h1 className="text-white hover:bg-green-900 h-8 content-center px-2">
-                  Edit Mealkits
-                </h1>
               </div>
             </CollapsibleContent>
           </div>
@@ -158,9 +172,6 @@ export default function AdminSidebar() {
                 >
                   View Orders
                 </Link>
-                <h1 className="text-white hover:bg-green-900 h-8 content-center px-2">
-                  Edit Mealkits
-                </h1>
               </div>
             </CollapsibleContent>
           </div>

@@ -1,5 +1,4 @@
 import { apiFetch } from "./apiFetch";
-import { limit } from "@/constants/constants";
 
 export async function getIngredients(page: number, limit: number) {
   console.log("Hi");

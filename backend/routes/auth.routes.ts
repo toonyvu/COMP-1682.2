@@ -6,6 +6,7 @@ import {
   refreshToken,
   forgotPassword,
   logout,
+  resetPassword,
 } from "../controllers/auth.controller.js";
 import { authenticateToken } from "../middleware/authenticateToken.js";
 import passport from "passport";
@@ -50,25 +51,15 @@ router.post("/signup", (req, res) => {
   signup(req, res);
 });
 
+router.put("/reset-password", (req, res) => {
+  resetPassword(req, res);
+});
+
 router.post("/forgot-password", (req, res) => {
   forgotPassword(req, res);
 });
 
-router.post("/logout", logout, (req, res) => {
-  res.clearCookie("accessToken", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-  });
-
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-  });
-
-  res.json({ success: true });
-});
+router.post("/logout", logout);
 
 router.post("/refresh", refreshToken);
 

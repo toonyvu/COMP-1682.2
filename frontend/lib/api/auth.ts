@@ -64,7 +64,7 @@ export async function forgotPassword(email: string) {
     `${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`,
     {
       method: "POST",
-      credentials: "include", // optional here
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -73,4 +73,32 @@ export async function forgotPassword(email: string) {
   );
 
   return res.json();
+}
+
+export async function resetPassword(password: string, token: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password?token=${token}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password }),
+    },
+  );
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    return {
+      success: false,
+      message: data?.message ?? "Error changing password.",
+    };
+  }
+
+  return {
+    success: true,
+    message:
+      "Password changed successfully. Go back to the login page to log in!",
+  };
 }

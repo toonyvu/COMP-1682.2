@@ -15,51 +15,55 @@ export async function getAllMealkits(
 
   if (ids.length > 0) {
     const mealkitResult = await pool.query(
-      `SELECT t1.id AS recipe_id, 
-      t1.name, 
-      t1.description, 
-      t1.avatar_url, 
-      t1.servings, 
-      t1.difficulty, 
-      t1.prep_time, 
-      t1.cooking_time, 
-      t1.created_at,
+      `SELECT 
+        t1.id AS recipe_id, 
+        t1.name, 
+        t1.description, 
+        t1.avatar_url, 
+        t1.servings, 
+        t1.difficulty, 
+        t1.prep_time, 
+        t1.cooking_time, 
+        t1.created_at,
 
-      t2.price, 
-      t2.id AS mealkit_id, 
-      t2.max_servings, 
-      t2.week_number, 
+        t2.price, 
+        t2.id AS mealkit_id, 
+        t2.max_servings, 
+        t2.week_number, 
 
-      COALESCE(
-        array_agg(DISTINCT tag.name)
-        FILTER (WHERE tag.id IS NOT NULL), '{}'
-      ) as tags
-      
+        COALESCE(
+          array_agg(DISTINCT tag.name)
+          FILTER (WHERE tag.id IS NOT NULL), '{}'
+        ) AS tags
+
       FROM recipes t1 
 
       INNER JOIN mealkits t2 
-      ON t1.id = t2.recipe_id 
+        ON t1.id = t2.recipe_id 
 
       LEFT JOIN recipe_tags rt
-      ON t1.id = rt.recipe_id
+        ON t1.id = rt.recipe_id
 
       LEFT JOIN tags tag
-      ON rt.tag_id = tag.id
+        ON rt.tag_id = tag.id
 
       WHERE t2.week_number = $1 
       AND t1.name ILIKE $2
-      AND rt.tag_id = ANY($3::int[])
 
       GROUP BY
-      t1.id,
-      t2.id
+        t1.id,
+        t2.id
+
+      HAVING
+        COUNT(DISTINCT rt.tag_id) FILTER (
+          WHERE rt.tag_id = ANY($3::int[])
+        ) = array_length($3::int[], 1)
 
       ORDER BY t2.id 
       LIMIT $4 
       OFFSET $5`,
       [week, `%${search}%`, ids, limit, offset],
     );
-
     const countResult = await pool.query(
       `
         SELECT COUNT(DISTINCT t2.id)

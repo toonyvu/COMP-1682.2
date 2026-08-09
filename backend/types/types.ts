@@ -12,6 +12,10 @@ export type RecipeDetails = {
   tags: string[];
 };
 
+export type RecipeDetailsEdit = RecipeDetails & {
+  id?: number;
+};
+
 export type Ingredient = {
   name: string;
   category: string;
@@ -23,10 +27,21 @@ export type Ingredient = {
   avatar_url: string;
 };
 
+export type IngredientEdit = Ingredient & {
+  id?: number;
+};
+
 export type Step = {
   step_number: number;
   instruction: string;
 };
+
+export type StepEdit = Step & {
+  id?: number;
+};
+
+export type Ingredients = IngredientEdit[];
+export type Steps = StepEdit[];
 
 export type mealkitData = {
   recipe_id: number;

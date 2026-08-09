@@ -48,7 +48,7 @@ export async function cancelOrders(orderId: number) {
     await client.query("BEGIN");
     const getOrderResult = await client.query(
       `
-    SELECT stripe_payment_intent_id, amount_total, refunded, status, cus_order_id
+    SELECT stripe_payment_intent_id, amount_total, refunded, status, cus_order_id, user_id
     FROM orders
     WHERE id = $1
     `,
@@ -63,6 +63,8 @@ export async function cancelOrders(orderId: number) {
       throw new Error("Order has already been refunded.");
     }
 
+    const userId = getOrderResult.rows[0].user_id;
+    const customerOrderId = getOrderResult.rows[0].cus_order_id;
     const amountTotal = getOrderResult.rows[0].amount_total;
     const cusIntentId = getOrderResult.rows[0].stripe_payment_intent_id;
     const status = getOrderResult.rows[0].status;
@@ -85,6 +87,25 @@ export async function cancelOrders(orderId: number) {
           WHERE id = $3
           `,
           [refund.id, refund.amount, orderId],
+        );
+
+        await client.query(
+          `
+        INSERT INTO notifications (
+        user_id,
+        title,
+        message,
+        type,
+        action_url
+        ) VALUES ($1, $2, $3, $4, $5)
+      `,
+          [
+            userId,
+            `Your order ${customerOrderId} has been cancelled.`,
+            `Your order has been cancelled. Refund has been inititated. Click on the link for details.`,
+            "cancelled",
+            `/profile/orders/${customerOrderId}`,
+          ],
         );
       } else {
         throw new Error("Error: Cannot refund for order.");
@@ -109,6 +130,25 @@ export async function cancelOrders(orderId: number) {
           WHERE id = $3
           `,
           [refund.id, refund.amount, orderId],
+        );
+
+        await client.query(
+          `
+        INSERT INTO notifications (
+        user_id,
+        title,
+        message,
+        type,
+        action_url
+        ) VALUES ($1, $2, $3, $4, $5)
+      `,
+          [
+            userId,
+            `Your order ${customerOrderId} has been cancelled.`,
+            `Your order has been cancelled. Refund has been inititated. Deductions in refund applied. Click on the link for details.`,
+            "cancelled",
+            `/profile/orders/${customerOrderId}`,
+          ],
         );
       } else {
         throw new Error("Error: Cannot refund for order.");
@@ -317,9 +357,8 @@ export async function getAllOrdersAdmin(
   }
 
   if (search && searchColumn) {
-    if (searchField === "cus_order_id" || searchField === "phone") {
+    if (searchField === "orderId" || searchField === "phone") {
       values.push(search);
-
       whereClause.push(`${searchColumn} = $${values.length}`);
     } else {
       values.push(`%${search}%`);
@@ -405,7 +444,6 @@ export async function getAllOrdersAdmin(
 
     const orders = ordersResult.rows.map((order) => ({
       ...order,
-      amount_total: order.amount_total,
     }));
 
     await client.query("COMMIT");

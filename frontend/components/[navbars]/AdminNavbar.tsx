@@ -25,17 +25,6 @@ export default function AdminNavbar() {
                 asChild
                 className=" hover:bg-black hover:text-white"
               >
-                <Link href="/profile" className="text-sm sm:text-xl">
-                  Profile
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className=" hover:bg-black hover:text-white"
-              >
                 <Link href="/signup" className="text-sm sm:text-xl">
                   Logout
                 </Link>

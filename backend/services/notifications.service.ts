@@ -5,6 +5,7 @@ export async function getAllNotificationsService(userId: number) {
     `
         SELECT * FROM notifications
         WHERE user_id = $1
+        ORDER BY created_at DESC
         `,
     [userId],
   );

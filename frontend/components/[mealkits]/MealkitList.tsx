@@ -120,7 +120,7 @@ export default function MealkitList({ week }: Props) {
         <div className="w-full flex justify-center">
           <div className="flex gap-2">
             <Input
-              className="h-10 w-80 ring-1 ring-gray-300"
+              className="h-10 w-300 ring-1 ring-gray-300"
               placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -306,8 +306,8 @@ export default function MealkitList({ week }: Props) {
           <CardContent>
             <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
               <CollapsibleTrigger className="w-full">
-                <div className="font-semibold text-xl flex flex-row w-full justify-between">
-                  <h3 className="text-2xl">Tag Filters</h3>
+                <div className="text-md flex flex-row w-full justify-between">
+                  <h3 className="font-semibold">Tag Filters</h3>
                   <ChevronRight></ChevronRight>
                 </div>
               </CollapsibleTrigger>
@@ -317,7 +317,7 @@ export default function MealkitList({ week }: Props) {
                     <h3 className="text-lg font-semibold text-gray-500 mb-2">
                       Cooking Time
                     </h3>
-                    <div className="flex flex-row gap-4 text-lg">
+                    <div className="flex flex-row gap-4">
                       <ToggleGroup
                         variant="outline"
                         type="multiple"
@@ -329,11 +329,14 @@ export default function MealkitList({ week }: Props) {
                           }));
                         }}
                       >
-                        <ToggleGroupItem value="28" className="">
+                        <ToggleGroupItem value="28">
                           15 Minutes or Less
                         </ToggleGroupItem>
                         <ToggleGroupItem value="27">
                           30 Minutes or Less
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="29">
+                          60 Minutes or Less
                         </ToggleGroupItem>
                         <ToggleGroupItem value="26">
                           Weekend Project
@@ -398,6 +401,7 @@ export default function MealkitList({ week }: Props) {
                         <ToggleGroupItem value="12">Indian</ToggleGroupItem>
                         <ToggleGroupItem value="11">Mexican</ToggleGroupItem>
                         <ToggleGroupItem value="10">French</ToggleGroupItem>
+                        <ToggleGroupItem value="30">Other</ToggleGroupItem>
                       </ToggleGroup>
                     </div>
                   </div>
@@ -418,6 +422,7 @@ export default function MealkitList({ week }: Props) {
                           }));
                         }}
                       >
+                        <ToggleGroupItem value="31">Cheesy</ToggleGroupItem>
                         <ToggleGroupItem value="9">Spicy</ToggleGroupItem>
                         <ToggleGroupItem value="8">Mild</ToggleGroupItem>
                         <ToggleGroupItem value="7">Sweet</ToggleGroupItem>
@@ -440,7 +445,7 @@ export default function MealkitList({ week }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto sm:px-6 mt-8">
         {mealkits.mealkits.map((recipe) => (
           <Link
-            key={recipe.recipe_id}
+            key={recipe.mealkit_id}
             href={`/recipes/${recipe.recipe_id}?mealkit=${recipe.mealkit_id}`}
             scroll
             className="block h-full hover:scale-105"

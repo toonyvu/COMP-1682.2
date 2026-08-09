@@ -7,6 +7,7 @@ type cartStore = {
   addItem: (item: Recipe, qty?: number) => void;
   removeItem: (item: Recipe) => void;
   setCart: (items: CartItem[]) => void;
+  deleteItem: (item: Recipe) => void;
 };
 
 export const useCartStore = create<cartStore>((set) => ({
@@ -51,6 +52,15 @@ export const useCartStore = create<cartStore>((set) => ({
           ),
         };
       }
+    }),
+
+  deleteItem: (recipe: Recipe) =>
+    set((state) => {
+      return {
+        cartItems: state.cartItems.filter(
+          (i) => i.mealkit_id !== recipe.mealkit_id,
+        ),
+      };
     }),
 
   setCart: (items) => set({ cartItems: items }),

@@ -4,9 +4,7 @@ import jwt from "jsonwebtoken";
 import { randomBytes, createHash } from "node:crypto";
 import { Resend } from "resend";
 
-const resend = new Resend(
-  process.env.RESEND_API_KEY || "re_P4CVpk86_EbwmUnNsvEpby5nZxrRzaNiG",
-);
+const resend = new Resend(process.env.RESEND_API_KEY);
 import type { Profile } from "passport";
 
 export async function login(email: string, password: string) {
@@ -32,7 +30,7 @@ export async function login(email: string, password: string) {
   const accessToken = jwt.sign(
     { userId: user.id, role: user.role },
     process.env.ACCESS_TOKEN_SECRET!,
-    { expiresIn: "15m" },
+    { expiresIn: "1h" },
   );
 
   const refreshToken = jwt.sign(
@@ -190,8 +188,48 @@ export async function deleteRefreshToken(refreshToken: string) {
   ]);
 }
 
+export async function resetPassword(password: string, token: string) {
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  const user = await pool.query(
+    `
+    SELECT * FROM reset_tokens
+    WHERE token_hash = $1
+    `,
+    [tokenHash],
+  );
+
+  console.log(tokenHash);
+
+  if (user.rowCount === 0) {
+    throw new Error("Invalid reset token.");
+  }
+
+  if (new Date() > user.rows[0].expires_at) {
+    throw new Error("Token Expired.");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const userId = user.rows[0].user_id;
+
+  await pool.query(
+    `
+    UPDATE users
+    SET password = $1
+    WHERE id = $2
+    `,
+    [hashedPassword, userId],
+  );
+
+  await pool.query(
+    `
+    DELETE FROM reset_tokens
+    WHERE token_hash = $1
+    `,
+    [tokenHash],
+  );
+}
+
 export async function forgotPassword(email: string) {
-  console.log("Waiting to send email");
   const userResult = await pool.query(
     `
     SELECT id, email FROM users WHERE email = $1`,
@@ -202,8 +240,6 @@ export async function forgotPassword(email: string) {
 
   const userId = userResult.rows[0].id;
   const userEmail = userResult.rows[0].email;
-
-  console.log(userId, userEmail);
 
   const token = randomBytes(32).toString("hex");
 
@@ -220,8 +256,6 @@ export async function forgotPassword(email: string) {
   );
 
   const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-
-  console.log("Waiting to send email 2");
 
   await resend.emails.send({
     from: "onboarding@resend.dev",

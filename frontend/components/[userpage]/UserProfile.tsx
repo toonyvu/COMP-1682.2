@@ -13,7 +13,6 @@ import type { UserType } from "@/types/types";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Field, FieldLabel } from "@/components/ui/field";
 import {
   Popover,
   PopoverContent,
@@ -50,6 +49,10 @@ export default function UserProfile() {
     address: "",
   });
 
+  const nameRegex = /^[A-Za-z \s'-]{1,50}$/;
+  const phoneRegex = /^(?:\+84|0)(3|5|7|8|9)\d{8}$/;
+  const addressRegex = /^.{0,255}$/;
+
   const [dobOpen, setDobOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
 
@@ -82,31 +85,35 @@ export default function UserProfile() {
       phoneNumber: "",
       address: "",
     };
-    if (!formData.first_name) {
-      newErrors.firstName = "First name cannot be empty!";
+    if (!nameRegex.test(formData.first_name.trim())) {
+      newErrors.firstName = "Please enter a valid first name.";
       valid = false;
     }
 
-    if (!formData.last_name) {
+    if (!nameRegex.test(formData.last_name.trim())) {
       newErrors.lastName = "Last name cannot be empty!";
 
       valid = false;
     }
 
-    if (formData.phone.length < 10) {
-      newErrors.phoneNumber = "Phone number must contain at least 10 numbers.";
+    if (!phoneRegex.test(formData.phone.trim())) {
+      newErrors.phoneNumber = "Please enter a valid phone number.";
 
       valid = false;
     }
 
-    if (!formData.address) {
+    if (!addressRegex.test(formData.address.trim())) {
       newErrors.address = "Address cannot be empty!";
 
       valid = false;
     }
 
     if (valid) {
-      const updatedData = await updateUser(formData);
+      let phone = formData.phone.trim();
+      if (phone.startsWith("0")) {
+        phone = "+84" + phone.slice(1);
+      }
+      const updatedData = await updateUser({ ...formData, phone });
       const userId = updatedData.result.id;
       const result = await getUser(Number(userId));
       if (!result) return;
@@ -397,9 +404,7 @@ export default function UserProfile() {
             className={`w-2/3 outline-1 shadow-md p-2 rounded-md ${!editing ? "bg-gray-200" : "bg-white"} ${errors.address ? "outline-1 outline-red-600" : ""}`}
           />
 
-          {errors.phoneNumber && (
-            <p className="text-red-600">{errors.phoneNumber}</p>
-          )}
+          {errors.address && <p className="text-red-600">{errors.address}</p>}
         </div>
 
         <div className=" flex flex-col gap-4 mt-8">

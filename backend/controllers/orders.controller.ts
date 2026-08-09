@@ -71,15 +71,15 @@ export async function getOrderDetailsController(req: Request, res: Response) {
 }
 
 export async function cancelOrderController(req: Request, res: Response) {
-  const { orderId, status } = req.body;
-  console.log(orderId, status);
+  const { orderId } = req.body;
+  console.log(orderId);
 
-  if (!orderId || !status) {
-    return res.status(400).json({ message: "No orderId or Status." });
+  if (!orderId) {
+    return res.status(400).json({ message: "No orderId" });
   }
 
   try {
-    await cancelOrders(Number(orderId), status);
+    await cancelOrders(Number(orderId));
     return res.status(200).json({ message: "Order cancelled successfully" });
   } catch (err: any) {
     return res.status(500).json({

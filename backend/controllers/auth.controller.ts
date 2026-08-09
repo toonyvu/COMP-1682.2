@@ -24,14 +24,14 @@ export async function login(req: Request, res: Response) {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "lax",
-      maxAge: 15 * 60 * 1000,
+      maxAge: 60 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -87,7 +87,7 @@ export async function Callback(req: Request, res: Response) {
   const accessToken = jwt.sign(
     { userId: user.id, role: user.role },
     process.env.ACCESS_TOKEN_SECRET!,
-    { expiresIn: "15m" },
+    { expiresIn: "1h" },
   );
 
   const refreshToken = jwt.sign(
@@ -102,7 +102,7 @@ export async function Callback(req: Request, res: Response) {
     httpOnly: true,
     secure: false,
     sameSite: "lax",
-    maxAge: 15 * 60 * 1000,
+    maxAge: 60 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
@@ -146,7 +146,7 @@ export async function refreshToken(req: Request, res: Response) {
       },
       process.env.ACCESS_TOKEN_SECRET!,
       {
-        expiresIn: "15m",
+        expiresIn: "1h",
       },
     );
 
@@ -154,9 +154,8 @@ export async function refreshToken(req: Request, res: Response) {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 15 * 60 * 1000,
+      maxAge: 60 * 60 * 1000,
     });
-    console.log("refreshed");
 
     return res.json({
       message: "Refreshed",
@@ -187,6 +186,24 @@ export async function forgotPassword(req: Request, res: Response) {
     console.error(err);
     return res.status(500).json({
       message: "Internal server error.",
+    });
+  }
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  const { token } = req.query;
+  const { password } = req.body;
+
+  if (!password) {
+    return res.status(401).json({ message: "Password is required." });
+  }
+
+  try {
+    await authService.resetPassword(password, String(token));
+    return res.sendStatus(204);
+  } catch (error: any) {
+    return res.status(400).json({
+      message: error.message,
     });
   }
 }

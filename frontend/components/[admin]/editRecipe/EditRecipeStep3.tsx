@@ -1,5 +1,9 @@
 "use client";
 
+type Props = {
+  setFormStep: React.Dispatch<React.SetStateAction<number>>;
+};
+
 import { Button } from "../../ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "../../ui/label";
@@ -8,44 +12,19 @@ import { useState } from "react";
 
 import { useRecipeStore } from "@/stores/recipeStore";
 
-type Props = {
-  setFormStep: React.Dispatch<React.SetStateAction<number>>;
-};
-
 const defaultStepsForm = {
   step_number: 0,
   instruction: "",
 };
 
-const defaultErrors = {
-  instruction: "",
-};
-
-export default function RecipeStep3({ setFormStep }: Props) {
+export default function EditRecipeStep3({ setFormStep }: Props) {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [formData, setFormData] = useState(defaultStepsForm);
-  const [errors, setErrors] = useState(defaultErrors);
-  const instructionRegex = /^[A-Za-z0-9 ]{10,200}$/;
 
   const steps = useRecipeStore((state) => state.steps);
   const addStep = useRecipeStore((state) => state.addStep);
   const updateStep = useRecipeStore((state) => state.updateStep);
   const removeStep = useRecipeStore((state) => state.removeStep);
-
-  const checkValidity = () => {
-    let valid = true;
-    const newErrors = {
-      instruction: "",
-    };
-
-    if (!instructionRegex.test(formData.instruction)) {
-      newErrors.instruction = "Invalid instruction.";
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
-  };
 
   return (
     <div className="w-full bg-white rounded-2xl p-8">
@@ -91,7 +70,6 @@ export default function RecipeStep3({ setFormStep }: Props) {
               <Input
                 id="step-content"
                 type="text"
-                className={`${errors.instruction ? "border-red-500" : ""}`}
                 placeholder="Enter step information..."
                 value={formData.instruction}
                 onChange={(e) =>
@@ -101,9 +79,6 @@ export default function RecipeStep3({ setFormStep }: Props) {
                   })
                 }
               ></Input>
-              {errors.instruction && (
-                <p className="text-red-600">{errors.instruction}</p>
-              )}
             </div>
 
             <footer className="flex gap-4 justify-end pt-4">
@@ -120,16 +95,13 @@ export default function RecipeStep3({ setFormStep }: Props) {
                   <Button
                     className="w-20 bg-green-600 hover:bg-green-800"
                     onClick={() => {
-                      const valid = checkValidity();
-                      if (valid) {
-                        const newStep = {
-                          ...formData,
-                          step_number: steps.length + 1,
-                        };
+                      const newStep = {
+                        ...formData,
+                        step_number: steps.length + 1,
+                      };
 
-                        addStep(newStep);
-                        setFormData(defaultStepsForm);
-                      } else return;
+                      addStep(newStep);
+                      setFormData(defaultStepsForm);
                     }}
                   >
                     Add
@@ -149,19 +121,15 @@ export default function RecipeStep3({ setFormStep }: Props) {
                   <Button
                     className="w-20 bg-green-600 hover:bg-green-800"
                     onClick={() => {
-                      const valid = checkValidity();
+                      const newStep = {
+                        ...formData,
+                        step_number: editingIndex + 1,
+                      };
 
-                      if (valid) {
-                        const newStep = {
-                          ...formData,
-                          step_number: editingIndex + 1,
-                        };
+                      updateStep(editingIndex, newStep);
 
-                        updateStep(editingIndex, newStep);
-
-                        setEditingIndex(null);
-                        setFormData(defaultStepsForm);
-                      } else return;
+                      setEditingIndex(null);
+                      setFormData(defaultStepsForm);
                     }}
                   >
                     Edit

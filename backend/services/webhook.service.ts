@@ -125,7 +125,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
             `,
             [
               userId,
-              `Order  ${createdOrderId} placed`,
+              `Order ${createdOrderId} placed`,
               `Your order has been created! Check the link for details.`,
               "order",
               `/profile/orders/${createdOrderId}`,

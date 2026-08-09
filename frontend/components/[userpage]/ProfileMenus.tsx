@@ -31,14 +31,6 @@ export default function ProfileMenus() {
         <ShoppingBag size={20} />
         <span>Orders</span>
       </Link>
-
-      <Link
-        href="/profile/billing"
-        className={`flex items-center gap-3 h-12 px-4 rounded-xl ${pathname === "/profile/billing" ? "bg-green-100 text-green-700 font-medium transition hover:bg-green-200" : "text-gray-700 transition hover:bg-gray-100"} `}
-      >
-        <CreditCard size={20} />
-        <span>Billing</span>
-      </Link>
     </div>
   );
 }

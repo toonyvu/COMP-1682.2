@@ -7,6 +7,7 @@ import {
   CheckCheck,
   XCircle,
   Search,
+  Slice,
 } from "lucide-react";
 
 import {
@@ -123,6 +124,16 @@ export default function OrdersTab() {
         >
           <BadgeCheck size={18} />
           <p className="text-lg">Paid</p>
+        </Button>
+
+        <Button
+          className={`flex flex-1 items-center gap-2 rounded-none ${status === "Preparing" ? "bg-gray-100 text-green-800 border-b-2 border-b-green-600" : "bg-gray-100 text-gray-600 hover:bg-gray-200 border-b-2 border-b-gray-600"}`}
+          onClick={() => {
+            setStatus("Preparing");
+          }}
+        >
+          <Slice size={18} />
+          <p className="text-lg">Preparing</p>
         </Button>
 
         <Button
@@ -292,10 +303,6 @@ export default function OrdersTab() {
               >
                 View Details
               </Button>
-
-              <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-800">
-                Reorder
-              </button>
             </div>
           </div>
         ))}

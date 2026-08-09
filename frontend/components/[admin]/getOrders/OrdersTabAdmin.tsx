@@ -28,7 +28,7 @@ export default function OrdersTabAdmin() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [searchField, setSearchField] = useState("orderId");
-  const [sort, setSort] = useState("amount_total");
+  const [sort, setSort] = useState("created_at");
   const [order, setOrder] = useState("desc");
   const [status, setStatus] = useState("");
   const [page, setPage] = useState(1);
@@ -71,7 +71,7 @@ export default function OrdersTabAdmin() {
     <div className="min-h-screen bg-gray-50">
       <h1 className="text-bold font-bold text-3xl pt-10 ml-10">Orders</h1>
       <div className="flex flex-col">
-        <div className="mx-auto w-2/3 space-y-6 px-4 py-8">
+        <div className="mx-auto w-4/5 space-y-6 px-4 py-8">
           <div className="rounded-xl border bg-white p-6 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row">
               {/* Search Field */}

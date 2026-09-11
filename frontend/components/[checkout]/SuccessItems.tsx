@@ -71,7 +71,7 @@ export default function SuccessItems({ session_id }: Props) {
 
           <div className="mt-4">
             <Link
-              href={`http://localhost:3000/profile/orders/${order?.order.order.cus_order_id}`}
+              href={`${process.env.FRONTEND_URL}/profile/orders/${order?.order.order.cus_order_id}`}
             >
               <Button className="bg-green-600 text-white h-12 rounded-2xl p-2 w-fit hover:bg-green-800">
                 View Order Status

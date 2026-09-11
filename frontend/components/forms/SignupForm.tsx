@@ -205,8 +205,7 @@ export default function SignupForm() {
               type="submit"
               className="w-full bg-red-500 hover:bg-red-800 h-10 rounded-xl text-lg"
               onClick={() => {
-                window.location.href =
-                  "http://localhost:8080/auth/oauth/google";
+                window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/google`;
               }}
             >
               Sign in with Google
@@ -215,8 +214,7 @@ export default function SignupForm() {
               type="button"
               className="w-full bg-blue-500 hover:bg-blue-800 h-10 rounded-xl text-lg"
               onClick={() => {
-                window.location.href =
-                  "http://localhost:8080/auth/oauth/facebook";
+                window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/google`;
               }}
             >
               Sign in with Facebook

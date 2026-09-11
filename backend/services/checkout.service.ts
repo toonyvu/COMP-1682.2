@@ -27,9 +27,8 @@ export async function createCheckoutSession(userId: number) {
     shipping_address_collection: {
       allowed_countries: ["VN", "US", "GB", "SG", "CN", "JP", "CA"],
     },
-    success_url:
-      "http://localhost:3000/checkout/success?session_id={CHECKOUT_SESSION_ID}",
-    cancel_url: "http://localhost:3000/checkout/cancel",
+    success_url: `${process.env.FRONTEND_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.FRONTEND_URL}/checkout/cancel`,
     metadata: {
       userId: userId.toString(),
     },

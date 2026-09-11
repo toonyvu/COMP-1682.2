@@ -97,7 +97,7 @@ export default function OrdersTab() {
     }
   });
 
-  console.log(orders);
+  orders;
   return (
     <div className="w-full bg-gray-100 h-full p-8">
       <header className="">

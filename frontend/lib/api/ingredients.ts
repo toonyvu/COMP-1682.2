@@ -1,7 +1,7 @@
 import { apiFetch } from "./apiFetch";
 
 export async function getIngredients(page: number, limit: number) {
-  console.log("Hi");
+  ("Hi");
   const result = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/ingredients?page=${page}&limit=${limit}`,
     {

@@ -35,7 +35,7 @@ export async function getOrderController(req: Request<Params>, res: Response) {
 
 export async function getAllOrdersController(req: Request, res: Response) {
   const userId = Number(req.authUser.userId);
-  console.log(userId);
+  userId;
 
   if (!userId) {
     return res.status(401).json({ message: "No userId found." });
@@ -72,7 +72,7 @@ export async function getOrderDetailsController(req: Request, res: Response) {
 
 export async function cancelOrderController(req: Request, res: Response) {
   const { orderId } = req.body;
-  console.log(orderId);
+  orderId;
 
   if (!orderId) {
     return res.status(400).json({ message: "No orderId" });
@@ -96,7 +96,6 @@ export async function getOrderDetailsAdminController(
   const { userId } = req.query;
 
   const parsedUserId = Number(userId);
-  console.log(userId);
 
   if (!userId) {
     return res.status(401).json({ message: "No userId!" });
@@ -128,7 +127,7 @@ export async function getOrdersAdminController(req: Request, res: Response) {
     const order = String(req.query.order) || "desc";
     const status = String(req.query.status) ?? "";
 
-    console.log("get orders admin controller reached");
+    ("get orders admin controller reached");
 
     const orders = await getAllOrdersAdmin(
       searchField,
@@ -147,8 +146,6 @@ export async function getOrdersAdminController(req: Request, res: Response) {
 
 export async function updateOrderStatusController(req: Request, res: Response) {
   const { orderId, status } = req.body;
-
-  console.log(orderId, status);
 
   const parsedOrderId = Number(orderId);
   const parsedStatus = String(status);

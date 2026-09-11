@@ -16,8 +16,7 @@ export default function CreateRecipePage() {
   useEffect(() => {
     resetStore();
   }, []);
-
-  console.log("FORM STEP", formStep);
+  
   return (
     <div className="flex flex-col gap-8 p-4 min-h-screen bg-gray-50">
       {formStep === 1 && <RecipeStep1 setFormStep={setFormStep} />}

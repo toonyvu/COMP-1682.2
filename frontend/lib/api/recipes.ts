@@ -75,7 +75,7 @@ export async function getRecipesAdmin(page: number, search: string) {
 
   if (!res.ok) {
     const msg = await res.text();
-    console.log(msg);
+    msg;
     throw new Error(`${res.status}: ${msg}`);
   }
 
@@ -95,7 +95,7 @@ export async function getRecipeAdmin(id: number) {
 
   if (!res.ok) {
     const msg = await res.text();
-    console.log(msg);
+    msg;
     throw new Error(`${res.status}: ${msg}`);
   }
 

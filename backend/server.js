@@ -1,0 +1,47 @@
+import "dotenv/config";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express from "express";
+import passport from "passport";
+import "./auth/strategies/google.strategy.js";
+import "./auth/strategies/facebook.strategy.js";
+import authRoutes from "./routes/auth.routes.js";
+import mealkitRoutes from "./routes/mealkits.routes.js";
+import ingredientRoutes from "./routes/ingredients.routes.js";
+import recipeRoutes from "./routes/recipes.routes.js";
+import cartRoutes from "./routes/carts.routes.js";
+import checkoutRoutes from "./routes/checkout.routes.js";
+import orderRoutes from "./routes/orders.routes.js";
+import webhookRoutes from "./routes/webhook.routes.js";
+import subscriptionRoutes from "./routes/subscriptions.routes.js";
+import userRoutes from "./routes/users.routes.js";
+import notificationRoutes from "./routes/notifications.routes.js";
+const app = express();
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+}));
+app.use(passport.initialize());
+app.use(cookieParser());
+app.use("/webhook", express.raw({ type: "application/json" }), webhookRoutes);
+app.use(express.json());
+const PORT = Number(process.env.PORT) || 8080;
+app.use("/auth", authRoutes);
+app.use("/mealkits", mealkitRoutes);
+app.use("/recipes", recipeRoutes);
+app.use("/cart", cartRoutes);
+app.use("/create-checkout-session", checkoutRoutes);
+app.use("/create-subscription-session", subscriptionRoutes);
+app.use("/orders", orderRoutes);
+app.use("/users", userRoutes);
+app.use("/ingredients", ingredientRoutes);
+app.use("/notifications", notificationRoutes);
+app.get("/test", (req, res) => {
+    res.json({ working: true });
+});
+let ready;
+app.listen(PORT, "0.0.0.0", () => {
+    console.log("Express running on port ", PORT);
+});
+export { app, ready };
+//# sourceMappingURL=server.js.map

@@ -65,7 +65,7 @@ export default function OrdersTabAdmin() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  console.log(orders);
+  orders;
 
   return (
     <div className="min-h-screen bg-gray-50">

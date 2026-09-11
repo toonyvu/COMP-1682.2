@@ -1,0 +1,48 @@
+import { getUserInfo, updateUserInfo } from "../services/users.service.js";
+export async function getUser(req, res) {
+    const userId = Number(req.authUser.userId);
+    try {
+        const result = await getUserInfo(Number(userId));
+        res.status(200).json({ user: result });
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+export async function getUserAdminController(req, res) {
+    const { userId } = req.query;
+    try {
+        const result = await getUserInfo(Number(userId));
+        res.status(200).json({ result });
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+export async function updateUser(req, res) {
+    const userId = Number(req.authUser.userId);
+    const { username, first_name, last_name, email, bio, address, phone, role, avatar_url, dob, created_at, tier, gender, } = req.body;
+    try {
+        const result = await updateUserInfo({
+            id: userId,
+            role,
+            username,
+            tier,
+            email,
+            bio,
+            avatar_url,
+            dob,
+            created_at,
+            address,
+            first_name,
+            last_name,
+            phone,
+            gender,
+        });
+        res.status(201).json({ result });
+    }
+    catch (err) {
+        err;
+    }
+}
+//# sourceMappingURL=users.controller.js.map

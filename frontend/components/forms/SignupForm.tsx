@@ -61,10 +61,10 @@ export default function SignupForm() {
         }, 3000);
       } else {
         setError(res.data.error);
-        console.log(res);
+        res;
       }
     } catch (err) {
-      console.log(err);
+      err;
       setError("Trouble signing up. Please try again.");
     }
   }

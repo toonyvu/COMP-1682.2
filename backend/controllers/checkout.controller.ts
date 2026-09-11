@@ -3,7 +3,7 @@ import { createCheckoutSession } from "../services/checkout.service.js";
 
 export async function createNewCheckoutSession(req: Request, res: Response) {
   const userId = Number(req.authUser.userId);
-  console.log(userId);
+  userId;
 
   try {
     const result = await createCheckoutSession(userId);

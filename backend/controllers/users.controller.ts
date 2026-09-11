@@ -63,6 +63,6 @@ export async function updateUser(req: Request, res: Response) {
 
     res.status(201).json({ result });
   } catch (err: any) {
-    console.log(err);
+    err;
   }
 }

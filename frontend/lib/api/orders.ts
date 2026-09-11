@@ -74,7 +74,7 @@ export async function updateOrderStatus(orderId: number, status: string) {
 }
 
 export async function getOrderDetails(orderId: string) {
-  console.log(process.env.NEXT_PUBLIC_API_URL);
+  process.env.NEXT_PUBLIC_API_URL;
   const result = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`,
     {

@@ -1,7 +1,7 @@
 import { pool } from "../database.js";
 
 export async function getAllIngredientsService(page: number, limit: number) {
-  console.log(limit);
+  limit;
   const offset = (page - 1) * limit;
   const result = await pool.query(
     `

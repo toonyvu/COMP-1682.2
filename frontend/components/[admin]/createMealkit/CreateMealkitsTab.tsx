@@ -275,7 +275,7 @@ export default function CreateMealkitsTab() {
                       max_servings: recipe.servings,
                     });
 
-                    console.log(formData);
+                    formData;
                   }}
                 >
                   {selectedRecipe ? "Recipe Selected" : "Add"}
@@ -425,7 +425,7 @@ export default function CreateMealkitsTab() {
                     duration: 3000,
                   });
                   setFormData(defaultFormData);
-                  console.log(res);
+                  res;
                   setSelectedRecipe(null);
                 }}
               >

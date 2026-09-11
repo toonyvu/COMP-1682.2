@@ -43,7 +43,7 @@ export default function LoginForm() {
         setError(res.data.message);
       }
     } catch (err) {
-      console.log(err);
+      err;
       setError("Server Error, please try again.");
     } finally {
       setLoading(false);

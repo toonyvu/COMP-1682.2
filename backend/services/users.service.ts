@@ -51,7 +51,7 @@ export async function updateUserInfo({
   phone,
   gender,
 }: userInformation) {
-  console.log(dob);
+  dob;
 
   try {
     const insertResult = await pool.query(

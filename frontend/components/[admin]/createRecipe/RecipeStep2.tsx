@@ -49,7 +49,6 @@ const defaultErrors = {
 };
 
 export default function RecipeStep2({ setFormStep }: Props) {
-  console.log("Form mounted.");
   const [page, setPage] = useState(1);
   const [ingredientForm, setIngredientForm] = useState(defaultIngredientForm);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -64,15 +63,10 @@ export default function RecipeStep2({ setFormStep }: Props) {
 
   const nameRegex = /^[A-Za-z0-9 ]{1,50}$/;
 
-  const {
-    data: availableIngredients,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: availableIngredients } = useQuery({
     queryKey: ["ingredientsQuery", page],
 
     queryFn: async () => {
-      console.log("Hi");
       const result = await getIngredients(page, limit);
       return result;
     },
@@ -81,7 +75,6 @@ export default function RecipeStep2({ setFormStep }: Props) {
   const total = availableIngredients?.total ?? 0;
   const totalPages =
     Math.floor(total / limit) === 0 ? 1 : Math.ceil(total / limit);
-  console.log(availableIngredients);
 
   const ingredients = useRecipeStore((state) => state.ingredients);
   const addIngredient = useRecipeStore((state) => state.addIngredient);

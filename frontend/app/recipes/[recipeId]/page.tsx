@@ -13,7 +13,7 @@ export default async function Recipe({ params, searchParams }: Props) {
   const { recipeId } = await params;
   const { mealkit } = await searchParams;
 
-  console.log(recipeId);
+  recipeId;
 
   const id = Number(recipeId);
   const mealkitId = Number(mealkit);

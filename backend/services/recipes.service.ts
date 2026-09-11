@@ -17,7 +17,7 @@ export async function getRecipeDetails(id: number, mealkitId: number) {
     throw { status: 404, message: `No recipes found.` };
   }
 
-  console.log("Fetching continues..");
+  ("Fetching continues..");
   const stepsResult = await pool.query(
     "SELECT * FROM recipe_steps WHERE recipe_id = $1 ORDER BY step_number ASC",
     [id],
@@ -208,7 +208,7 @@ export async function createRecipeService(
       steps: stepsList,
     };
   } catch (err: any) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     client.release();
@@ -232,7 +232,7 @@ export async function getAllRecipesAdmin(
       `SELECT COUNT(*) as count FROM recipes`,
     );
 
-    console.log(countResult.rows[0].count);
+    countResult.rows[0].count;
 
     return {
       recipes: recipeResult.rows,

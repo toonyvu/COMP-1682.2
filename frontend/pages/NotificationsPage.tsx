@@ -1,3 +1,5 @@
+"use client";
+
 import NotificationsTab from "@/components/[userpage]/NotificationsTab";
 import ProfileMenus from "@/components/[userpage]/ProfileMenus";
 

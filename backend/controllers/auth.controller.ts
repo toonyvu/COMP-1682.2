@@ -63,7 +63,7 @@ export async function signup(req: Request, res: Response) {
     const user = await authService.signup(username, email, password);
     return res.status(201).json(user);
   } catch (err: any) {
-    console.log(err.message);
+    err.message;
     return res.status(err.status || 500).json({ error: err.message });
   }
 }
@@ -116,7 +116,7 @@ export async function Callback(req: Request, res: Response) {
 }
 
 export async function refreshToken(req: Request, res: Response) {
-  console.log("refresh reached");
+  ("refresh reached");
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
@@ -169,7 +169,7 @@ export async function refreshToken(req: Request, res: Response) {
 
 export async function forgotPassword(req: Request, res: Response) {
   const email = req.body.email;
-  console.log(email);
+  email;
 
   if (!email) {
     return res.status(401).json({ message: "Email is required." });

@@ -10,7 +10,7 @@ export async function getAllMealkits(
   search: string,
   ids: number[],
 ) {
-  console.log(ids);
+  ids;
   const offset = (page - 1) * limit;
 
   if (ids.length > 0) {

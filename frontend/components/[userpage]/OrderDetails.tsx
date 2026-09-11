@@ -46,7 +46,7 @@ export default function OrderDetails({ orderId }: Props) {
     queryFn: () => getOrderDetails(orderId),
   });
 
-  console.log(order);
+  order;
 
   if (isLoading) {
     return <div>Loading order...</div>;

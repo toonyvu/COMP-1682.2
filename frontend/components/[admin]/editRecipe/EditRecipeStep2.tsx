@@ -78,7 +78,7 @@ export default function EditRecipeStep2({ setFormStep }: Props) {
   const total = availableIngredients?.total ?? 0;
   const totalPages =
     Math.floor(total / limit) === 0 ? 1 : Math.ceil(total / limit);
-  console.log(availableIngredients);
+  availableIngredients;
 
   const ingredients = useRecipeStore((state) => state.ingredients);
   const addIngredient = useRecipeStore((state) => state.addIngredient);

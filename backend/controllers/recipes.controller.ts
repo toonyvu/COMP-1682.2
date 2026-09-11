@@ -8,16 +8,16 @@ import {
 } from "../services/recipes.service.js";
 
 export async function getRecipes(req: Request, res: Response) {
-  console.log(req);
+  req;
   const userId = req.authUser.userId;
-  console.log(userId);
+  userId;
   const { id } = req.params;
   const { mealkitId } = req.query;
 
   if (!id) return res.status(400).json({ message: "Invalid request." });
 
   try {
-    console.log(id);
+    id;
     if (!Number.isInteger(Number(id))) {
       return res.status(400).json({ message: "Invalid Recipe ID." });
     }
@@ -25,7 +25,7 @@ export async function getRecipes(req: Request, res: Response) {
     const result = await getRecipeDetails(Number(id), userId);
     return res.status(200).json(result);
   } catch (err: any) {
-    console.log(err);
+    err;
     return res.status(500).json({
       message: err.message,
     });
@@ -34,15 +34,15 @@ export async function getRecipes(req: Request, res: Response) {
 
 export async function createRecipeController(req: Request, res: Response) {
   const { recipe, ingredients, steps } = req.body;
-  console.log(recipe);
-  console.log(ingredients);
-  console.log(steps);
+  recipe;
+  ingredients;
+  steps;
 
   try {
     const result = await createRecipeService(recipe, ingredients, steps);
     return res.status(200).json(result);
   } catch (err: any) {
-    console.log(err);
+    err;
     return res.status(500).json(err.message);
   }
 }

@@ -6,7 +6,7 @@ export function requireRole(...allowedRoles: string[]) {
     const user = (req as any).authUser;
 
     if (!user) {
-      console.log("Yo");
+      ("Yo");
       return res.status(401).json({
         message: "Unauthorized.",
       });

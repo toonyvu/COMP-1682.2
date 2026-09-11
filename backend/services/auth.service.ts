@@ -60,7 +60,7 @@ export async function signup(
   password: string,
 ) {
   if (!email || !username || !password) {
-    console.log("Error with data");
+    ("Error with data");
     throw { status: 400, message: "Please fill in all information." };
   }
 
@@ -198,7 +198,7 @@ export async function resetPassword(password: string, token: string) {
     [tokenHash],
   );
 
-  console.log(tokenHash);
+  tokenHash;
 
   if (user.rowCount === 0) {
     throw new Error("Invalid reset token.");
@@ -235,7 +235,7 @@ export async function forgotPassword(email: string) {
     SELECT id, email FROM users WHERE email = $1`,
     [email],
   );
-  console.log(userResult.rows.length);
+  userResult.rows.length;
   if (userResult.rows.length === 0) return;
 
   const userId = userResult.rows[0].id;

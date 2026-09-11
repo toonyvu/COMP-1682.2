@@ -67,7 +67,7 @@ export default function OrderDetailsAdmin({ orderId, userId }: Props) {
     }) => updateOrderStatus(orderId, currentStatus),
 
     onSuccess: (_, variables) => {
-      console.log("Success!");
+      ("Success!");
       showToast.success(
         `Successfully changed status to ${variables.currentStatus}!`,
         {

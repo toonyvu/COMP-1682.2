@@ -59,15 +59,13 @@ export default function MealkitList({ week }: Props) {
 
     queryFn: async () => {
       const res = await getMealKits(page, week, filters, debouncedSearch);
-      console.log(res.data);
+      res.data;
       return res.data;
     },
   });
 
   const total = mealkits?.total ?? 0;
   const totalPages = Math.floor(total / 12) === 0 ? 1 : Math.ceil(total / 12);
-
-  console.log(total, totalPages);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -89,7 +87,7 @@ export default function MealkitList({ week }: Props) {
     try {
       await cartApi.addToCart(mealkitId);
     } catch (err) {
-      console.log(err);
+      err;
     }
   }
 
@@ -502,7 +500,7 @@ export default function MealkitList({ week }: Props) {
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
-                          console.log("Adding item");
+                          ("Adding item");
                           showToast.success(`Added ${recipe.name} to cart!`, {
                             position: "top-left",
                             duration: 3000,

@@ -1,5 +1,5 @@
 export async function login(email: string, password: string) {
-  console.log(process.env.NEXT_PUBLIC_API_URL);
+  process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
     method: "POST",
     credentials: "include",
@@ -10,7 +10,7 @@ export async function login(email: string, password: string) {
   });
 
   const data = await res.json();
-  console.log(data);
+  data;
   return { ok: res.ok, data: data };
 }
 

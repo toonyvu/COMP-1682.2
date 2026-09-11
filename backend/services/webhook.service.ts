@@ -45,7 +45,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
         );
 
         if (existing.rows.length > 0) {
-          console.log("Order already exists");
+          ("Order already exists");
           return;
         }
 
@@ -154,8 +154,6 @@ export async function handleStripeEvent(event: Stripe.Event) {
           );
 
           await client.query("COMMIT");
-
-          console.log(" Order + items saved:", orderId);
         } catch (err) {
           await client.query("ROLLBACK");
           throw err;
@@ -181,7 +179,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
         );
 
         if (existing.rows.length > 0) {
-          console.log("Order already exists!");
+          ("Order already exists!");
           return;
         }
 
@@ -211,9 +209,8 @@ export async function handleStripeEvent(event: Stripe.Event) {
           const subscriptionId = subscriptionResult.rows[0].id;
 
           await client.query("COMMIT");
-          console.log("Subscription + items saved:", subscriptionId);
         } catch (err) {
-          console.log(err);
+          err;
           await client.query("ROLLBACK");
         } finally {
           client.release();
@@ -222,6 +219,6 @@ export async function handleStripeEvent(event: Stripe.Event) {
     }
 
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      `Unhandled event type ${event.type}`;
   }
 }

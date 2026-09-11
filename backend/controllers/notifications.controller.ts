@@ -6,7 +6,7 @@ export async function getAllNotificationsController(
   res: Response,
 ) {
   const userId = Number(req.authUser.userId);
-  console.log(userId);
+  userId;
 
   try {
     const notifications = await getAllNotificationsService(userId);

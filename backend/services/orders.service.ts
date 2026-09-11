@@ -43,7 +43,7 @@ export async function getOrder(sessionId: string) {
 export async function cancelOrders(orderId: number) {
   const client = await pool.connect();
 
-  console.log("Cancel orders reached");
+  ("Cancel orders reached");
   try {
     await client.query("BEGIN");
     const getOrderResult = await client.query(
@@ -160,7 +160,7 @@ export async function cancelOrders(orderId: number) {
     await client.query("COMMIT");
     return;
   } catch (err: any) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
     throw new Error(err.message);
   } finally {
@@ -213,7 +213,7 @@ export async function getAllOrders(userId: number) {
       [userId],
     );
 
-    console.log(ordersResult.rows);
+    ordersResult.rows;
 
     const orders = ordersResult.rows.map((order) => ({
       ...order,
@@ -223,7 +223,7 @@ export async function getAllOrders(userId: number) {
 
     return orders;
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();
@@ -282,7 +282,7 @@ export async function updateOrderStatus(orderId: number, status: string) {
 
     await client.query("COMMIT");
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();
@@ -325,7 +325,7 @@ export async function getOrderDetails(orderId: string, userId: number) {
     await client.query("COMMIT");
     return result.rows[0];
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();
@@ -447,10 +447,10 @@ export async function getAllOrdersAdmin(
     }));
 
     await client.query("COMMIT");
-    console.log(orders);
+    orders;
     return orders;
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();

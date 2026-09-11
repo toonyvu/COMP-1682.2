@@ -6,6 +6,6 @@ type Props = {
 };
 
 export default function RecipePage({ id, mealkitId }: Props) {
-  console.log(id);
+  id;
   return <RecipeDetails id={id} mealkitId={mealkitId} />;
 }

@@ -71,7 +71,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
     };
 
     addItem(addedRecipe, qty);
-    console.log(qty);
+    qty;
     showToast.success(
       `Added ${qty} ${addedRecipe.name}${qty === 1 ? "" : "s"} to cart!`,
       {
@@ -83,16 +83,16 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
     try {
       await cartApi.addToCart(mealkitId);
     } catch (err) {
-      console.log(err);
+      err;
     }
   };
 
-  console.log(recipeDetails);
+  recipeDetails;
 
   const [favorited, setFavorited] = useState<boolean>(false);
   const [qty, setQty] = useState<number>(1);
 
-  console.log(recipeDetails?.recipeTags);
+  recipeDetails?.recipeTags;
 
   if (!recipeDetails) return;
   const available_from = TimestampToDate(
@@ -113,7 +113,7 @@ export default function RecipeDetails({ id, mealkitId }: Props) {
         setFavorited(false);
       }
     } catch (err) {
-      console.log(err);
+      err;
     }
   }
 

@@ -15,7 +15,7 @@ import { getUserInfo } from "../services/users.service.js";
 const router = Router();
 
 router.post("/login", (req, res) => {
-  console.log("Login route hit!");
+  ("Login route hit!");
   login(req, res);
 });
 
@@ -47,7 +47,7 @@ router.get(
 );
 
 router.post("/signup", (req, res) => {
-  console.log("Signup route hit!");
+  ("Signup route hit!");
   signup(req, res);
 });
 

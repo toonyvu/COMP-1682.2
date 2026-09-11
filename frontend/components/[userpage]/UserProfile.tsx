@@ -379,7 +379,7 @@ export default function UserProfile() {
                 defaultMonth={date}
                 captionLayout="dropdown"
                 onSelect={(date) => {
-                  console.log(date);
+                  date;
                   setDate(date);
                   setFormData({
                     ...formData,

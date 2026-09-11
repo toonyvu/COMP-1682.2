@@ -100,19 +100,19 @@ export async function Callback(req: Request, res: Response) {
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 60 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  res.redirect("http://localhost:3000/oauth/callback");
+  res.redirect(`${process.env.FRONTEND_URL}/oauth/callback`);
 }
 
 export async function refreshToken(req: Request, res: Response) {

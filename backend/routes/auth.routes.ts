@@ -44,6 +44,7 @@ router.get(
   }),
   Callback,
 );
+
 router.post("/signup", (req, res) => {
   ("Signup route hit!");
   signup(req, res);

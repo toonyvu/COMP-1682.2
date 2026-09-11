@@ -27,12 +27,11 @@ router.get(
 );
 
 router.get("/oauth/facebook", passport.authenticate("facebook"));
-
 router.get(
   "/oauth/facebook/callback",
   passport.authenticate("facebook", {
     session: false,
-    failureRedirect: "http://localhost:3000/login",
+    failureRedirect: `${process.env.FRONTEND_URL}/login`,
   }),
   Callback,
 );
@@ -41,11 +40,10 @@ router.get(
   "/oauth/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "http://localhost:3000/login",
+    failureRedirect: `${process.env.FRONTEND_URL}/login`,
   }),
   Callback,
 );
-
 router.post("/signup", (req, res) => {
   ("Signup route hit!");
   signup(req, res);

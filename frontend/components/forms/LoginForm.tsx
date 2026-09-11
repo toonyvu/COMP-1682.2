@@ -138,8 +138,7 @@ export default function LoginForm() {
               className="w-full bg-red-500 h-10 rounded-xl hover:bg-red-800 text-lg"
               disabled={loading}
               onClick={() => {
-                window.location.href =
-                  "http://localhost:8080/auth/oauth/google";
+                window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/google`;
               }}
             >
               {loading ? "Logging in..." : "Login with Google"}
@@ -148,8 +147,7 @@ export default function LoginForm() {
               type="button"
               className="w-full bg-blue-500 hover:bg-blue-800 h-10 rounded-xl text-lg"
               onClick={() => {
-                window.location.href =
-                  "http://localhost:8080/auth/oauth/facebook";
+                window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/google`;
               }}
             >
               Login with Facebook

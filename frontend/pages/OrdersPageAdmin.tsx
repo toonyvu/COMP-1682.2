@@ -1,3 +1,5 @@
+"use client";
+
 import OrdersTabAdmin from "@/components/[admin]/getOrders/OrdersTabAdmin";
 
 export default function OrdersPageAdmin() {

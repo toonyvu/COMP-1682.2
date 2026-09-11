@@ -20,7 +20,7 @@ export const subscriptionPlans = {
 
 export const allowedStatuses: Record<OrderStatus, OrderStatus[]> = {
   pending: ["paid", "cancelled"],
-  paid: ["preparing", "cancelled"],
+  paid: ["preparing"],
   preparing: ["shipped", "cancelled"],
   shipped: ["delivered"],
   delivered: [],

@@ -1,7 +1,7 @@
 import { apiFetch } from "./apiFetch";
 
 export async function getOrder(sessionId: string) {
-  console.log(sessionId);
+  sessionId;
 
   const res = await apiFetch(
     `${process.env.NEXT_PUBLIC_API_URL}/orders/session/${sessionId}`,
@@ -16,6 +16,6 @@ export async function getOrder(sessionId: string) {
   }
 
   const data = await res.json();
-  console.log(data);
+  data;
   return data;
 }

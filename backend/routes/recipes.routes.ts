@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
   getRecipes,
-  addFavorite,
-  deleteFavorite,
   createRecipeController,
   getRecipesAdminController,
+  getRecipeAdminController,
+  editRecipeAdminController,
 } from "../controllers/recipes.controller.js";
 import { authenticateToken } from "../middleware/authenticateToken.js";
 import { requireRole } from "../middleware/requireRole.js";
@@ -24,8 +24,20 @@ router.post(
   createRecipeController,
 );
 
+router.put(
+  "/edit",
+  authenticateToken,
+  requireRole("admin"),
+  editRecipeAdminController,
+);
+
+router.get(
+  "/admin/:id",
+  authenticateToken,
+  requireRole("admin"),
+  getRecipeAdminController,
+);
+
 router.get("/:id", authenticateToken, getRecipes);
-router.post("/:id", authenticateToken, addFavorite);
-router.delete("/:id", authenticateToken, deleteFavorite);
 
 export default router;

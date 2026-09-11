@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { createMealkit } from "@/lib/api/mealkits";
 
+import { showToast } from "nextjs-toast-notify";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,16 @@ export default function CreateMealkitsTab() {
     return valid;
   };
 
+  const defaultFormData = {
+    week_number: 0,
+    year: 0,
+    available_from: "",
+    available_until: "",
+    price: 0,
+    recipe_id: 0,
+    max_servings: 0,
+  };
+
   const [formData, setFormData] = useState<mealkitData>({
     week_number: 0,
     year: 0,
@@ -91,7 +102,7 @@ export default function CreateMealkitsTab() {
   }, [search]);
 
   const total = recipes?.total ?? 0;
-  const totalPages = Math.floor(total / 5) === 0 ? 1 : Math.ceil(total / 5);
+  const totalPages = Math.floor(total / 12) === 0 ? 1 : Math.ceil(total / 12);
 
   const [selectedWeek, setSelectedWeek] = useState<{
     week_number: number;
@@ -264,7 +275,7 @@ export default function CreateMealkitsTab() {
                       max_servings: recipe.servings,
                     });
 
-                    console.log(formData);
+                    formData;
                   }}
                 >
                   {selectedRecipe ? "Recipe Selected" : "Add"}
@@ -319,6 +330,13 @@ export default function CreateMealkitsTab() {
                     <Button
                       variant="destructive"
                       onClick={() => {
+                        showToast.info(
+                          `${selectedRecipe.name} has been removed.`,
+                          {
+                            position: "top-left",
+                            duration: 3000,
+                          },
+                        );
                         setSelectedRecipe(null);
 
                         setFormData((prev) => ({
@@ -402,7 +420,13 @@ export default function CreateMealkitsTab() {
                 className="w-full bg-green-600 hover:bg-green-700"
                 onClick={async () => {
                   const res = await createMealkit(formData);
-                  console.log(res);
+                  showToast.success(`${selectedRecipe.name} has been added!`, {
+                    position: "top-left",
+                    duration: 3000,
+                  });
+                  setFormData(defaultFormData);
+                  res;
+                  setSelectedRecipe(null);
                 }}
               >
                 Create Meal Kit

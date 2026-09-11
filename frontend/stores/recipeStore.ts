@@ -1,26 +1,26 @@
 import { create } from "zustand";
-import type { RecipeAdd } from "@/types/types";
-import type { IngredientAdd } from "@/types/types";
-import type { StepsAdd } from "@/types/types";
-import type { RecipeAPIType } from "@/types/types";
+import type { RecipeEdit } from "@/types/types";
+import type { IngredientEdit } from "@/types/types";
+import type { StepEdit } from "@/types/types";
+import type { RecipeAdminEdit } from "@/types/types";
 
 type RecipeStore = {
-  recipe: RecipeAdd | null;
-  ingredients: IngredientAdd[];
-  steps: StepsAdd[];
+  recipe: RecipeEdit | null;
+  ingredients: IngredientEdit[];
+  steps: StepEdit[];
 
-  setRecipeDetails: (recipe: RecipeAdd) => void;
-  setIngredients: (ingredients: IngredientAdd[]) => void;
-  setSteps: (steps: StepsAdd[]) => void;
-  setFullRecipe: (data: RecipeAPIType) => void;
+  setRecipeDetails: (recipe: RecipeEdit) => void;
+  setIngredients: (ingredients: IngredientEdit[]) => void;
+  setSteps: (steps: StepEdit[]) => void;
+  setFullRecipe: (data: RecipeAdminEdit) => void;
 
-  addIngredient: (ingredient: IngredientAdd) => void;
+  addIngredient: (ingredient: IngredientEdit) => void;
   removeIngredient: (index: number) => void;
-  updateIngredient: (index: number, ingredient: IngredientAdd) => void;
+  updateIngredient: (index: number, ingredient: IngredientEdit) => void;
 
-  addStep: (step: StepsAdd) => void;
+  addStep: (step: StepEdit) => void;
   removeStep: (index: number) => void;
-  updateStep: (index: number, step: StepsAdd) => void;
+  updateStep: (index: number, step: StepEdit) => void;
 
   resetRecipeStore: () => void;
 };

@@ -1,0 +1,10 @@
+import { pool } from "../database.js";
+export async function getAllNotificationsService(userId) {
+    const notifsResult = await pool.query(`
+        SELECT * FROM notifications
+        WHERE user_id = $1
+        ORDER BY created_at DESC
+        `, [userId]);
+    return notifsResult.rows;
+}
+//# sourceMappingURL=notifications.service.js.map

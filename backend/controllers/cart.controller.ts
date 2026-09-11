@@ -5,7 +5,7 @@ export async function addItem(req: Request, res: Response) {
   const { mealkitId } = req.body;
   const userId = Number(req.authUser.userId);
 
-  console.log("Adding item!");
+  ("Adding item!");
   try {
     await cartService.addItem(userId, mealkitId);
     const result = await cartService.getFullCart(userId);
@@ -45,7 +45,7 @@ export async function alterQty(req: Request, res: Response) {
 
 export async function getCart(req: Request, res: Response) {
   const userId = Number(req.authUser.userId);
-  console.log(userId);
+  userId;
 
   try {
     const result = await cartService.getFullCart(userId);

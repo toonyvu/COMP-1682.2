@@ -8,10 +8,12 @@ import { useState } from "react";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
 
     forgotPassword(email);
+    setSent(true);
   };
   return (
     <div className="min-h-screen w-full px-80 space-y-8">
@@ -42,6 +44,7 @@ export default function ForgotPasswordForm() {
             Submit
           </Button>
         </form>
+        {sent && <h1 className="">An mail has been sent to your address.</h1>}
       </div>
     </div>
   );

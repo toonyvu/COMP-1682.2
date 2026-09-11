@@ -45,7 +45,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
         );
 
         if (existing.rows.length > 0) {
-          console.log("Order already exists");
+          ("Order already exists");
           return;
         }
 
@@ -88,7 +88,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
             country
           )
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-          RETURNING id
+          RETURNING id, cus_order_id
           `,
             [
               userId,
@@ -110,6 +110,27 @@ export async function handleStripeEvent(event: Stripe.Event) {
           );
 
           const orderId = orderResult.rows[0].id;
+          const createdOrderId = orderResult.rows[0].cus_order_id;
+
+          await client.query(
+            `
+            INSERT INTO notifications (
+              user_id,
+              title,
+              message,
+              type,
+              action_url
+            )
+            VALUES ($1, $2, $3, $4, $5)
+            `,
+            [
+              userId,
+              `Order ${createdOrderId} placed`,
+              `Your order has been created! Check the link for details.`,
+              "order",
+              `/profile/orders/${createdOrderId}`,
+            ],
+          );
 
           const cart = await getFullCart(Number(userId));
 
@@ -133,8 +154,6 @@ export async function handleStripeEvent(event: Stripe.Event) {
           );
 
           await client.query("COMMIT");
-
-          console.log(" Order + items saved:", orderId);
         } catch (err) {
           await client.query("ROLLBACK");
           throw err;
@@ -160,7 +179,7 @@ export async function handleStripeEvent(event: Stripe.Event) {
         );
 
         if (existing.rows.length > 0) {
-          console.log("Order already exists!");
+          ("Order already exists!");
           return;
         }
 
@@ -190,9 +209,8 @@ export async function handleStripeEvent(event: Stripe.Event) {
           const subscriptionId = subscriptionResult.rows[0].id;
 
           await client.query("COMMIT");
-          console.log("Subscription + items saved:", subscriptionId);
         } catch (err) {
-          console.log(err);
+          err;
           await client.query("ROLLBACK");
         } finally {
           client.release();
@@ -201,6 +219,6 @@ export async function handleStripeEvent(event: Stripe.Event) {
     }
 
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      `Unhandled event type ${event.type}`;
   }
 }

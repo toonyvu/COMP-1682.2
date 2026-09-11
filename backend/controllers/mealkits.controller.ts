@@ -25,7 +25,7 @@ export async function getMealKits(req: Request, res: Response) {
 }
 
 export const createMealkitController = async (req: Request, res: Response) => {
-  console.log("create mealkit Controller reached");
+  ("create mealkit Controller reached");
   const { mealkitData } = req.body;
   if (!mealkitData) return;
 

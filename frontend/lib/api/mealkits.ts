@@ -9,7 +9,7 @@ export async function getMealKits(
   filters: TagFilters,
   search?: string,
 ) {
-  console.log(process.env.NEXT_PUBLIC_API_URL);
+  process.env.NEXT_PUBLIC_API_URL;
 
   const params = new URLSearchParams({
     page: page.toString(),
@@ -57,11 +57,11 @@ export async function createMealkit(formData: mealkitData) {
     body: JSON.stringify({ mealkitData: formData }),
   });
 
-  console.log(process.env.NEXT_PUBLIC_API_URL);
+  process.env.NEXT_PUBLIC_API_URL;
 
   if (!result.ok) {
     const text = await result.text();
-    console.log(text);
+    text;
     throw new Error(`HTTP ${result.status}`);
   }
 

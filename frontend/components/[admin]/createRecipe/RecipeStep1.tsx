@@ -68,11 +68,13 @@ export default function RecipeStep1({ setFormStep }: Props) {
   const [errors, setErrors] = useState({
     recipeName: "",
     description: "",
+    servings: "",
     tags: "",
     prepAndCookTime: "",
     avatarUrl: "",
   });
 
+  const nameRegex = /^[A-Za-z0-9 ]{4,100}$/;
   useEffect(() => {
     if (recipeDetails) {
       setFormData(recipeDetails);
@@ -115,6 +117,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
     const newErrors = {
       recipeName: "",
       description: "",
+      servings: "",
       tags: "",
       prepAndCookTime: "",
       avatarUrl: "",
@@ -122,7 +125,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
 
     let valid = true;
 
-    if (!formData.name || formData.name.length < 4) {
+    if (!nameRegex.test(formData.name)) {
       newErrors.recipeName = "Recipe name must contain at least 4 characters.";
       valid = false;
     }
@@ -137,7 +140,12 @@ export default function RecipeStep1({ setFormStep }: Props) {
       valid = false;
     }
 
-    if (!formData.description) {
+    if (formData.servings == 0) {
+      newErrors.servings = "Serving cannot be 0.";
+      valid = false;
+    }
+
+    if (formData.description.trim().length < 10) {
       newErrors.description = "Recipe must contain a description.";
       valid = false;
     }
@@ -237,9 +245,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
           )}
         </div>
 
-        {/* Servings + Difficulty */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Servings */}
           <div className="flex flex-col gap-2">
             <Label htmlFor="servings">Servings</Label>
 
@@ -248,6 +254,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
               type="number"
               min={1}
               placeholder="4"
+              className={`${errors.servings ? "border-red-500" : ""}`}
               value={formData.servings}
               onChange={(e) =>
                 setFormData({
@@ -256,6 +263,10 @@ export default function RecipeStep1({ setFormStep }: Props) {
                 })
               }
             />
+
+            {errors.servings && (
+              <p className="text-red-600">{errors.servings}</p>
+            )}
           </div>
 
           {/* Difficulty */}
@@ -294,7 +305,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
               <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
                 <CollapsibleTrigger className="w-full">
                   <div className="text-md flex flex-row w-full justify-between">
-                    <h3 className="">Tag Filters</h3>
+                    <h3 className="font-semibold">Tag Filters</h3>
                     <ChevronRight></ChevronRight>
                   </div>
                 </CollapsibleTrigger>
@@ -321,6 +332,9 @@ export default function RecipeStep1({ setFormStep }: Props) {
                           </ToggleGroupItem>
                           <ToggleGroupItem value="27">
                             30 Minutes or Less
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="29">
+                            60 Minutes or Less
                           </ToggleGroupItem>
                           <ToggleGroupItem value="26">
                             Weekend Project
@@ -391,6 +405,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
                           <ToggleGroupItem value="12">Indian</ToggleGroupItem>
                           <ToggleGroupItem value="11">Mexican</ToggleGroupItem>
                           <ToggleGroupItem value="10">French</ToggleGroupItem>
+                          <ToggleGroupItem value="30">Other</ToggleGroupItem>
                         </ToggleGroup>
                       </div>
                     </div>
@@ -411,6 +426,7 @@ export default function RecipeStep1({ setFormStep }: Props) {
                             }));
                           }}
                         >
+                          <ToggleGroupItem value="31">Cheesy</ToggleGroupItem>
                           <ToggleGroupItem value="9">Spicy</ToggleGroupItem>
                           <ToggleGroupItem value="8">Mild</ToggleGroupItem>
                           <ToggleGroupItem value="7">Sweet</ToggleGroupItem>

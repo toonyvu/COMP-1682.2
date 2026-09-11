@@ -65,7 +65,7 @@ export default function UserNavbar() {
                   onClick={async () => {
                     clearUser();
                     const result = await logout();
-                    console.log(result);
+                    result;
                   }}
                 >
                   Logout

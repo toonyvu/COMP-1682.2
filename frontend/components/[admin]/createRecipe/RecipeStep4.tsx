@@ -19,7 +19,7 @@ export default function RecipeStep4({ setFormStep }: Props) {
   const addRecipe = async () => {
     if (!recipe) return;
     const createdRecipe = await createRecipe({ recipe, ingredients, steps });
-    console.log(createdRecipe);
+    createdRecipe;
     if (createdRecipe) {
       setFullRecipe(createdRecipe);
       setFormStep(5);

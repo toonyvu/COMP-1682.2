@@ -8,6 +8,7 @@ import { requireRole } from "../middleware/requireRole.js";
 const router = Router();
 
 router.get("/", authenticateToken, getMealKits);
+
 router.post(
   "/",
   authenticateToken,

@@ -35,7 +35,7 @@ export default function LoginForm() {
       if (res.ok) {
         setUser(res.data.user);
         if (res.data.role === "admin") {
-          router.push("/admin/dashboard");
+          router.push("/admin/dashboard/orders");
         } else {
           router.push("/dashboard");
         }
@@ -43,7 +43,7 @@ export default function LoginForm() {
         setError(res.data.message);
       }
     } catch (err) {
-      console.log(err);
+      err;
       setError("Server Error, please try again.");
     } finally {
       setLoading(false);

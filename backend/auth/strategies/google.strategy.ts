@@ -10,7 +10,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL: "http://localhost:8080/auth/oauth/google/callback",
     },
-    async (accessToken, refreshToken, profile: Profile, done) => {
+    async (_accessToken, _refreshToken, profile: Profile, done) => {
       const user = await findOrCreateExistingUser(profile);
       return done(null, user);
     },

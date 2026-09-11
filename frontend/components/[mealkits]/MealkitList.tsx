@@ -59,15 +59,13 @@ export default function MealkitList({ week }: Props) {
 
     queryFn: async () => {
       const res = await getMealKits(page, week, filters, debouncedSearch);
-      console.log(res.data);
+      res.data;
       return res.data;
     },
   });
 
   const total = mealkits?.total ?? 0;
   const totalPages = Math.floor(total / 12) === 0 ? 1 : Math.ceil(total / 12);
-
-  console.log(total, totalPages);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -89,7 +87,7 @@ export default function MealkitList({ week }: Props) {
     try {
       await cartApi.addToCart(mealkitId);
     } catch (err) {
-      console.log(err);
+      err;
     }
   }
 
@@ -120,7 +118,7 @@ export default function MealkitList({ week }: Props) {
         <div className="w-full flex justify-center">
           <div className="flex gap-2">
             <Input
-              className="h-10 w-80 ring-1 ring-gray-300"
+              className="h-10 w-300 ring-1 ring-gray-300"
               placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -130,6 +128,148 @@ export default function MealkitList({ week }: Props) {
               Search
             </Button>
           </div>
+        </div>
+
+        <div className="w-1/2 place-self-center mt-4">
+          <Card>
+            <CardContent>
+              <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+                <CollapsibleTrigger className="w-full">
+                  <div className="font-semibold text-xl flex flex-row w-full justify-between">
+                    <h3 className="text-2xl">Tag Filters</h3>
+                    <ChevronRight></ChevronRight>
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Cooking Time
+                      </h3>
+                      <div className="flex flex-row gap-4 text-lg">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.cookingTimes}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              cookingTimes: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="28" className="">
+                            15 Minutes or Less
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="27">
+                            30 Minutes or Less
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="26">
+                            Weekend Project
+                          </ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Recipe Type
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.recipeTypes}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              recipeTypes: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="25">
+                            Vegetarian
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="24">Vegan</ToggleGroupItem>
+                          <ToggleGroupItem value="23">
+                            Pescatarian
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="22">
+                            Gluten Free
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="21">
+                            Dairy Free
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="20">Halal</ToggleGroupItem>
+                          <ToggleGroupItem value="19">Low Carb</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Cuisine
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.cuisines}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              cuisines: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="18">Italian</ToggleGroupItem>
+                          <ToggleGroupItem value="17">Japanese</ToggleGroupItem>
+                          <ToggleGroupItem value="16">Korean</ToggleGroupItem>
+                          <ToggleGroupItem value="15">Chinese</ToggleGroupItem>
+                          <ToggleGroupItem value="14">
+                            Vietnamese
+                          </ToggleGroupItem>
+                          <ToggleGroupItem value="13">Thai</ToggleGroupItem>
+                          <ToggleGroupItem value="12">Indian</ToggleGroupItem>
+                          <ToggleGroupItem value="11">Mexican</ToggleGroupItem>
+                          <ToggleGroupItem value="10">French</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-500 mb-2">
+                        Flavor
+                      </h3>
+                      <div className="flex flex-row gap-4">
+                        <ToggleGroup
+                          variant="outline"
+                          type="multiple"
+                          value={filters.flavors}
+                          onValueChange={(value) => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              flavors: value,
+                            }));
+                          }}
+                        >
+                          <ToggleGroupItem value="9">Spicy</ToggleGroupItem>
+                          <ToggleGroupItem value="8">Mild</ToggleGroupItem>
+                          <ToggleGroupItem value="7">Sweet</ToggleGroupItem>
+                          <ToggleGroupItem value="6">Savoury</ToggleGroupItem>
+                          <ToggleGroupItem value="5">Tangy</ToggleGroupItem>
+                          <ToggleGroupItem value="4">Smoky</ToggleGroupItem>
+                          <ToggleGroupItem value="3">Creamy</ToggleGroupItem>
+                          <ToggleGroupItem value="2">Herby</ToggleGroupItem>
+                          <ToggleGroupItem value="1">Garlicky</ToggleGroupItem>
+                        </ToggleGroup>
+                      </div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </CardContent>
+          </Card>
         </div>
 
         <h1 className="place-self-center my-20 text-lg text-gray-600">
@@ -164,8 +304,8 @@ export default function MealkitList({ week }: Props) {
           <CardContent>
             <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
               <CollapsibleTrigger className="w-full">
-                <div className="font-semibold text-xl flex flex-row w-full justify-between">
-                  <h3 className="text-2xl">Tag Filters</h3>
+                <div className="text-md flex flex-row w-full justify-between">
+                  <h3 className="font-semibold">Tag Filters</h3>
                   <ChevronRight></ChevronRight>
                 </div>
               </CollapsibleTrigger>
@@ -192,6 +332,9 @@ export default function MealkitList({ week }: Props) {
                         </ToggleGroupItem>
                         <ToggleGroupItem value="27">
                           30 Minutes or Less
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="29">
+                          60 Minutes or Less
                         </ToggleGroupItem>
                         <ToggleGroupItem value="26">
                           Weekend Project
@@ -256,6 +399,7 @@ export default function MealkitList({ week }: Props) {
                         <ToggleGroupItem value="12">Indian</ToggleGroupItem>
                         <ToggleGroupItem value="11">Mexican</ToggleGroupItem>
                         <ToggleGroupItem value="10">French</ToggleGroupItem>
+                        <ToggleGroupItem value="30">Other</ToggleGroupItem>
                       </ToggleGroup>
                     </div>
                   </div>
@@ -276,6 +420,7 @@ export default function MealkitList({ week }: Props) {
                           }));
                         }}
                       >
+                        <ToggleGroupItem value="31">Cheesy</ToggleGroupItem>
                         <ToggleGroupItem value="9">Spicy</ToggleGroupItem>
                         <ToggleGroupItem value="8">Mild</ToggleGroupItem>
                         <ToggleGroupItem value="7">Sweet</ToggleGroupItem>
@@ -294,10 +439,11 @@ export default function MealkitList({ week }: Props) {
           </CardContent>
         </Card>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto sm:px-6 mt-8">
         {mealkits.mealkits.map((recipe) => (
           <Link
-            key={recipe.recipe_id}
+            key={recipe.mealkit_id}
             href={`/recipes/${recipe.recipe_id}?mealkit=${recipe.mealkit_id}`}
             scroll
             className="block h-full hover:scale-105"
@@ -319,25 +465,25 @@ export default function MealkitList({ week }: Props) {
                   {recipe.difficulty}
                 </span>
 
-                <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+                <h2 className="text-xl font-semibold text-gray-800 line-clamp-1">
                   {recipe.name}
                 </h2>
 
-                <p className="text-sm text-gray-500 line-clamp-2">
+                <p className="text-lg text-gray-500 line-clamp-2">
                   {recipe.description}
                 </p>
 
                 <h3 className="text-md font-semibold">
                   Tags:{" "}
                   {recipe.tags.map((tag, index) => (
-                    <span key={tag} className="text-sm text-gray-500">
+                    <span key={tag} className="text-md text-gray-500">
                       {index > 0 && ", "}
                       {tag}
                     </span>
                   ))}
                 </h3>
 
-                <div className="text-sm font-semibold text-gray-800 mt-auto">
+                <div className="text-md font-semibold text-gray-800 mt-auto">
                   <p>Servings: {recipe.servings}</p>
                   <div className="flex flex-row">
                     <div>
@@ -354,7 +500,7 @@ export default function MealkitList({ week }: Props) {
                         onClick={(e) => {
                           e.stopPropagation();
                           e.preventDefault();
-                          console.log("Adding item");
+                          ("Adding item");
                           showToast.success(`Added ${recipe.name} to cart!`, {
                             position: "top-left",
                             duration: 3000,

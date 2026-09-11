@@ -40,6 +40,134 @@ export async function getOrder(sessionId: string) {
   };
 }
 
+export async function cancelOrders(orderId: number) {
+  const client = await pool.connect();
+
+  ("Cancel orders reached");
+  try {
+    await client.query("BEGIN");
+    const getOrderResult = await client.query(
+      `
+    SELECT stripe_payment_intent_id, amount_total, refunded, status, cus_order_id, user_id
+    FROM orders
+    WHERE id = $1
+    `,
+      [orderId],
+    );
+
+    if (getOrderResult.rows.length === 0) {
+      throw new Error("Order not found.");
+    }
+
+    if (getOrderResult.rows[0].refunded) {
+      throw new Error("Order has already been refunded.");
+    }
+
+    const userId = getOrderResult.rows[0].user_id;
+    const customerOrderId = getOrderResult.rows[0].cus_order_id;
+    const amountTotal = getOrderResult.rows[0].amount_total;
+    const cusIntentId = getOrderResult.rows[0].stripe_payment_intent_id;
+    const status = getOrderResult.rows[0].status;
+
+    if (status === "paid") {
+      const refund = await stripe.refunds.create({
+        payment_intent: cusIntentId,
+      });
+
+      if (refund.status === "succeeded") {
+        await client.query(
+          `
+          UPDATE orders
+          SET
+            status = 'cancelled',
+            stripe_refund_id = $1,
+            refunded = TRUE,
+            refunded_amount = $2,
+            refunded_at = NOW()
+          WHERE id = $3
+          `,
+          [refund.id, refund.amount, orderId],
+        );
+
+        await client.query(
+          `
+        INSERT INTO notifications (
+        user_id,
+        title,
+        message,
+        type,
+        action_url
+        ) VALUES ($1, $2, $3, $4, $5)
+      `,
+          [
+            userId,
+            `Your order ${customerOrderId} has been cancelled.`,
+            `Your order has been cancelled. Refund has been inititated. Click on the link for details.`,
+            "cancelled",
+            `/profile/orders/${customerOrderId}`,
+          ],
+        );
+      } else {
+        throw new Error("Error: Cannot refund for order.");
+      }
+    } else if (status === "preparing") {
+      const refundAmount = Math.floor(amountTotal / 2);
+      const refund = await stripe.refunds.create({
+        payment_intent: cusIntentId,
+        amount: refundAmount,
+      });
+
+      if (refund.status === "succeeded") {
+        await client.query(
+          `
+          UPDATE orders
+          SET
+            status = 'cancelled',
+            stripe_refund_id = $1,
+            refunded = TRUE,
+            refunded_amount = $2,
+            refunded_at = NOW()
+          WHERE id = $3
+          `,
+          [refund.id, refund.amount, orderId],
+        );
+
+        await client.query(
+          `
+        INSERT INTO notifications (
+        user_id,
+        title,
+        message,
+        type,
+        action_url
+        ) VALUES ($1, $2, $3, $4, $5)
+      `,
+          [
+            userId,
+            `Your order ${customerOrderId} has been cancelled.`,
+            `Your order has been cancelled. Refund has been inititated. Deductions in refund applied. Click on the link for details.`,
+            "cancelled",
+            `/profile/orders/${customerOrderId}`,
+          ],
+        );
+      } else {
+        throw new Error("Error: Cannot refund for order.");
+      }
+    } else {
+      throw new Error("This order cannot be cancelled.");
+    }
+
+    await client.query("COMMIT");
+    return;
+  } catch (err: any) {
+    err;
+    await client.query("ROLLBACK");
+    throw new Error(err.message);
+  } finally {
+    await client.release();
+  }
+}
+
 export async function getAllOrders(userId: number) {
   const client = await pool.connect();
 
@@ -85,7 +213,7 @@ export async function getAllOrders(userId: number) {
       [userId],
     );
 
-    console.log(ordersResult.rows);
+    ordersResult.rows;
 
     const orders = ordersResult.rows.map((order) => ({
       ...order,
@@ -95,7 +223,7 @@ export async function getAllOrders(userId: number) {
 
     return orders;
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();
@@ -116,9 +244,45 @@ export async function updateOrderStatus(orderId: number, status: string) {
       [status, orderId],
     );
 
+    const getUserResult = await client.query(
+      `
+      SELECT cus_order_id, user_id
+      FROM orders
+      WHERE id = $1
+      `,
+      [orderId],
+    );
+
+    if (getUserResult.rows.length === 0) {
+      await client.query("ROLLBACK");
+      return;
+    }
+
+    const customerOrderId = getUserResult.rows[0].cus_order_id;
+    const userId = getUserResult.rows[0].user_id;
+
+    await client.query(
+      `
+        INSERT INTO notifications (
+        user_id,
+        title,
+        message,
+        type,
+        action_url
+        ) VALUES ($1, $2, $3, $4, $5)
+      `,
+      [
+        userId,
+        `Your order ${customerOrderId} has been ${status}.`,
+        `Your order is now ${status}! Click on the link for details.`,
+        "order",
+        `/profile/orders/${customerOrderId}`,
+      ],
+    );
+
     await client.query("COMMIT");
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();
@@ -161,7 +325,7 @@ export async function getOrderDetails(orderId: string, userId: number) {
     await client.query("COMMIT");
     return result.rows[0];
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();
@@ -193,9 +357,8 @@ export async function getAllOrdersAdmin(
   }
 
   if (search && searchColumn) {
-    if (searchField === "cus_order_id" || searchField === "phone") {
+    if (searchField === "orderId" || searchField === "phone") {
       values.push(search);
-
       whereClause.push(`${searchColumn} = $${values.length}`);
     } else {
       values.push(`%${search}%`);
@@ -281,14 +444,13 @@ export async function getAllOrdersAdmin(
 
     const orders = ordersResult.rows.map((order) => ({
       ...order,
-      amount_total: order.amount_total,
     }));
 
     await client.query("COMMIT");
-    console.log(orders);
+    orders;
     return orders;
   } catch (err) {
-    console.log(err);
+    err;
     await client.query("ROLLBACK");
   } finally {
     await client.release();

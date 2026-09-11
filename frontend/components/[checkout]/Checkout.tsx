@@ -21,7 +21,7 @@ export default function Checkout() {
       setLoading(true);
       await createCheckoutSession();
     } catch (err) {
-      console.log(err);
+      err;
     } finally {
       setLoading(false);
     }
